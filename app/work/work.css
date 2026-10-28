@@ -34,7 +34,7 @@
   --secondary: oklch(0.965 0.003 90);
   --secondary-foreground: oklch(0.24 0.012 300);
   --muted: oklch(0.965 0.003 90);
-  --muted-foreground: oklch(0.51 0.012 300);
+  --muted-foreground: oklch(0.46 0.012 300);
   --accent: oklch(0.955 0.006 340);
   --accent-foreground: oklch(0.24 0.012 300);
   --destructive: oklch(0.58 0.22 25);
@@ -78,7 +78,7 @@
   --secondary: oklch(0.24 0.012 305);
   --secondary-foreground: oklch(0.94 0.006 90);
   --muted: oklch(0.24 0.012 305);
-  --muted-foreground: oklch(0.66 0.014 305);
+  --muted-foreground: oklch(0.73 0.014 305);
   --accent: oklch(0.27 0.02 340);
   --accent-foreground: oklch(0.96 0.006 90);
   --destructive: oklch(0.64 0.21 22);
@@ -164,6 +164,13 @@
     @apply border-border outline-ring/50;
   }
 
+  /* Slightly larger rem base while the workspace is mounted: every Tailwind
+     size (text-sm, text-xs, spacing) scales with it. The marketing site never
+     renders [data-orkwork], so it keeps the browser default. */
+  html:has([data-orkwork]) {
+    font-size: 106.25%;
+  }
+
   /* Isolation wrapper — neutralises the public site's global reset
      (app/globals.css sets body{cursor:none;background:var(--ink);...}). */
   [data-orkwork] {
@@ -195,5 +202,73 @@
     justify-content: normal;
     flex-direction: row;
     gap: normal;
+  }
+}
+
+/* Org chart: classic tree connectors drawn with borders. */
+@layer components {
+  [data-orkwork] .org-tree ul {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    padding-top: 1.25rem;
+    margin: 0;
+  }
+  [data-orkwork] .org-tree > ul {
+    padding-top: 0;
+  }
+  [data-orkwork] .org-tree li {
+    list-style: none;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.25rem 0.5rem 0;
+  }
+  [data-orkwork] .org-tree > ul > li {
+    padding-top: 0;
+  }
+  [data-orkwork] .org-tree li::before,
+  [data-orkwork] .org-tree li::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 50%;
+    width: 50%;
+    height: 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+  [data-orkwork] .org-tree li::after {
+    right: auto;
+    left: 50%;
+    border-left: 1px solid var(--border);
+  }
+  [data-orkwork] .org-tree > ul > li::before,
+  [data-orkwork] .org-tree > ul > li::after,
+  [data-orkwork] .org-tree li:only-child::before {
+    display: none;
+  }
+  [data-orkwork] .org-tree li:only-child::after {
+    border-top: 0;
+  }
+  [data-orkwork] .org-tree li:first-child::before,
+  [data-orkwork] .org-tree li:last-child::after {
+    border: 0;
+  }
+  [data-orkwork] .org-tree li:last-child::before {
+    border-right: 1px solid var(--border);
+    border-radius: 0 6px 0 0;
+  }
+  [data-orkwork] .org-tree li:first-child::after {
+    border-radius: 6px 0 0 0;
+  }
+  /* vertical line from a parent down to its children row */
+  [data-orkwork] .org-tree ul ul::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    height: 1.25rem;
+    border-left: 1px solid var(--border);
   }
 }

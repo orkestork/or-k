@@ -6,6 +6,7 @@ import { Dialog as DialogPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/work/utils"
 import { Button } from "@/components/work/ui/button"
+import { useWorkPortalContainer } from "./portal-container"
 
 function Dialog({
   ...props
@@ -22,7 +23,7 @@ function DialogTrigger({
 function DialogPortal({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Portal>) {
-  return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />
+  return <DialogPrimitive.Portal container={useWorkPortalContainer()} data-slot="dialog-portal" {...props} />
 }
 
 function DialogClose({

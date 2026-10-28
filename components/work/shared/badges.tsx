@@ -15,7 +15,7 @@ export function StatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-medium whitespace-nowrap",
+        "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap",
         TONE_CLASS[meta.tone as Tone],
         className,
       )}
@@ -44,7 +44,7 @@ export function PriorityBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium",
+        "inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium",
         TONE_CLASS[meta.tone],
         className,
       )}
@@ -79,7 +79,7 @@ export function DeadlinePill({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium",
+        "inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium",
         tone,
         className,
       )}

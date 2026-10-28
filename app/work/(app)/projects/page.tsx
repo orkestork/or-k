@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getClients, getProjects, getRequests, getUsers } from "@/lib/work/mock/store";
+import { getClients, getMe, getProjects, getRequests, getUsers } from "@/lib/work/data";
+import { seesAll } from "@/lib/work/people";
 import { HAPPY_PATH } from "@/lib/work/workflow";
 import { shortDate } from "@/lib/work/format";
 import { PageHeader, ClientMark } from "@/components/work/shared/page-header";
@@ -8,28 +9,44 @@ import { PersonStack } from "@/components/work/shared/people";
 import { Card } from "@/components/work/ui/card";
 import { Progress } from "@/components/work/ui/progress";
 import { Badge } from "@/components/work/ui/badge";
+import { Button } from "@/components/work/ui/button";
+import { EmptyState } from "@/components/work/shared/empty-state";
+import { FolderKanban, Plus } from "lucide-react";
 
 export const metadata: Metadata = { title: "Projects · OR-K WORK" };
 
 const STATUS_LABEL = { active: "Activo", on_hold: "En pausa", closed: "Cerrado" } as const;
 
 export default async function ProjectsPage() {
-  const [projects, clients, requests, users] = await Promise.all([
+  const [projects, clients, requests, users, me] = await Promise.all([
     getProjects(),
     getClients(),
     getRequests(),
     getUsers(),
+    getMe(),
   ]);
+  const canManage = seesAll(me?.role);
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div className="mx-auto max-w-7xl">
       <PageHeader
         title="Proyectos"
         description="Un proyecto agrupa las solicitudes de una campaña o entregable de cliente."
+        actions={
+          canManage ? <Button size="sm" asChild>
+            <Link href="/work/projects/new">
+              <Plus className="size-4" /> Nuevo proyecto
+            </Link>
+          </Button> : null
+        }
       />
+      {projects.length === 0 ? (
+        <EmptyState icon={FolderKanban} title="Sin proyectos todavía" description="Crea un proyecto dentro de un cliente para poder abrir solicitudes." />
+      ) : null}
       <div className="grid gap-3 sm:grid-cols-2">
         {projects.map((p) => {
-          const client = clients.find((c) => c.id === p.clientId)!;
+          const client = clients.find((c) => c.id === p.clientId);
+          if (!client) return null;
           const reqs = requests.filter((r) => r.projectId === p.id);
           const done = reqs.filter((r) =>
             ["approved", "scheduled", "published", "completed"].includes(r.state),
@@ -65,7 +82,7 @@ export default async function ProjectsPage() {
                   </div>
                   <Badge
                     variant="outline"
-                    className="ml-auto text-[11px] font-normal"
+                    className="ml-auto text-xs font-normal"
                   >
                     {STATUS_LABEL[p.status]}
                   </Badge>

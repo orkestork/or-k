@@ -11,7 +11,7 @@ export function WorkflowStrip({ state }: { state: WorkflowState }) {
 
   return (
     <div className="overflow-x-auto">
-      <ol className="flex min-w-max items-center gap-1.5 text-[11px]">
+      <ol className="flex min-w-max items-center gap-1.5 text-xs">
         {HAPPY_PATH.map((s, i) => {
           const done = i < idx;
           const current = i === idx && !inAdjustments;

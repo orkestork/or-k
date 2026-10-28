@@ -21,9 +21,12 @@ import {
 import {
   Avatar,
   AvatarFallback,
+  AvatarImage,
 } from "@/components/work/ui/avatar";
 import { ThemeToggle } from "@/components/work/theme/theme-toggle";
 import { WorkSidebar } from "./work-sidebar";
+import { seesAll, seesFinance } from "@/lib/work/people";
+import { CommandPalette } from "./command-palette";
 
 function initials(name: string) {
   return name
@@ -57,13 +60,14 @@ export function WorkTopbar({
         </SheetTrigger>
         <SheetContent side="left" className="w-64 p-0">
           <SheetTitle className="sr-only">Navegación</SheetTitle>
-          <WorkSidebar />
+          <WorkSidebar canSeeAll={seesAll(user?.role)} canSeeFinance={seesFinance(user?.role)} />
         </SheetContent>
       </Sheet>
 
       <h1 className="text-sm font-medium">{title}</h1>
 
       <div className="ml-auto flex items-center gap-2">
+        <CommandPalette canSeeAll={seesAll(user?.role)} canSeeFinance={seesFinance(user?.role)} />
         <ThemeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -73,7 +77,8 @@ export function WorkTopbar({
               aria-label="Cuenta"
             >
               <Avatar className="size-6">
-                <AvatarFallback className="text-[10px]">
+                {user?.avatarUrl ? <AvatarImage src={user.avatarUrl} alt={user.name} className="object-cover" /> : null}
+                <AvatarFallback className="text-[11px]">
                   {user ? initials(user.name) : "?"}
                 </AvatarFallback>
               </Avatar>

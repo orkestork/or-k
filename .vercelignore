@@ -2,3 +2,6 @@
 .git
 .next
 node_modules
+.migration-backup
+output
+.env.local

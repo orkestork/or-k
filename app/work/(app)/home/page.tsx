@@ -6,10 +6,11 @@ import {
   getClients,
   getDashboard,
   getUsers,
-} from "@/lib/work/mock/store";
+} from "@/lib/work/data";
 import { PageHeader } from "@/components/work/shared/page-header";
 import { MetricCard } from "@/components/work/shared/metric-card";
 import { RequestList } from "@/components/work/requests/request-list";
+import { PersonAvatar } from "@/components/work/shared/people";
 import {
   Card,
   CardContent,
@@ -28,6 +29,9 @@ export default async function HomePage() {
   ]);
 
   const firstName = user?.name.split(" ")[0] ?? "";
+  const me = users.find((u) => u.id === user?.id);
+  const covering = users.filter((u) => u.away?.substituteId && u.away.substituteId === user?.id);
+  const day = (ymd: string) => new Date(`${ymd}T12:00:00`).toLocaleDateString("es", { day: "numeric", month: "long" });
 
   const sections: {
     key: string;
@@ -43,11 +47,30 @@ export default async function HomePage() {
   ];
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div className="mx-auto max-w-7xl">
       <PageHeader
         title={`Hola, ${firstName}`}
         description="Tu resumen de operación de hoy."
       />
+
+      {me?.away ? (
+        <div className="mb-4 rounded-md border border-tone-warn/40 bg-tone-warn/10 px-4 py-2.5 text-sm">
+          Estás marcado como <span className="font-medium">off</span> hasta el {day(me.away.until)}
+          {me.away.substituteId ? ` · te reemplaza ${users.find((u) => u.id === me.away!.substituteId)?.name ?? "alguien del equipo"}` : ""}.
+        </div>
+      ) : null}
+      {covering.map((u) => (
+        <div key={u.id} className="mb-4 flex flex-wrap items-center gap-2 rounded-md border border-primary/40 bg-primary/5 px-4 py-2.5 text-sm">
+          <PersonAvatar person={u} size="xs" />
+          <span>
+            Estás reemplazando a <Link href={`/work/team/${u.id}`} className="font-medium hover:underline">{u.name}</Link> hasta el{" "}
+            {day(u.away!.until)}: te llegan sus avisos y puedes aprobar por él/ella.
+          </span>
+          <Link href={`/work/requests?assignee=${u.id}&scope=open`} className="ml-auto text-primary hover:underline">
+            Ver sus tareas
+          </Link>
+        </div>
+      ))}
 
       <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <MetricCard label="Proyectos activos" value={dash.counts.activeProjects} />

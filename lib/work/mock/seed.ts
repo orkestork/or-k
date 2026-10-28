@@ -45,7 +45,7 @@ export const CURRENT_USER_ID = "u-brandon";
 
 /* --------------------------------------------------------------- clients --- */
 
-export const CLIENTS: Client[] = [
+export const CLIENTS: Client[] = ([
   {
     id: "c-marwa", name: "MARWA", logoText: "MW", accentColor: "#e11d48",
     industry: "Retail · Moda", accountManagerId: "u-laura",
@@ -99,7 +99,11 @@ export const CLIENTS: Client[] = [
       { id: "a-tp-1", category: "templates", name: "Grid marketplace (Figma).link", kind: "link", addedAt: ago(30), addedBy: "u-julian" },
     ],
   },
-];
+] as Omit<Client, "legal" | "active">[]).map((c) => ({
+  ...c,
+  active: true,
+  legal: { legalName: c.name, taxId: "", taxRegime: "", address: "", city: "", country: "Colombia", website: "", billingEmail: "" },
+}));
 
 /* -------------------------------------------------------------- projects --- */
 

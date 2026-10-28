@@ -1,19 +1,18 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { ArrowRight, Check, RotateCcw, Upload, X } from "lucide-react";
+import { ArrowRight, Check, RotateCcw, Send, X } from "lucide-react";
 import { toast } from "sonner";
 import type { AdjustmentTarget, Request } from "@/types/work/domain";
 import { WORKFLOW, nextState } from "@/lib/work/workflow";
 import {
-  addVersionAction,
   advanceRequestAction,
   decideApprovalAction,
   registerAdjustmentAction,
+  setRequestStateAction,
 } from "@/lib/work/actions";
 import { Button } from "@/components/work/ui/button";
 import { Textarea } from "@/components/work/ui/textarea";
-import { Input } from "@/components/work/ui/input";
 import {
   Dialog,
   DialogClose,
@@ -38,14 +37,36 @@ const REVIEW_STATES = [
   "client_review",
 ] as const;
 
-export function RequestActions({ request }: { request: Request }) {
-  const [pending, start] = useTransition();
+export function RequestActions({
+  request,
+  approval = { allowed: true, approverName: null },
+  canSendToClient = true,
+}: {
+  request: Request;
+  /** Management decides what reaches the client. */
+  canSendToClient?: boolean;
+  /** Internal reviews can be locked to one approver. */
+  approval?: { allowed: boolean; approverName: string | null };
+}) {
+  const [pending, startTransition] = useTransition();
+  const start: Runner = (fn) =>
+    startTransition(async () => {
+      try {
+        await fn();
+      } catch (e) {
+        toast.error(e instanceof Error ? e.message : "No se pudo completar la acción");
+      }
+    });
   const isReview = (REVIEW_STATES as readonly string[]).includes(request.state);
   const next = nextState(request.state);
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {isReview ? (
+      {isReview && !approval.allowed ? (
+        <span className="rounded-md border border-border px-3 py-1.5 text-sm text-muted-foreground">
+          Esperando aprobación de <span className="font-medium text-foreground">{approval.approverName}</span>
+        </span>
+      ) : isReview ? (
         <>
           <ApproveButton id={request.id} pending={pending} start={start} />
           <RequestChangesButton id={request.id} pending={pending} start={start} />
@@ -64,10 +85,55 @@ export function RequestActions({ request }: { request: Request }) {
           Mover a {WORKFLOW[next].label}
           <ArrowRight className="size-4" />
         </Button>
+      ) : request.state === "adjustments" ? (
+        <>
+          <Button
+            size="sm"
+            disabled={pending}
+            onClick={() =>
+              start(async () => {
+                await setRequestStateAction(request.id, "copy");
+                toast.success("De vuelta a Copy");
+              })
+            }
+          >
+            Ajustar copy
+          </Button>
+          <Button
+            size="sm"
+            disabled={pending}
+            onClick={() =>
+              start(async () => {
+                await setRequestStateAction(request.id, "design");
+                toast.success("De vuelta a Diseño");
+              })
+            }
+          >
+            Ajustar diseño
+          </Button>
+        </>
       ) : null}
 
-      {["design", "copy", "adjustments"].includes(request.state) ? (
-        <UploadVersionButton id={request.id} pending={pending} start={start} />
+
+      {canSendToClient && approval.allowed && !["client_review", "approved", "scheduled", "published", "completed", "archived"].includes(request.state) ? (
+        <Button
+          size="sm"
+          variant="outline"
+          disabled={pending}
+          title={request.versions.length ? "Pasa a Revisión del cliente y le comparte la última versión" : "Aún no hay versiones subidas"}
+          onClick={() =>
+            start(async () => {
+              await setRequestStateAction(request.id, "client_review");
+              toast.success("Enviada al cliente", {
+                description: request.versions.length
+                  ? "Ya puede verla y aprobarla en su portal."
+                  : "Aún no tiene versiones: sube una para que tenga qué revisar.",
+              });
+            })
+          }
+        >
+          <Send className="size-4" /> Enviar al cliente
+        </Button>
       ) : null}
 
       <AdjustmentButton
@@ -163,56 +229,6 @@ function RequestChangesButton({ id, pending, start }: { id: string; pending: boo
               }
             >
               Enviar
-            </Button>
-          </DialogClose>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-function UploadVersionButton({ id, pending, start }: { id: string; pending: boolean; start: Runner }) {
-  const [file, setFile] = useState("");
-  const [note, setNote] = useState("");
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button size="sm" variant="outline" disabled={pending}>
-          <Upload className="size-4" /> Subir versión
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Nueva versión</DialogTitle>
-        </DialogHeader>
-        <Input
-          placeholder="nombre-del-archivo.png"
-          value={file}
-          onChange={(e) => setFile(e.target.value)}
-        />
-        <Textarea
-          placeholder="Nota de la versión"
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-        />
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="ghost" size="sm">
-              Cancelar
-            </Button>
-          </DialogClose>
-          <DialogClose asChild>
-            <Button
-              size="sm"
-              disabled={pending}
-              onClick={() =>
-                start(async () => {
-                  await addVersionAction(id, file, note || "Nueva versión.");
-                  toast.success("Versión subida");
-                })
-              }
-            >
-              Subir
             </Button>
           </DialogClose>
         </DialogFooter>

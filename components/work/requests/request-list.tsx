@@ -2,8 +2,9 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import type { Client, Request, WorkUserRecord } from "@/types/work/domain";
 import { StatusBadge, PriorityBadge, DeadlinePill } from "@/components/work/shared/badges";
-import { PersonAvatar } from "@/components/work/shared/people";
+import { PersonAvatar, PersonStack } from "@/components/work/shared/people";
 import { ClientMark } from "@/components/work/shared/page-header";
+import { peopleOn } from "@/lib/work/people";
 
 export function RequestList({
   requests,
@@ -24,7 +25,7 @@ export function RequestList({
     <ul className="divide-y divide-border rounded-lg border border-border">
       {requests.map((r) => {
         const client = clientById(r.clientId);
-        const assignee = userById(r.assigneeId);
+        const people = peopleOn(r).map((id) => userById(id)).filter(Boolean) as WorkUserRecord[];
         return (
           <li key={r.id}>
             <Link
@@ -57,10 +58,12 @@ export function RequestList({
 
               <DeadlinePill iso={r.deadline} className="hidden shrink-0 md:inline-flex" />
 
-              {assignee ? (
-                <PersonAvatar person={assignee} size="sm" className="shrink-0" />
+              {people.length ? (
+                <div className="shrink-0">
+                  <PersonStack people={people} max={3} />
+                </div>
               ) : (
-                <span className="grid size-6 shrink-0 place-items-center rounded-full border border-dashed border-border text-[10px] text-muted-foreground">
+                <span className="grid size-6 shrink-0 place-items-center rounded-full border border-dashed border-border text-xs text-muted-foreground">
                   ?
                 </span>
               )}

@@ -67,8 +67,22 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+// Used when a consumer renders outside the provider (e.g. for a moment during
+// a dev hot reload): it still works against the DOM/storage instead of
+// taking the whole page down.
+const FALLBACK: Ctx = {
+  theme: "system",
+  resolved: "dark",
+  setTheme: (t) => {
+    try {
+      localStorage.setItem(THEME_KEY, t);
+    } catch {
+      // storage unavailable
+    }
+    apply(resolveTheme(t));
+  },
+};
+
 export function useTheme() {
-  const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error("useTheme must be used within ThemeProvider");
-  return ctx;
+  return useContext(ThemeContext) ?? FALLBACK;
 }

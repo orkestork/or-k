@@ -6,6 +6,8 @@ import { signInWithPassword, type AuthState } from "@/lib/work/auth/actions";
 import { Button } from "@/components/work/ui/button";
 import { Input } from "@/components/work/ui/input";
 import { Label } from "@/components/work/ui/label";
+import { PasswordInput } from "@/components/work/forms/password-input";
+import { ActionForm } from "@/components/work/forms/action-form";
 
 const initialState: AuthState = { error: null };
 
@@ -18,7 +20,7 @@ export function LoginForm() {
   );
 
   return (
-    <form action={formAction} className="grid gap-4">
+    <ActionForm action={formAction} className="grid gap-4">
       <input type="hidden" name="redirect" value={redirectTo} />
 
       <div className="grid gap-2">
@@ -35,10 +37,9 @@ export function LoginForm() {
 
       <div className="grid gap-2">
         <Label htmlFor="password">Contraseña</Label>
-        <Input
+        <PasswordInput
           id="password"
           name="password"
-          type="password"
           autoComplete="current-password"
           required
         />
@@ -56,6 +57,6 @@ export function LoginForm() {
       <Button type="submit" disabled={pending} className="mt-1 w-full">
         {pending ? "Entrando…" : "Entrar"}
       </Button>
-    </form>
+    </ActionForm>
   );
 }

@@ -3,12 +3,13 @@ import { initials as toInitials } from "@/lib/work/format";
 import type { WorkUserRecord } from "@/types/work/domain";
 
 type PersonLike = Pick<WorkUserRecord, "name" | "color"> &
-  Partial<Pick<WorkUserRecord, "initials" | "title">>;
+  Partial<Pick<WorkUserRecord, "initials" | "title" | "avatarUrl">>;
 
 const SIZES = {
-  xs: "size-5 text-[9px]",
-  sm: "size-6 text-[10px]",
+  xs: "size-5 text-[10px]",
+  sm: "size-6 text-[11px]",
   md: "size-8 text-xs",
+  lg: "size-16 text-lg",
 } as const;
 
 export function PersonAvatar({
@@ -20,6 +21,19 @@ export function PersonAvatar({
   size?: keyof typeof SIZES;
   className?: string;
 }) {
+  if (person.avatarUrl) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element -- tiny avatar, public URL
+      <img
+        src={person.avatarUrl}
+        alt={person.name}
+        title={person.name}
+        loading="lazy"
+        className={cn("shrink-0 rounded-full object-cover ring-1 ring-inset ring-white/10", SIZES[size], className)}
+        style={{ backgroundColor: person.color }}
+      />
+    );
+  }
   return (
     <span
       className={cn(
@@ -74,7 +88,7 @@ export function PersonStack({
         />
       ))}
       {rest > 0 ? (
-        <span className="grid size-6 place-items-center rounded-full bg-muted text-[10px] font-medium text-muted-foreground ring-2 ring-background">
+        <span className="grid size-6 place-items-center rounded-full bg-muted text-xs font-medium text-muted-foreground ring-2 ring-background">
           +{rest}
         </span>
       ) : null}

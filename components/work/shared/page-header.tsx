@@ -42,8 +42,8 @@ export function ClientMark({
 }) {
   return (
     <span
-      className="grid shrink-0 place-items-center rounded-md text-[11px] font-bold text-white"
-      style={{ backgroundColor: color, width: size, height: size }}
+      className="grid shrink-0 place-items-center rounded-md font-bold leading-none text-white"
+      style={{ backgroundColor: color, width: size, height: size, fontSize: Math.max(7, Math.round(size * 0.38)) }}
       title={name}
     >
       {logoText}

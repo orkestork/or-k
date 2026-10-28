@@ -5,8 +5,8 @@ import {
   getRequests,
   getSessionUser,
   getUsers,
-} from "@/lib/work/mock/store";
-import { WORKFLOW } from "@/lib/work/workflow";
+} from "@/lib/work/data";
+import { mustApprove } from "@/lib/work/people";
 import { PageHeader } from "@/components/work/shared/page-header";
 import { EmptyState } from "@/components/work/shared/empty-state";
 import { RequestList } from "@/components/work/requests/request-list";
@@ -27,11 +27,12 @@ export default async function ApprovalsPage() {
   const inReview = requests.filter((r) =>
     (REVIEW as readonly string[]).includes(r.state),
   );
-  const forMe = inReview.filter((r) => WORKFLOW[r.state].owner === me.role);
-  const others = inReview.filter((r) => WORKFLOW[r.state].owner !== me.role);
+  const subOf = (id: string) => users.find((u) => u.id === id)?.away?.substituteId;
+  const forMe = inReview.filter((r) => mustApprove(r, me, subOf));
+  const others = inReview.filter((r) => !mustApprove(r, me, subOf));
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="mx-auto max-w-6xl">
       <PageHeader
         title="Aprobaciones"
         description="Piezas esperando una decisión en alguna etapa de revisión."

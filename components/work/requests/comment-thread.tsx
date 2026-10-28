@@ -14,12 +14,16 @@ export function CommentThread({
   requestId,
   comments,
   users,
+  allowExternal = false,
 }: {
   requestId: string;
   comments: Comment[];
   users: WorkUserRecord[];
+  /** Staff can mark a comment as visible to the client. */
+  allowExternal?: boolean;
 }) {
   const [value, setValue] = useState("");
+  const [external, setExternal] = useState(false);
   const [pending, start] = useTransition();
   const userById = (id: string) => users.find((u) => u.id === id);
 
@@ -46,6 +50,11 @@ export function CommentThread({
                     {c.versionLabel ? (
                       <span className="font-mono">{c.versionLabel}</span>
                     ) : null}
+                    {allowExternal && !c.internal ? (
+                      <span className="rounded bg-primary/10 px-1.5 py-0.5 text-primary">
+                        Visible al cliente
+                      </span>
+                    ) : null}
                   </div>
                   <p className="mt-1 text-sm whitespace-pre-wrap">{c.body}</p>
                 </div>
@@ -62,15 +71,30 @@ export function CommentThread({
           placeholder="Escribe un comentario…  usa @nombre para mencionar"
           className="min-h-16 border-0 bg-transparent px-1 shadow-none focus-visible:ring-0"
         />
-        <div className="flex justify-end">
+        <div className="flex items-center justify-end gap-3">
+          {allowExternal ? (
+            <label className="mr-auto flex items-center gap-1.5 text-xs text-muted-foreground">
+              <input
+                type="checkbox"
+                checked={external}
+                onChange={(e) => setExternal(e.target.checked)}
+              />
+              Visible para el cliente
+            </label>
+          ) : null}
           <Button
             size="sm"
             disabled={pending || !value.trim()}
             onClick={() =>
               start(async () => {
-                await addCommentAction(requestId, value);
-                setValue("");
-                toast.success("Comentario añadido");
+                try {
+                  await addCommentAction(requestId, value, external);
+                  setValue("");
+                  setExternal(false);
+                  toast.success("Comentario añadido");
+                } catch (e) {
+                  toast.error(e instanceof Error ? e.message : "No se pudo comentar");
+                }
               })
             }
           >

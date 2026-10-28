@@ -5,8 +5,22 @@ import { usePathname } from "next/navigation";
 import { WORK_NAV } from "@/lib/work/navigation";
 import { cn } from "@/lib/work/utils";
 
-export function WorkSidebar({ className }: { className?: string }) {
+export function WorkSidebar({
+  className,
+  canSeeAll = true,
+  canSeeFinance = false,
+}: {
+  className?: string;
+  canSeeAll?: boolean;
+  canSeeFinance?: boolean;
+}) {
   const pathname = usePathname();
+  const nav = WORK_NAV.map((g) => ({
+    ...g,
+    items: g.items.filter((i) => (canSeeAll || !i.managersOnly) && (canSeeFinance || !i.financeOnly)),
+  })).filter(
+    (g) => g.items.length,
+  );
 
   return (
     <div className={cn("flex h-full flex-col bg-sidebar", className)}>
@@ -19,10 +33,10 @@ export function WorkSidebar({ className }: { className?: string }) {
 
       <div className="flex-1 overflow-y-auto px-2 py-2">
         <nav className="flex flex-col gap-4">
-          {WORK_NAV.map((group) => (
+          {nav.map((group) => (
             <div key={group.id} className="flex flex-col gap-0.5">
               {group.label ? (
-                <p className="px-2 pb-1 pt-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground/70">
+                <p className="px-2 pb-1 pt-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground/70">
                   {group.label}
                 </p>
               ) : null}

@@ -423,6 +423,7 @@ export default function Home() {
       <a className="logo brandLogo" href="#inicio" aria-label="O R-K inicio"><img src="/assets/ork-logo-white.png" alt="O R-K"/></a>
       <button className="navHow" type="button" onClick={()=>setHowOpen(true)}><span>Explora UTS Method</span><b>↗</b></button>
       <div className="navlinks"><a href="#trabajo">Trabajo</a><a href="#servicios">Método UTS</a><a href="#nosotros" onClick={()=>setTeamOpen(true)}>Nosotros</a><a href="/development">Development</a><a href="#contacto">Hablemos</a></div>
+      <a className="navLogin" href="/work/login">Iniciar sesión <span aria-hidden="true">↗</span></a>
     </nav>
 
     {howOpen&&<div className="howOverlay" role="dialog" aria-modal="true" aria-label="Cómo funciona O R-K">
@@ -569,6 +570,6 @@ export default function Home() {
       event.currentTarget.style.setProperty("--glow-x", `${event.clientX - bounds.left}px`);
       event.currentTarget.style.setProperty("--glow-y", `${event.clientY - bounds.top}px`);
     }}><p>¿Tienes algo en mente?</p><h2 aria-label="Hagámoslo inevitable."><span className="contactWord contactWordTop" aria-hidden="true">{Array.from("HAGÁMOSLO").map((char,index)=><span data-char={char} style={{"--char-index":index} as React.CSSProperties} key={`${char}-${index}`}>{char}</span>)}</span><span className="contactWord contactWordImpact" aria-hidden="true">{Array.from("INEVITABLE.").map((char,index)=><span data-char={char} style={{"--char-index":index} as React.CSSProperties} key={`${char}-${index}`}>{char}</span>)}</span></h2><div className="contactMeta"><span>Un proyecto nuevo<br/>Una colaboración<br/>Una idea sin resolver</span><a className="contactLaunch" href="/formulario">Descubre si tu empresa está preparada <span>↗</span></a></div></section>
-    <footer><a className="logo brandLogo brandLogoFooter" href="#inicio" aria-label="O R-K inicio"><img src="/assets/ork-logo-white.png" alt="O R-K"/></a><p>Business innovation & technology.</p><div className="footerMeta"><p>© 2026 O R-K</p><a className="footerWork" href="/work">Work <span aria-hidden="true">↗</span></a></div></footer>
+    <footer><a className="logo brandLogo brandLogoFooter" href="#inicio" aria-label="O R-K inicio"><img src="/assets/ork-logo-white.png" alt="O R-K"/></a><p>Business innovation & technology.</p><div className="footerMeta"><p>© 2026 O R-K</p></div></footer>
   </main>;
 }

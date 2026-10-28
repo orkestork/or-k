@@ -8,8 +8,10 @@ import { BOARD_COLUMNS, WORKFLOW } from "@/lib/work/workflow";
 import { setRequestStateAction } from "@/lib/work/actions";
 import { cn } from "@/lib/work/utils";
 import { PriorityBadge, DeadlinePill } from "@/components/work/shared/badges";
-import { PersonAvatar } from "@/components/work/shared/people";
+import { PersonAvatar, PersonStack } from "@/components/work/shared/people";
 import { ClientMark } from "@/components/work/shared/page-header";
+import { peopleOn } from "@/lib/work/people";
+import { ListChecks, Lock } from "lucide-react";
 
 export function KanbanBoard({
   requests,
@@ -42,8 +44,12 @@ export function KanbanBoard({
     if (!req || req.state === targetState) return;
     start(async () => {
       moveOptimistic({ id, to: targetState });
-      await setRequestStateAction(id, targetState);
-      toast.success(`${id} → ${WORKFLOW[targetState].label}`);
+      try {
+        await setRequestStateAction(id, targetState);
+        toast.success(`${id} → ${WORKFLOW[targetState].label}`);
+      } catch (e) {
+        toast.error(e instanceof Error ? e.message : "No se pudo mover");
+      }
     });
   };
 
@@ -77,7 +83,12 @@ export function KanbanBoard({
             <div className="flex flex-col gap-2 p-2">
               {items.map((r) => {
                 const client = clientById(r.clientId);
-                const assignee = userById(r.assigneeId);
+                const people = peopleOn(r).map((id) => userById(id)).filter(Boolean) as WorkUserRecord[];
+                const subtasks = r.subtasks ?? [];
+                const blocked = (r.dependsOn ?? []).some((d) => {
+                  const dep = optimistic.find((x) => x.id === d);
+                  return dep && !["approved", "scheduled", "published", "completed"].includes(dep.state);
+                });
                 return (
                   <Link
                     key={r.id}
@@ -99,23 +110,34 @@ export function KanbanBoard({
                           size={18}
                         />
                       ) : null}
-                      <span className="font-mono text-[11px] text-muted-foreground">
+                      <span className="font-mono text-xs text-muted-foreground">
                         {r.id}
                       </span>
-                      <span className="ml-auto text-[11px] text-muted-foreground">
+                      <span className="ml-auto text-xs text-muted-foreground">
                         {WORKFLOW[r.state].label}
                       </span>
                     </div>
-                    <p className="text-sm leading-snug">{r.title}</p>
+                    <p className="flex items-start gap-1.5 text-sm leading-snug">
+                      {blocked ? (
+                        <span title="Bloqueada: depende de otra tarea sin aprobar">
+                          <Lock className="mt-0.5 size-3.5 shrink-0 text-tone-warn" />
+                        </span>
+                      ) : null}
+                      {r.title}
+                    </p>
                     <div className="mt-2 flex items-center gap-1.5">
                       <PriorityBadge priority={r.priority} />
                       <DeadlinePill iso={r.deadline} />
-                      {assignee ? (
-                        <PersonAvatar
-                          person={assignee}
-                          size="xs"
-                          className="ml-auto"
-                        />
+                      {subtasks.length ? (
+                        <span className="inline-flex items-center gap-1 font-mono text-xs text-muted-foreground">
+                          <ListChecks className="size-3" />
+                          {subtasks.filter((s) => s.done).length}/{subtasks.length}
+                        </span>
+                      ) : null}
+                      {people.length ? (
+                        <div className="ml-auto">
+                          <PersonStack people={people} max={3} />
+                        </div>
                       ) : null}
                     </div>
                   </Link>

@@ -1,6 +1,4 @@
-import { createClient } from "@/lib/work/supabase/server";
-import { supabaseConfigured } from "@/lib/work/supabase/env";
-import { getSessionUser } from "@/lib/work/mock/store";
+import { getMe } from "@/lib/work/data";
 import type { RoleSlug } from "@/types/work/domain";
 
 export type WorkUser = {
@@ -11,49 +9,27 @@ export type WorkUser = {
   title: string;
   initials: string;
   color: string;
+  active: boolean;
+  avatarUrl?: string | null;
 };
 
 /**
- * Returns the current OR-K WORK user.
+ * Returns the current OR-K WORK user from their profile.
  * While Supabase is not provisioned this resolves to the mock session user so
  * the whole app behaves "as if" someone is signed in.
  */
 export async function getCurrentUser(): Promise<WorkUser | null> {
-  if (!supabaseConfigured) {
-    const u = await getSessionUser();
-    return {
-      id: u.id,
-      email: u.email,
-      name: u.name,
-      role: u.role,
-      title: u.title,
-      initials: u.initials,
-      color: u.color,
-    };
-  }
-
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return null;
-
-  const meta = user.user_metadata ?? {};
-  const name =
-    (meta.name as string) || (meta.full_name as string) || user.email || "Usuario";
+  const me = await getMe();
+  if (!me) return null;
   return {
-    id: user.id,
-    email: user.email ?? "",
-    name,
-    role: ((meta.role as RoleSlug) ?? "account_manager") as RoleSlug,
-    title: (meta.title as string) ?? "",
-    initials: name
-      .split(" ")
-      .map((p) => p[0])
-      .filter(Boolean)
-      .slice(0, 2)
-      .join("")
-      .toUpperCase(),
-    color: (meta.color as string) ?? "#e31572",
+    id: me.id,
+    email: me.email,
+    name: me.name,
+    role: me.role,
+    title: me.title,
+    initials: me.initials,
+    color: me.color,
+    active: me.active,
+    avatarUrl: me.avatarUrl,
   };
 }

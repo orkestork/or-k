@@ -8,10 +8,11 @@ import {
   RotateCcw,
   UserPlus,
 } from "lucide-react";
-import { getNotifications } from "@/lib/work/mock/store";
+import { getNotifications } from "@/lib/work/data";
 import { relativeTime } from "@/lib/work/format";
 import { PageHeader } from "@/components/work/shared/page-header";
 import { EmptyState } from "@/components/work/shared/empty-state";
+import { MarkAllRead } from "@/components/work/shared/mark-read";
 
 export const metadata: Metadata = { title: "Inbox · OR-K WORK" };
 
@@ -28,10 +29,11 @@ export default async function InboxPage() {
   const notifications = await getNotifications();
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-3xl">
       <PageHeader
         title="Inbox"
         description="Asignaciones, menciones, aprobaciones y alertas de fecha."
+        actions={notifications.some((n) => !n.read && n.kind !== "deadline") ? <MarkAllRead /> : null}
       />
       {notifications.length === 0 ? (
         <EmptyState icon={Bell} title="Bandeja al día" />

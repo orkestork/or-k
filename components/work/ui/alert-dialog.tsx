@@ -5,6 +5,7 @@ import { AlertDialog as AlertDialogPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/work/utils"
 import { Button } from "@/components/work/ui/button"
+import { useWorkPortalContainer } from "./portal-container"
 
 function AlertDialog({
   ...props
@@ -24,7 +25,7 @@ function AlertDialogPortal({
   ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Portal>) {
   return (
-    <AlertDialogPrimitive.Portal data-slot="alert-dialog-portal" {...props} />
+    <AlertDialogPrimitive.Portal container={useWorkPortalContainer()} data-slot="alert-dialog-portal" {...props} />
   )
 }
 

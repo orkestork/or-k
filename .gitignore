@@ -13,3 +13,5 @@ dist/
 *.mov
 public/.DS_Store
 .vercel
+.migration-backup/
+output/

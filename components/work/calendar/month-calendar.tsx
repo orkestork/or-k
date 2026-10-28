@@ -96,7 +96,7 @@ export function MonthCalendar({
         </Button>
         <span className="ml-1 text-sm font-medium">{monthLabel}</span>
 
-        <div className="ml-auto hidden flex-wrap items-center gap-3 text-[11px] text-muted-foreground sm:flex">
+        <div className="ml-auto hidden flex-wrap items-center gap-3 text-xs text-muted-foreground sm:flex">
           {Object.values(KIND_META).map((k) => (
             <span key={k.label} className="flex items-center gap-1.5">
               <span className={cn("size-2 rounded-full", k.dot)} />
@@ -108,7 +108,7 @@ export function MonthCalendar({
 
       {/* Grid (desktop) */}
       <div className="hidden overflow-hidden rounded-lg border border-border md:block">
-        <div className="grid grid-cols-7 border-b border-border bg-muted/30 text-[11px] font-medium text-muted-foreground">
+        <div className="grid grid-cols-7 border-b border-border bg-muted/30 text-xs font-medium text-muted-foreground">
           {WEEKDAYS.map((d) => (
             <div key={d} className="px-2 py-1.5">
               {d}
@@ -135,7 +135,7 @@ export function MonthCalendar({
                 <div className="mb-1 flex justify-end">
                   <span
                     className={cn(
-                      "grid size-5 place-items-center rounded-full text-[11px]",
+                      "grid size-5 place-items-center rounded-full text-xs",
                       isToday
                         ? "bg-primary font-semibold text-primary-foreground"
                         : inMonth
@@ -157,7 +157,7 @@ export function MonthCalendar({
                           e.requestId && router.push(`/work/requests/${e.requestId}`)
                         }
                         className={cn(
-                          "flex w-full items-center gap-1 truncate rounded-sm border-l-2 bg-card px-1.5 py-0.5 text-left text-[11px] transition-colors hover:bg-muted",
+                          "flex w-full items-center gap-1 truncate rounded-sm border-l-2 bg-card px-1.5 py-0.5 text-left text-xs transition-colors hover:bg-muted",
                           KIND_META[e.kind].chip,
                         )}
                         title={`${e.title} — ${KIND_META[e.kind].label}`}
@@ -171,7 +171,7 @@ export function MonthCalendar({
                     );
                   })}
                   {extra > 0 ? (
-                    <span className="px-1.5 text-[11px] text-muted-foreground">
+                    <span className="px-1.5 text-xs text-muted-foreground">
                       +{extra} más
                     </span>
                   ) : null}
@@ -218,7 +218,7 @@ export function MonthCalendar({
                         style={{ backgroundColor: client?.accentColor }}
                       />
                       <span className="flex-1 truncate">{e.title}</span>
-                      <span className="text-[11px] text-muted-foreground">
+                      <span className="text-xs text-muted-foreground">
                         {KIND_META[e.kind].label}
                       </span>
                     </li>

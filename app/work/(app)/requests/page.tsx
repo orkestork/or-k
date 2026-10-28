@@ -6,9 +6,12 @@ import {
   getRequests,
   getSessionUser,
   getUsers,
-} from "@/lib/work/mock/store";
+} from "@/lib/work/data";
 import { WORKFLOW, WORKFLOW_ORDER } from "@/lib/work/workflow";
 import { cn } from "@/lib/work/utils";
+import { involves } from "@/lib/work/people";
+import { SearchFilter } from "@/components/work/shared/search-filter";
+import { clientOptions, peopleOptions } from "@/components/work/shared/filter-options";
 import { PageHeader } from "@/components/work/shared/page-header";
 import { EmptyState } from "@/components/work/shared/empty-state";
 import { RequestList } from "@/components/work/requests/request-list";
@@ -16,7 +19,7 @@ import { Button } from "@/components/work/ui/button";
 
 export const metadata: Metadata = { title: "Requests · OR-K WORK" };
 
-type SP = { state?: string; client?: string; scope?: string };
+type SP = { state?: string; client?: string; scope?: string; assignee?: string };
 
 export default async function RequestsPage({
   searchParams,
@@ -34,11 +37,12 @@ export default async function RequestsPage({
   let list = [...requests].sort(
     (a, b) => +new Date(a.deadline) - +new Date(b.deadline),
   );
-  if (sp.scope === "mine") list = list.filter((r) => r.assigneeId === me.id);
+  if (sp.scope === "mine") list = list.filter((r) => involves(r, me.id));
   if (sp.scope === "open")
     list = list.filter((r) => !["completed", "archived"].includes(r.state));
   if (sp.state) list = list.filter((r) => r.state === sp.state);
   if (sp.client) list = list.filter((r) => r.clientId === sp.client);
+  if (sp.assignee) list = list.filter((r) => involves(r, sp.assignee));
 
   const qs = (patch: Partial<SP>) => {
     const next = { ...sp, ...patch };
@@ -55,7 +59,7 @@ export default async function RequestsPage({
     );
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div className="mx-auto max-w-7xl">
       <PageHeader
         title="Solicitudes"
         description="Todo el trabajo entrando a la agencia."
@@ -78,15 +82,20 @@ export default async function RequestsPage({
             Mías
           </Link>
           <span className="mx-1 h-4 w-px bg-border" />
-          {clients.map((c) => (
-            <Link
-              key={c.id}
-              href={`/work/requests${qs({ client: sp.client === c.id ? undefined : c.id })}`}
-              className={chip(sp.client === c.id)}
-            >
-              {c.name}
-            </Link>
-          ))}
+          <SearchFilter
+            param="client"
+            label="Cliente"
+            allLabel="Todos"
+            placeholder="Buscar cliente…"
+            options={clientOptions(clients)}
+          />
+          <SearchFilter
+            param="assignee"
+            label="Responsable"
+            allLabel="Todos"
+            placeholder="Buscar persona…"
+            options={peopleOptions(users)}
+          />
         </div>
         <div className="mt-2 flex flex-wrap items-center gap-1.5">
           {WORKFLOW_ORDER.filter((s) => s !== "archived").map((s) => (
