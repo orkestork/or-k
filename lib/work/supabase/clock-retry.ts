@@ -10,9 +10,17 @@ export async function fetchWithClockRetry(input: RequestInfo | URL, init?: Reque
   for (const wait of waits) {
     if (res.status !== 401 && res.status !== 403) return res;
     const body = await res.clone().text();
-    if (!/PGRST303|issued at future/i.test(body)) return res;
+    if (!/issued at future/i.test(body)) return res;
     await new Promise((r) => setTimeout(r, wait));
-    res = await fetch(input, init);
+    // Next/React memoizes identical GETs during a render, including failures.
+    // An explicit signal bypasses that memoization so retries hit Supabase.
+    // Preserve a caller's cancellation signal when one was supplied.
+    const signal = init?.signal ?? (input instanceof Request ? input.signal : undefined);
+    res = await fetch(input, {
+      ...init,
+      cache: "no-store",
+      signal: signal ?? new AbortController().signal,
+    });
   }
   return res;
 }
