@@ -40,6 +40,10 @@ export default async function RequestsPage({
   if (sp.scope === "mine") list = list.filter((r) => involves(r, me.id));
   if (sp.scope === "open")
     list = list.filter((r) => !["completed", "archived"].includes(r.state));
+  if (sp.scope === "review")
+    list = list.filter((r) => ["copy_review", "creative_review", "account_review", "client_review"].includes(r.state));
+  if (sp.scope === "overdue")
+    list = list.filter((r) => !["completed", "archived"].includes(r.state) && +new Date(r.deadline) < Date.now());
   if (sp.state) list = list.filter((r) => r.state === sp.state);
   if (sp.client) list = list.filter((r) => r.clientId === sp.client);
   if (sp.assignee) list = list.filter((r) => involves(r, sp.assignee));
@@ -80,6 +84,12 @@ export default async function RequestsPage({
           </Link>
           <Link href={`/work/requests${qs({ scope: "mine" })}`} className={chip(sp.scope === "mine")}>
             Mías
+          </Link>
+          <Link href={`/work/requests${qs({ scope: "review" })}`} className={chip(sp.scope === "review")}>
+            En aprobación
+          </Link>
+          <Link href={`/work/requests${qs({ scope: "overdue" })}`} className={chip(sp.scope === "overdue")}>
+            Atrasadas
           </Link>
           <span className="mx-1 h-4 w-px bg-border" />
           <SearchFilter

@@ -1,29 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  AtSign,
-  Bell,
-  CalendarClock,
-  CheckCircle2,
-  RotateCcw,
-  UserPlus,
-} from "lucide-react";
+import { Bell } from "lucide-react";
 import { getNotifications } from "@/lib/work/data";
 import { relativeTime } from "@/lib/work/format";
 import { PageHeader } from "@/components/work/shared/page-header";
 import { EmptyState } from "@/components/work/shared/empty-state";
 import { MarkAllRead } from "@/components/work/shared/mark-read";
+import { NOTIFICATION_ICON } from "@/components/work/shared/notification-icons";
 
 export const metadata: Metadata = { title: "Inbox · OR-K WORK" };
-
-const ICON = {
-  assignment: UserPlus,
-  mention: AtSign,
-  approval: CheckCircle2,
-  adjustment: RotateCcw,
-  deadline: CalendarClock,
-  status: Bell,
-} as const;
 
 export default async function InboxPage() {
   const notifications = await getNotifications();
@@ -40,7 +25,7 @@ export default async function InboxPage() {
       ) : (
         <ul className="divide-y divide-border rounded-lg border border-border">
           {notifications.map((n) => {
-            const Icon = ICON[n.kind];
+            const Icon = NOTIFICATION_ICON[n.kind];
             return (
               <li key={n.id}>
                 <Link

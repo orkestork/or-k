@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import type { WorkUser } from "@/lib/work/auth/session";
+import type { Notification } from "@/types/work/domain";
 import { WORK_NAV } from "@/lib/work/navigation";
 import { WorkSidebar } from "./work-sidebar";
 import { seesAll, seesFinance } from "@/lib/work/people";
@@ -22,9 +23,11 @@ function titleForPath(pathname: string): string {
 
 export function WorkShell({
   user,
+  notifications,
   children,
 }: {
   user: WorkUser | null;
+  notifications: Notification[];
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -36,7 +39,7 @@ export function WorkShell({
       </aside>
 
       <div className="flex min-w-0 flex-col">
-        <WorkTopbar user={user} title={titleForPath(pathname)} />
+        <WorkTopbar user={user} title={titleForPath(pathname)} notifications={notifications} />
         <main className="min-w-0 flex-1 p-4 md:p-6 xl:px-10">{children}</main>
         <Suspense fallback={null}>
           <NavTrailRecorder />

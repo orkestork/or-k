@@ -499,7 +499,7 @@ export async function createEventAction(_prev: FormState, fd: FormData): Promise
 
 export async function markAllReadAction() {
   await markAllNotificationsRead();
-  revalidatePath("/work/inbox");
+  revalidatePath("/work", "layout");
 }
 
 /* ------------------------------------------------------- team/settings --- */

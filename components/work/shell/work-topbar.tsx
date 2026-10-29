@@ -2,6 +2,7 @@
 
 import { Menu } from "lucide-react";
 import type { WorkUser } from "@/lib/work/auth/session";
+import type { Notification } from "@/types/work/domain";
 import { signOut } from "@/lib/work/auth/actions";
 import { Button } from "@/components/work/ui/button";
 import {
@@ -27,6 +28,7 @@ import { ThemeToggle } from "@/components/work/theme/theme-toggle";
 import { WorkSidebar } from "./work-sidebar";
 import { seesAll, seesFinance } from "@/lib/work/people";
 import { CommandPalette } from "./command-palette";
+import { NotificationBell } from "./notification-bell";
 
 function initials(name: string) {
   return name
@@ -41,9 +43,11 @@ function initials(name: string) {
 export function WorkTopbar({
   user,
   title,
+  notifications,
 }: {
   user: WorkUser | null;
   title: string;
+  notifications: Notification[];
 }) {
   return (
     <header className="flex h-14 items-center gap-3 border-b border-border px-4">
@@ -69,6 +73,7 @@ export function WorkTopbar({
       <div className="ml-auto flex items-center gap-2">
         <CommandPalette canSeeAll={seesAll(user?.role)} canSeeFinance={seesFinance(user?.role)} />
         <ThemeToggle />
+        <NotificationBell notifications={notifications} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button

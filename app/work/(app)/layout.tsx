@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { after } from "next/server";
 import { createClient } from "@/lib/work/supabase/server";
 import { getCurrentUser } from "@/lib/work/auth/session";
+import { getNotifications } from "@/lib/work/data";
 import { signOut } from "@/lib/work/auth/actions";
 import { supabaseConfigured } from "@/lib/work/supabase/env";
 import { WorkShell } from "@/components/work/shell/work-shell";
@@ -43,9 +44,11 @@ export default async function WorkAppLayout({
     });
   }
 
+  const notifications = user ? await getNotifications() : [];
+
   return (
     <>
-      <WorkShell user={user}>{children}</WorkShell>
+      <WorkShell user={user} notifications={notifications}>{children}</WorkShell>
       <Toaster position="bottom-right" />
     </>
   );

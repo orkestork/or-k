@@ -73,17 +73,19 @@ export default async function HomePage() {
       ))}
 
       <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <MetricCard label="Proyectos activos" value={dash.counts.activeProjects} />
-        <MetricCard label="Solicitudes activas" value={dash.counts.activeRequests} />
+        <MetricCard label="Proyectos activos" value={dash.counts.activeProjects} href="/work/projects" />
+        <MetricCard label="Solicitudes activas" value={dash.counts.activeRequests} href="/work/requests?scope=open" />
         <MetricCard
           label="En aprobación"
           value={dash.counts.awaitingApproval}
           tone="warn"
+          href="/work/requests?scope=review"
         />
         <MetricCard
           label="Atrasadas"
           value={dash.counts.overdue}
           tone={dash.counts.overdue > 0 ? "warn" : "positive"}
+          href="/work/requests?scope=overdue"
         />
       </div>
 
