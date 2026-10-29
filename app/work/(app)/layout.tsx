@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { after } from "next/server";
 import { createClient } from "@/lib/work/supabase/server";
 import { getCurrentUser } from "@/lib/work/auth/session";
-import { getNotifications } from "@/lib/work/data";
+import { getNotifications, startDueRequests } from "@/lib/work/data";
 import { signOut } from "@/lib/work/auth/actions";
 import { supabaseConfigured } from "@/lib/work/supabase/env";
 import { WorkShell } from "@/components/work/shell/work-shell";
@@ -39,6 +39,12 @@ export default async function WorkAppLayout({
   // client is created first.)
   if (supabaseConfigured && user) {
     const supabase = await createClient();
+    // Before rendering, so the board already shows pieces that started today.
+    try {
+      await startDueRequests(supabase, user.id);
+    } catch (e) {
+      console.error("startDueRequests", e);
+    }
     after(async () => {
       await supabase.rpc("work_run_recurrences");
     });

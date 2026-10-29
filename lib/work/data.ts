@@ -679,6 +679,50 @@ async function notify(
     .insert([...targets.map((for_user_id) => ({ for_user_id, kind, body, href })), ...covering]);
 }
 
+/**
+ * Pieces whose start date arrived leave the brief and move to Diseño, and their
+ * people are told. Runs when someone opens the workspace (like recurrences);
+ * the conditional update keeps it to one move and one notice per piece even if
+ * several people open it at once. Pieces locked by an unfinished dependency wait.
+ */
+export async function startDueRequests(supabase: Supa, openerId: string) {
+  const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota" });
+  const BRIEF: WorkflowState[] = ["request", "briefing"];
+  const { data: due } = await supabase
+    .from("requests")
+    .select("id, title, assignee_id, collaborator_ids, depends_on")
+    .in("state", BRIEF)
+    .lte("start_on", today);
+  if (!due?.length) return;
+
+  const depIds = [...new Set(due.flatMap((r) => (r.depends_on as string[] | null) ?? []))];
+  const { data: deps } = depIds.length
+    ? await supabase.from("requests").select("id, state").in("id", depIds)
+    : { data: [] as Row[] };
+  const finished = new Set((deps ?? []).filter((d) => DEADLINE_MET.includes(d.state)).map((d) => d.id as string));
+
+  for (const r of due) {
+    if (((r.depends_on as string[] | null) ?? []).some((d) => !finished.has(d))) continue;
+    const { data: moved } = await supabase
+      .from("requests")
+      .update({ state: "design", updated_at: new Date().toISOString() })
+      .eq("id", r.id)
+      .in("state", BRIEF)
+      .select("id");
+    if (!moved?.length) continue;
+    await logActivity(supabase, r.id, openerId, "movió a", WORKFLOW.design.label);
+    // No actor to skip: whoever opened the app is told too if it's theirs.
+    await notify(
+      supabase,
+      "",
+      [r.assignee_id, ...((r.collaborator_ids as string[] | null) ?? [])],
+      "status",
+      `${r.id} · ${r.title} arranca hoy: pasó a Diseño`,
+      `/work/requests/${r.id}`,
+    );
+  }
+}
+
 /** Who covers `userId` today, if they're away. */
 async function substituteOf(supabase: Supa, userId: string | null | undefined) {
   if (!userId) return null;
