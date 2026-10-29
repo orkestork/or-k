@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Bell } from "lucide-react";
 import { getNotifications } from "@/lib/work/data";
 import { relativeTime } from "@/lib/work/format";
@@ -7,6 +6,7 @@ import { PageHeader } from "@/components/work/shared/page-header";
 import { EmptyState } from "@/components/work/shared/empty-state";
 import { MarkAllRead } from "@/components/work/shared/mark-read";
 import { NOTIFICATION_ICON } from "@/components/work/shared/notification-icons";
+import { NotificationLink } from "@/components/work/shared/notification-link";
 
 export const metadata: Metadata = { title: "Inbox · OR-K WORK" };
 
@@ -28,7 +28,9 @@ export default async function InboxPage() {
             const Icon = NOTIFICATION_ICON[n.kind];
             return (
               <li key={n.id}>
-                <Link
+                <NotificationLink
+                  id={n.id}
+                  read={n.read}
                   href={n.href}
                   className="flex items-start gap-3 px-3 py-3 transition-colors hover:bg-muted/40"
                 >
@@ -52,7 +54,7 @@ export default async function InboxPage() {
                   {!n.read ? (
                     <span className="mt-1.5 size-2 shrink-0 rounded-full bg-primary" />
                   ) : null}
-                </Link>
+                </NotificationLink>
               </li>
             );
           })}

@@ -1556,6 +1556,13 @@ export async function createCalendarEvent(input: {
   );
 }
 
+export async function markNotificationRead(id: string) {
+  if (!supabaseConfigured) return;
+  const me = await requireMe();
+  const supabase = await sb();
+  check(await supabase.from("notifications").update({ read: true }).eq("id", id).eq("for_user_id", me.id));
+}
+
 export async function markAllNotificationsRead() {
   if (!supabaseConfigured) return;
   const me = await requireMe();

@@ -2,9 +2,10 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { Bell, CheckCheck } from "lucide-react";
 import type { Notification } from "@/types/work/domain";
-import { markAllReadAction } from "@/lib/work/actions";
+import { markAllReadAction, markReadAction } from "@/lib/work/actions";
 import { relativeTime } from "@/lib/work/format";
 import { cn } from "@/lib/work/utils";
 import { NOTIFICATION_ICON } from "@/components/work/shared/notification-icons";
@@ -15,6 +16,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/work/ui/po
 export function NotificationBell({ notifications }: { notifications: Notification[] }) {
   const [open, setOpen] = useState(false);
   const [pending, start] = useTransition();
+  const pathname = usePathname();
+  const router = useRouter();
   const unread = notifications.filter((n) => !n.read).length;
   // Deadline alerts are live and can't be marked as read.
   const markable = notifications.some((n) => !n.read && n.kind !== "deadline");
@@ -49,11 +52,22 @@ export function NotificationBell({ notifications }: { notifications: Notificatio
           <ul className="max-h-96 divide-y divide-border overflow-y-auto">
             {notifications.slice(0, 8).map((n) => {
               const Icon = NOTIFICATION_ICON[n.kind];
+              const here = n.href === pathname;
               return (
                 <li key={n.id}>
                   <Link
                     href={n.href}
-                    onClick={() => setOpen(false)}
+                    onClick={(e) => {
+                      setOpen(false);
+                      if (!n.read) void markReadAction(n.id);
+                      // Already on that page: the link would do nothing, so
+                      // refresh it and go back to the top instead.
+                      if (here) {
+                        e.preventDefault();
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                        router.refresh();
+                      }
+                    }}
                     className="flex items-start gap-2.5 px-3 py-2.5 transition-colors hover:bg-muted/40"
                   >
                     <span
@@ -66,7 +80,10 @@ export function NotificationBell({ notifications }: { notifications: Notificatio
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className={cn("line-clamp-2 text-xs", n.read && "text-muted-foreground")}>{n.body}</p>
-                      <p className="text-[11px] text-muted-foreground">{relativeTime(n.at)}</p>
+                      <p className="text-[11px] text-muted-foreground">
+                        {relativeTime(n.at)}
+                        {here ? <span className="ml-1.5 font-medium text-primary">· Estás aquí</span> : null}
+                      </p>
                     </div>
                     {!n.read ? <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" /> : null}
                   </Link>

@@ -77,6 +77,7 @@ import {
   getMe,
   isAdmin,
   markAllNotificationsRead,
+  markNotificationRead,
   registerAdjustment,
   saveCopy,
   saveMinute,
@@ -495,6 +496,13 @@ export async function createEventAction(_prev: FormState, fd: FormData): Promise
   }
   revalidatePath("/work/calendar");
   return { error: null, ok: true };
+}
+
+export async function markReadAction(id: string) {
+  // Deadline alerts are derived live, not stored.
+  if (id.startsWith("deadline-")) return;
+  await markNotificationRead(id);
+  revalidatePath("/work", "layout");
 }
 
 export async function markAllReadAction() {
