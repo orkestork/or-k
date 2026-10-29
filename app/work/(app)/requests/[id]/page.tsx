@@ -154,7 +154,7 @@ export default async function RequestDetailPage({
         <div className="flex flex-wrap items-center gap-2">
           <StatusBadge state={request.state} />
           <PriorityBadge priority={request.priority} />
-          <DeadlinePill iso={request.deadline} />
+          <DeadlinePill iso={request.deadline} state={request.state} />
           <span className="text-xs text-muted-foreground">
             {client?.name} · {project?.name} · {request.campaign}
           </span>

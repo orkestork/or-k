@@ -29,7 +29,7 @@ import type {
   WorkflowState,
   WorkUserRecord,
 } from "@/types/work/domain";
-import { WORKFLOW, nextState } from "@/lib/work/workflow";
+import { DEADLINE_MET, WORKFLOW, isOverdue, nextState } from "@/lib/work/workflow";
 import { ABSENCE_LABEL, INTERNAL_REVIEW, canApprove, involves, isHr, mustApprove, peopleOn, seesAll } from "@/lib/work/people";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/work/supabase/server";
@@ -491,7 +491,7 @@ export async function getCalendar(): Promise<CalendarEvent[]> {
     check(
       await supabase
         .from("requests")
-        .select("id, title, deadline, state, client_id")
+        .select("id, title, deadline, state, client_id, start_on")
         .not("state", "in", "(completed,archived)"),
     ),
     check(await supabase.from("calendar_events").select("*")),
@@ -504,6 +504,7 @@ export async function getCalendar(): Promise<CalendarEvent[]> {
       title: r.title,
       clientId: r.client_id,
       requestId: r.id,
+      start: r.start_on,
     })),
     ...events.map((e) => ({
       id: e.id,
@@ -547,7 +548,7 @@ export async function getNotifications(): Promise<Notification[]> {
       .from("requests")
       .select("id, title, deadline")
       .or(`assignee_id.eq.${me.id},collaborator_ids.cs.{${me.id}}`)
-      .not("state", "in", "(completed,archived,published)")
+      .not("state", "in", `(${DEADLINE_MET.join(",")})`)
       .lte("deadline", new Date(Date.now() + 2 * 86_400_000).toISOString()),
   ).map(
     (r): Notification => {
@@ -593,7 +594,7 @@ export async function getDashboard() {
   const adjustmentsOpen = active.filter((r) => r.state === "adjustments" && !needsMe.includes(r));
   const awaitingApproval = active.filter((r) => REVIEW.includes(r.state));
   const dueSoon = active
-    .filter((r) => (new Date(r.deadline).getTime() - Date.now()) / 86_400_000 <= 3)
+    .filter((r) => !DEADLINE_MET.includes(r.state) && (new Date(r.deadline).getTime() - Date.now()) / 86_400_000 <= 3)
     .sort((a, b) => +new Date(a.deadline) - +new Date(b.deadline));
   const completedThisWeek = reqs.filter((r) => {
     if (!["completed", "published"].includes(r.state)) return false;
@@ -611,7 +612,7 @@ export async function getDashboard() {
       activeProjects: projects.filter((p) => p.status === "active").length,
       activeRequests: active.length,
       awaitingApproval: awaitingApproval.length,
-      overdue: active.filter((r) => new Date(r.deadline).getTime() < Date.now()).length,
+      overdue: active.filter(isOverdue).length,
     },
   };
 }

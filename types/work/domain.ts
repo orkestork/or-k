@@ -482,6 +482,8 @@ export interface CalendarEvent {
   title: string;
   clientId: string;
   requestId?: string;
+  /** First day (YYYY-MM-DD) when the event spans several days, ending on `date`. */
+  start?: string | null;
 }
 
 export interface Notification {

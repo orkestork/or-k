@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getClients, getRequests, getTimeEntries, getUsers, requireManager } from "@/lib/work/data";
 import { formatHours, toHours } from "@/lib/work/hours";
-import { HAPPY_PATH, WORKFLOW } from "@/lib/work/workflow";
+import { HAPPY_PATH, WORKFLOW, isOverdue } from "@/lib/work/workflow";
 import { stageDurations } from "@/lib/work/insights";
 import { cn } from "@/lib/work/utils";
 import { SearchFilter } from "@/components/work/shared/search-filter";
@@ -16,7 +16,6 @@ export const metadata: Metadata = { title: "Insights · OR-K WORK" };
 
 const isActive = (r: Request) => !["completed", "archived"].includes(r.state);
 const isDone = (r: Request) => ["completed", "published"].includes(r.state);
-const isOverdue = (r: Request) => isActive(r) && new Date(r.deadline).getTime() < Date.now();
 const avgRounds = (rs: Request[]) => {
   const withRounds = rs.filter((r) => r.roundsUsed > 0);
   return withRounds.reduce((a, r) => a + r.roundsUsed, 0) / Math.max(1, withRounds.length);

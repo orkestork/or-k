@@ -1,5 +1,5 @@
 import { cn } from "@/lib/work/utils";
-import { WORKFLOW } from "@/lib/work/workflow";
+import { DEADLINE_MET, WORKFLOW } from "@/lib/work/workflow";
 import { daysUntil } from "@/lib/work/format";
 import { TONE_CLASS, type Tone } from "@/lib/work/tone";
 import type { Priority, WorkflowState } from "@/types/work/domain";
@@ -56,12 +56,15 @@ export function PriorityBadge({
 
 export function DeadlinePill({
   iso,
+  state,
   className,
 }: {
   iso: string;
+  state?: WorkflowState;
   className?: string;
 }) {
   const d = daysUntil(iso);
+  if (d < 0 && state && DEADLINE_MET.includes(state)) return null;
   const label =
     d < 0
       ? `Vencido ${Math.abs(d)}d`

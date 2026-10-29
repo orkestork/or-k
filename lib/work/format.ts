@@ -17,15 +17,19 @@ export function relativeTime(iso: string): string {
   return new Date(iso).toLocaleDateString("es", { day: "numeric", month: "short" });
 }
 
+// A bare "YYYY-MM-DD" parses as UTC midnight, which is the previous day in
+// Bogotá; read it at local noon instead.
+const toDate = (iso: string) => new Date(/^\d{4}-\d{2}-\d{2}$/.test(iso) ? `${iso}T12:00:00` : iso);
+
 export function shortDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("es", {
+  return toDate(iso).toLocaleDateString("es", {
     day: "numeric",
     month: "short",
   });
 }
 
 export function fullDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("es", {
+  return toDate(iso).toLocaleDateString("es", {
     weekday: "short",
     day: "numeric",
     month: "long",
@@ -33,7 +37,7 @@ export function fullDate(iso: string): string {
 }
 
 export function daysUntil(iso: string): number {
-  const d = new Date(iso);
+  const d = toDate(iso);
   d.setHours(23, 59, 59, 999);
   return Math.ceil((d.getTime() - Date.now()) / 86_400_000);
 }

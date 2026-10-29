@@ -56,7 +56,7 @@ export function RequestList({
                 <StatusBadge state={r.state} />
               </div>
 
-              <DeadlinePill iso={r.deadline} className="hidden shrink-0 md:inline-flex" />
+              <DeadlinePill iso={r.deadline} state={r.state} className="hidden shrink-0 md:inline-flex" />
 
               {people.length ? (
                 <div className="shrink-0">

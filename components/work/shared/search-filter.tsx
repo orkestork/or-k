@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Check, ChevronDown, X } from "lucide-react";
 import { cn } from "@/lib/work/utils";
@@ -25,9 +25,36 @@ export type FilterOption = {
   image?: string | null;
 };
 
+// Shared across pages: picking a client in Workflow also filters Calendar, etc.
+const memoryKey = (param: string) => `orkwork-filter:${param}`;
+
+function remember(param: string, value: string | null) {
+  try {
+    if (value) localStorage.setItem(memoryKey(param), value);
+    else localStorage.removeItem(memoryKey(param));
+  } catch {
+    // Storage disabled: the filter just isn't remembered.
+  }
+}
+
+function recall(param: string) {
+  try {
+    return localStorage.getItem(memoryKey(param));
+  } catch {
+    return null;
+  }
+}
+
+// Filters on the same page restore together in one navigation, so one
+// doesn't overwrite the other's param.
+const pending = new Map<string, string>();
+let flush: ReturnType<typeof setTimeout> | null = null;
+
 /**
  * Searchable single-select filter stored in a URL search param, so it scales
  * to many clients/people and the filtered view can be shared or bookmarked.
+ * The last choice is remembered across pages, so moving around (to a request,
+ * Calendar, the sidebar…) keeps the filter until it is cleared.
  */
 export function SearchFilter({
   param,
@@ -49,10 +76,28 @@ export function SearchFilter({
   const value = searchParams.get(param);
   const current = options.find((o) => o.value === value);
 
+  useEffect(() => {
+    if (value) return;
+    const saved = recall(param);
+    if (!saved || !options.some((o) => o.value === saved)) return;
+    pending.set(param, saved);
+    if (flush) clearTimeout(flush);
+    flush = setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      for (const [k, v] of pending) if (!params.has(k)) params.set(k, v);
+      pending.clear();
+      flush = null;
+      router.replace(`${pathname}?${params}`);
+    }, 0);
+    // Only on arrival: later changes go through select().
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
   const select = (next: string | null) => {
     const params = new URLSearchParams(searchParams.toString());
     if (next) params.set(param, next);
     else params.delete(param);
+    remember(param, next);
     const qs = params.toString();
     router.push(qs ? `${pathname}?${qs}` : pathname);
     setOpen(false);

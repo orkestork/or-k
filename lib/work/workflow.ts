@@ -43,6 +43,13 @@ export const BOARD_COLUMNS: { id: NonNullable<WorkflowStageMeta["board"]>; label
   { id: "approved", label: "Aprobado", states: ["approved", "scheduled", "published", "completed"] },
 ];
 
+/** Past these states the deadline has been met, so a piece can't be overdue. */
+export const DEADLINE_MET: WorkflowState[] = ["approved", "scheduled", "published", "completed", "archived"];
+
+/** Open work whose deadline already passed (one rule for Home, Insights, filters and badges). */
+export const isOverdue = (r: { state: WorkflowState; deadline: string }) =>
+  !DEADLINE_MET.includes(r.state) && new Date(r.deadline).getTime() < Date.now();
+
 /** Forward path through the flow (skips adjustments loop and archive). */
 export const HAPPY_PATH: WorkflowState[] = [
   "request",

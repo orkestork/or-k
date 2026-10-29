@@ -7,7 +7,7 @@ import {
   getSessionUser,
   getUsers,
 } from "@/lib/work/data";
-import { WORKFLOW, WORKFLOW_ORDER } from "@/lib/work/workflow";
+import { WORKFLOW, WORKFLOW_ORDER, isOverdue } from "@/lib/work/workflow";
 import { cn } from "@/lib/work/utils";
 import { involves } from "@/lib/work/people";
 import { SearchFilter } from "@/components/work/shared/search-filter";
@@ -43,7 +43,7 @@ export default async function RequestsPage({
   if (sp.scope === "review")
     list = list.filter((r) => ["copy_review", "creative_review", "account_review", "client_review"].includes(r.state));
   if (sp.scope === "overdue")
-    list = list.filter((r) => !["completed", "archived"].includes(r.state) && +new Date(r.deadline) < Date.now());
+    list = list.filter(isOverdue);
   if (sp.state) list = list.filter((r) => r.state === sp.state);
   if (sp.client) list = list.filter((r) => r.clientId === sp.client);
   if (sp.assignee) list = list.filter((r) => involves(r, sp.assignee));

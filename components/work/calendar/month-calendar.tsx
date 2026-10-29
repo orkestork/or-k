@@ -18,6 +18,8 @@ const KIND_META: Record<
   campaign: { label: "Campaña", dot: "bg-primary", chip: "border-l-primary" },
 };
 
+type DayEvent = CalendarEvent & { part: "single" | "start" | "middle" | "end" };
+
 const WEEKDAYS = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
 
 function startOfMonth(d: Date) {
@@ -59,12 +61,27 @@ export function MonthCalendar({
     });
   }, [cursor]);
 
+  // Requests fill every day from their start to their deadline (work is
+  // planned by week), so a span shows up on each of those days.
   const eventsByDay = useMemo(() => {
-    const map = new Map<string, CalendarEvent[]>();
-    for (const e of events) {
-      const key = new Date(e.date).toDateString();
+    const map = new Map<string, DayEvent[]>();
+    const add = (day: Date, e: DayEvent) => {
+      const key = day.toDateString();
       map.set(key, [...(map.get(key) ?? []), e]);
+    };
+    for (const e of events) {
+      const end = new Date(e.date);
+      const start = e.start ? new Date(`${e.start}T12:00:00`) : end;
+      if (!(start < end) || sameDay(start, end)) {
+        add(end, { ...e, part: "single" });
+        continue;
+      }
+      for (const day = new Date(start); day <= end || sameDay(day, end); day.setDate(day.getDate() + 1)) {
+        add(new Date(day), { ...e, part: sameDay(day, start) ? "start" : sameDay(day, end) ? "end" : "middle" });
+      }
     }
+    // Spans first so they line up row by row across the week.
+    for (const list of map.values()) list.sort((a, b) => Number(a.part === "single") - Number(b.part === "single"));
     return map;
   }, [events]);
 
@@ -149,6 +166,9 @@ export function MonthCalendar({
                 <div className="flex flex-col gap-1">
                   {shown.map((e) => {
                     const client = clientById(e.clientId);
+                    // Weekly spans read as one bar: the title on the first day
+                    // (or each Monday), a lighter fill on the following ones.
+                    const continued = (e.part === "middle" || e.part === "end") && mondayIndex(day) !== 0;
                     return (
                       <button
                         key={e.id}
@@ -159,8 +179,10 @@ export function MonthCalendar({
                         className={cn(
                           "flex w-full items-center gap-1 truncate rounded-sm border-l-2 bg-card px-1.5 py-0.5 text-left text-xs transition-colors hover:bg-muted",
                           KIND_META[e.kind].chip,
+                          e.part !== "single" && "bg-muted/60",
+                          continued && "border-l-transparent text-muted-foreground",
                         )}
-                        title={`${e.title} — ${KIND_META[e.kind].label}`}
+                        title={`${e.title} — ${KIND_META[e.kind].label}${e.part === "end" ? " (entrega)" : ""}`}
                       >
                         <span
                           className="size-1.5 shrink-0 rounded-full"

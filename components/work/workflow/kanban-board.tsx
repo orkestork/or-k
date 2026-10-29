@@ -127,7 +127,7 @@ export function KanbanBoard({
                     </p>
                     <div className="mt-2 flex items-center gap-1.5">
                       <PriorityBadge priority={r.priority} />
-                      <DeadlinePill iso={r.deadline} />
+                      <DeadlinePill iso={r.deadline} state={r.state} />
                       {subtasks.length ? (
                         <span className="inline-flex items-center gap-1 font-mono text-xs text-muted-foreground">
                           <ListChecks className="size-3" />
