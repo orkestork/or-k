@@ -461,8 +461,7 @@ export default function Home() {
         <h2 className="teamTitle">Personas detrás<br/><i>de la estrategia.</i></h2>
         <p className="teamIntro">Estrategia, creatividad y tecnología trabajando en la misma mesa.</p>
         <div className="teamGrid">
-          {/* Oculto temporalmente; conservamos su perfil para volver a mostrarlo. */}
-          {teamMembers.filter((member)=>member.name!=="Brandon Bustos").map((member,index)=><article className="teamCard" style={{"--card-index":index} as React.CSSProperties} key={index}>
+          {teamMembers.map((member,index)=><article className="teamCard" style={{"--card-index":index} as React.CSSProperties} key={index}>
             <div className="teamPhoto">
               <img src={member.photo} alt={member.name} decoding="async"/>
               <span className="teamPhotoGrade" aria-hidden="true"/>
