@@ -1609,6 +1609,35 @@ export async function updateRequestDates(id: string, startOn: string, deadline: 
   await logActivity(supabase, id, me.id, "reprogramó", `${startOn} → ${deadline}`);
 }
 
+/** What the client portal shows of a request: name, dates, deliverables and stage. */
+export async function updateRequestSchedule(
+  id: string,
+  input: { title: string; startOn: string; deadline: string; deliverables: string[]; state: WorkflowState },
+) {
+  if (!supabaseConfigured) throw new Error("Requiere Supabase");
+  const me = await requireMe();
+  const supabase = await sb();
+  if (!input.title.trim()) throw new Error("Escribe un título");
+  if (!input.startOn || !input.deadline) throw new Error("Define inicio y entrega");
+  if (input.startOn > input.deadline) throw new Error("La fecha de inicio no puede ser posterior a la entrega");
+  const row = await loadRequestRow(supabase, id);
+  check(
+    await supabase
+      .from("requests")
+      .update({
+        title: input.title.trim(),
+        start_on: input.startOn,
+        deadline: new Date(`${input.deadline}T17:00:00`).toISOString(),
+        deliverables: input.deliverables.map((d) => d.trim()).filter(Boolean),
+        state: input.state,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id),
+  );
+  await logActivity(supabase, id, me.id, "editó la solicitud", input.title.trim());
+  if (input.state !== row.state) await logActivity(supabase, id, me.id, "movió a", WORKFLOW[input.state].label);
+}
+
 /* ------------------------------------------------------------- hours --- */
 
 const toEntry = (r: Row): TimeEntry => ({

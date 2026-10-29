@@ -54,6 +54,7 @@ import {
   searchAll,
   setAutomationActive,
   updateRequestDates,
+  updateRequestSchedule,
   addAsset,
   addComment,
   addMarker,
@@ -628,6 +629,19 @@ export async function updateRequestDatesAction(id: string, startOn: string, dead
   revalidateRequest(id);
   revalidatePath("/work/calendar");
   revalidatePath("/work/projects", "layout");
+}
+
+export async function updateRequestScheduleAction(
+  projectId: string,
+  id: string,
+  input: { title: string; startOn: string; deadline: string; deliverables: string[]; state: WorkflowState },
+) {
+  if (!seesAll((await getMe())?.role)) throw new Error("No tienes permiso para editar el cronograma");
+  await updateRequestSchedule(id, input);
+  revalidateRequest(id);
+  revalidatePath("/work/calendar");
+  revalidatePath(`/work/projects/${projectId}`);
+  revalidatePath("/work/portal", "layout");
 }
 
 export async function addTimeEntryAction(input: { requestId: string; minutes: number; workedOn: string; note: string }) {

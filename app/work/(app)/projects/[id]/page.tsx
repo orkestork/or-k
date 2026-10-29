@@ -15,6 +15,7 @@ import {
 import { Timeline } from "@/components/work/projects/timeline";
 import { seesAll } from "@/lib/work/people";
 import { Recurrences } from "@/components/work/projects/recurrences";
+import { ScheduleEditor } from "@/components/work/projects/schedule-editor";
 import { SaveTemplateButton } from "@/components/work/projects/save-template";
 import { Progress } from "@/components/work/ui/progress";
 import { formatHours, toHours } from "@/lib/work/hours";
@@ -24,7 +25,7 @@ import { PersonInline } from "@/components/work/shared/people";
 import { RequestList } from "@/components/work/requests/request-list";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/work/ui/card";
 import { Button } from "@/components/work/ui/button";
-import { Pencil, Plus, Repeat } from "lucide-react";
+import { CalendarRange, ExternalLink, Pencil, Plus, Repeat } from "lucide-react";
 
 export async function generateMetadata({
   params,
@@ -125,6 +126,30 @@ export default async function ProjectDetailPage({
           />
         </CardContent>
       </Card>
+
+      {canManage ? (
+        <Card className="mb-4 gap-0 py-0">
+          <CardHeader className="border-b border-border py-3">
+            <CardTitle className="flex flex-wrap items-center justify-between gap-2 text-sm">
+              <span className="flex items-center gap-2">
+                <CalendarRange className="size-4 text-muted-foreground" /> Cronograma del portal del cliente
+              </span>
+              <span className="flex items-center gap-3 text-xs font-normal text-muted-foreground">
+                Así aparece cada fase en el portal de {client?.name ?? "el cliente"}
+                <Link href={`/work/requests/new?project=${project.id}`} className="inline-flex items-center gap-1 hover:text-foreground">
+                  <Plus className="size-3" /> Fase
+                </Link>
+                <Link href="/work/portal" className="inline-flex items-center gap-1 hover:text-foreground">
+                  <ExternalLink className="size-3" /> Ver portal
+                </Link>
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <ScheduleEditor projectId={project.id} requests={requests} />
+          </CardContent>
+        </Card>
+      ) : null}
 
       <div className="grid gap-4 lg:grid-cols-[1fr_19rem]">
         <div className="flex flex-col gap-4">
