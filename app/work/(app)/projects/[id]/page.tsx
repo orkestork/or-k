@@ -13,7 +13,7 @@ import {
   getUsers,
 } from "@/lib/work/data";
 import { Timeline } from "@/components/work/projects/timeline";
-import { seesAll } from "@/lib/work/people";
+import { managesOperation } from "@/lib/work/people";
 import { Recurrences } from "@/components/work/projects/recurrences";
 import { ScheduleEditor } from "@/components/work/projects/schedule-editor";
 import { SaveTemplateButton } from "@/components/work/projects/save-template";
@@ -53,7 +53,7 @@ export default async function ProjectDetailPage({
     getRecurrences(id),
   ]);
   const entries = await getTimeEntries({ requestIds: requests.map((r) => r.id) });
-  const canManage = seesAll((await getMe())?.role);
+  const canManage = managesOperation(await getMe());
   const spent = entries.reduce((a, e) => a + e.minutes, 0);
   const hoursByPerson = Object.entries(
     entries.reduce<Record<string, number>>((acc, e) => ({ ...acc, [e.userId]: (acc[e.userId] ?? 0) + e.minutes }), {}),

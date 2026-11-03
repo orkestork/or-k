@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getClients, getMe, getProjects, getRequests, getUsers } from "@/lib/work/data";
-import { seesAll } from "@/lib/work/people";
+import { managesOperation } from "@/lib/work/people";
 import { HAPPY_PATH } from "@/lib/work/workflow";
 import { shortDate } from "@/lib/work/format";
 import { PageHeader, ClientMark } from "@/components/work/shared/page-header";
@@ -25,7 +25,7 @@ export default async function ProjectsPage() {
     getUsers(),
     getMe(),
   ]);
-  const canManage = seesAll(me?.role);
+  const canManage = managesOperation(me);
 
   return (
     <div className="mx-auto max-w-7xl">

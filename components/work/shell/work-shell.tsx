@@ -35,7 +35,7 @@ export function WorkShell({
   return (
     <div className="grid min-h-dvh grid-cols-1 md:grid-cols-[15rem_1fr]">
       <aside className="sticky top-0 hidden h-dvh border-r border-border md:block">
-        <WorkSidebar canSeeAll={seesAll(user?.role)} canSeeFinance={seesFinance(user?.role)} />
+        <WorkSidebar canSeeAll={seesAll(user)} canSeeFinance={seesFinance(user)} />
       </aside>
 
       <div className="flex min-w-0 flex-col">

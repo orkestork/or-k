@@ -181,6 +181,12 @@
     min-height: 100dvh;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    color-scheme: light;
+  }
+
+  /* Native scrollbars and form controls follow the workspace theme. */
+  [data-orkwork].dark {
+    color-scheme: dark;
   }
 
   /* The marketing globals.css is loaded on every route (root layout) and styles

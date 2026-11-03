@@ -5,7 +5,7 @@ import { CalendarClock, Cake, PartyPopper, Plane, Users } from "lucide-react";
 import { getAbsences, getHrProfiles, getMe, getPayrollParams, getPendingAbsences, getUsers } from "@/lib/work/data";
 import { PayrollParamsForm } from "@/components/work/hr/payroll-params";
 import { SalarySimulator } from "@/components/work/hr/salary-simulator";
-import { ABSENCE_LABEL, isHr, seesPay, vacationBalance } from "@/lib/work/people";
+import { ABSENCE_LABEL, isHr, readsHr, seesPay, vacationBalance } from "@/lib/work/people";
 import { PageHeader } from "@/components/work/shared/page-header";
 import { MetricCard } from "@/components/work/shared/metric-card";
 import { PersonAvatar } from "@/components/work/shared/people";
@@ -30,7 +30,7 @@ export default async function HrPage() {
   const me = await getMe();
   if (!me) redirect("/work/login");
   // Everyone else gets their own file; managers still decide on their team's requests from it.
-  if (!isHr(me.role) && !seesPay(me.role)) redirect(`/work/hr/${me.id}`);
+  if (!readsHr(me) && !seesPay(me)) redirect(`/work/hr/${me.id}`);
 
   const [users, files, pendingReqs, absences, payroll] = await Promise.all([
     getUsers(),
@@ -158,9 +158,9 @@ export default async function HrPage() {
         <aside className="flex flex-col gap-4">
           <Card className="gap-2 p-4">
             <p className="text-sm font-medium">Parámetros de nómina {payroll.year}</p>
-            <PayrollParamsForm params={payroll} canEdit={isHr(me.role)} />
+            <PayrollParamsForm params={payroll} canEdit={isHr(me)} />
           </Card>
-          {seesPay(me.role) ? (
+          {seesPay(me) ? (
             <Card className="p-4">
               <SalarySimulator params={payroll} />
             </Card>

@@ -95,7 +95,7 @@ export default async function ClientDetailPage({
         }
         description={`${client.industry} · cliente desde ${shortDate(client.since)}`}
         actions={
-          seesAll(me?.role) ? <>
+          seesAll(me) ? <>
             <ClientActiveToggle id={client.id} name={client.name} active={client.active} />
             <Button size="sm" variant="outline" asChild>
               <Link href={`/work/clients/${client.id}/edit`}>

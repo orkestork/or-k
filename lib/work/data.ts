@@ -30,7 +30,7 @@ import type {
   WorkUserRecord,
 } from "@/types/work/domain";
 import { DEADLINE_MET, WORKFLOW, isOverdue, nextState } from "@/lib/work/workflow";
-import { ABSENCE_LABEL, INTERNAL_REVIEW, canApprove, involves, isHr, mustApprove, peopleOn, seesAll } from "@/lib/work/people";
+import { ABSENCE_LABEL, INTERNAL_REVIEW, canApprove, involves, isHr, mustApprove, peopleOn, permission, seesAll } from "@/lib/work/people";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/work/supabase/server";
 import { supabaseConfigured } from "@/lib/work/supabase/env";
@@ -83,6 +83,7 @@ function toUser(r: Row): WorkUserRecord {
     avatarUrl: r.avatar_url,
     managerId: r.manager_id,
     backupId: r.backup_id,
+    permissions: r.permissions ?? {},
   };
 }
 
@@ -305,12 +306,12 @@ async function requireMe() {
 /** Pages for management roles only: others go back to their Home. */
 export async function requireManager() {
   const me = await getMe();
-  if (supabaseConfigured && !seesAll(me?.role)) redirect("/work/home");
+  if (supabaseConfigured && !seesAll(me)) redirect("/work/home");
   return me;
 }
 
-export function isAdmin(user: Pick<WorkUserRecord, "role"> | null) {
-  return !!user && (user.role === "super_admin" || user.role === "agency_director");
+export function isAdmin(user: Pick<WorkUserRecord, "role" | "permissions"> | null | undefined) {
+  return permission(user, "team") === "edit";
 }
 
 /* --------------------------------------------------------------- reads --- */
@@ -1626,6 +1627,7 @@ export async function updateProfile(
     avatarUrl: string | null;
     managerId: string | null;
     backupId: string | null;
+    permissions: WorkUserRecord["permissions"];
   }>,
 ) {
   if (!supabaseConfigured) throw new Error("Requiere Supabase");
@@ -1641,6 +1643,7 @@ export async function updateProfile(
   if (patch.avatarUrl !== undefined) row.avatar_url = patch.avatarUrl;
   if (patch.managerId !== undefined) row.manager_id = patch.managerId;
   if (patch.backupId !== undefined) row.backup_id = patch.backupId;
+  if (patch.permissions !== undefined) row.permissions = patch.permissions;
   check(await supabase.from("profiles").update(row).eq("id", id));
 }
 
@@ -2113,7 +2116,7 @@ export async function saveAbsence(input: Omit<Absence, "id" | "status" | "decide
     }),
   );
   const person = await getUser(input.userId);
-  const asRequest = input.userId === me.id && !isHr(me.role);
+  const asRequest = input.userId === me.id && !isHr(me);
   if (asRequest) {
     const { data: hrPeople } = await supabase.from("profiles").select("id").in("role", ["hr"]).eq("active", true);
     await notify(
@@ -2168,7 +2171,7 @@ export async function getPendingAbsences(): Promise<Absence[]> {
   const me = await requireMe();
   const supabase = await sb();
   const rows = check(await supabase.from("member_absences").select("*").eq("status", "pending").order("start_on")).map(toAbsence);
-  if (isHr(me.role)) return rows;
+  if (isHr(me)) return rows;
   const { data: team } = await supabase.from("profiles").select("id").eq("manager_id", me.id);
   const mine = new Set((team ?? []).map((t) => t.id as string));
   return rows.filter((r) => mine.has(r.userId));

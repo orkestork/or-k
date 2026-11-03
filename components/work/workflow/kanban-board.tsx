@@ -54,7 +54,7 @@ export function KanbanBoard({
   };
 
   return (
-    <div className="flex gap-3 overflow-x-auto pb-2">
+    <div className="flex h-[calc(100dvh-14rem)] min-h-96 gap-3 overflow-x-auto pb-2">
       {BOARD_COLUMNS.map((col) => {
         const items = optimistic
           .filter((r) => col.states.includes(r.state))
@@ -70,7 +70,7 @@ export function KanbanBoard({
             onDragLeave={() => setOverCol((c) => (c === col.id ? null : c))}
             onDrop={() => drop(col.id, targetState)}
             className={cn(
-              "flex w-72 shrink-0 flex-col rounded-lg border border-border bg-card/40 transition-colors",
+              "flex min-h-0 w-72 shrink-0 flex-col rounded-lg border border-border bg-card/40 transition-colors",
               overCol === col.id && "border-primary/50 bg-primary/5",
             )}
           >
@@ -80,7 +80,9 @@ export function KanbanBoard({
                 {items.length}
               </span>
             </div>
-            <div className="flex flex-col gap-2 p-2">
+            {/* Each column scrolls on its own so the board's horizontal
+                scrollbar stays in view. */}
+            <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-2">
               {items.map((r) => {
                 const client = clientById(r.clientId);
                 const people = peopleOn(r).map((id) => userById(id)).filter(Boolean) as WorkUserRecord[];

@@ -7,7 +7,7 @@ import {
   getUsers,
   getMe,
 } from "@/lib/work/data";
-import { seesAll } from "@/lib/work/people";
+import { managesOperation } from "@/lib/work/people";
 import { shortDate } from "@/lib/work/format";
 import { PageHeader, ClientMark } from "@/components/work/shared/page-header";
 import { PersonInline } from "@/components/work/shared/people";
@@ -29,7 +29,7 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
     getUsers(),
     getMe(),
   ]);
-  const canManage = seesAll(me?.role);
+  const canManage = managesOperation(me);
   const inactiveCount = all.filter((c) => !c.active).length;
   const clients = all.filter((c) => c.active !== showInactive);
 

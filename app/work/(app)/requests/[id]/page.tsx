@@ -139,7 +139,7 @@ export default async function RequestDetailPage({
                     : approver.name
                   : null,
               }}
-              canSendToClient={seesAll(me?.role)}
+              canSendToClient={seesAll(me)}
             />
             {canAdmin ? (
               <Button size="sm" variant="outline" asChild>
@@ -307,7 +307,7 @@ export default async function RequestDetailPage({
                 markers={request.markers}
                 users={users}
                 canResolve
-                canShare={supabaseConfigured && seesAll(me?.role)}
+                canShare={supabaseConfigured && seesAll(me)}
                 clientVerdicts={verdictByVersion(request)}
                 collapsible
               />

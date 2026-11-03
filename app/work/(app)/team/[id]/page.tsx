@@ -19,6 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/work/ui/c
 import { ROLE_DUTIES, ROLE_LABEL, roleArea } from "@/components/work/settings/roles";
 import { MemberEditor } from "@/components/work/settings/member-editor";
 import { AvatarUpload } from "@/components/work/settings/avatar-upload";
+import { PermissionsEditor } from "@/components/work/settings/permissions-editor";
 import { RemoveMemberButton } from "@/components/work/settings/team-admin";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -50,6 +51,8 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ id:
 
   const canManage = supabaseConfigured && isAdmin(me);
   const isSelf = me?.id === member.id;
+  // Only the super admin grants access; their own and clients' access is fixed.
+  const canGrant = supabaseConfigured && me?.role === "super_admin" && !["super_admin", "client"].includes(member.role);
   const stages = WORKFLOW_ORDER.filter((s) => WORKFLOW[s].owner === member.role);
   const open = requests.filter(
     (r) => involves(r, member.id) && !["completed", "archived"].includes(r.state),
@@ -148,6 +151,17 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ id:
             </CardContent>
           </Card>
 
+          {canGrant ? (
+            <Card className="gap-0 py-0">
+              <CardHeader className="border-b border-border py-3">
+                <CardTitle className="text-sm">Permisos</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 text-sm">
+                <PermissionsEditor member={member} />
+              </CardContent>
+            </Card>
+          ) : null}
+
           <Card className="gap-0 py-0">
             <CardHeader className="border-b border-border py-3">
               <CardTitle className="text-sm">Ausencias y reemplazo</CardTitle>
@@ -157,9 +171,9 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ id:
                 person={member}
                 absences={absences}
                 users={users}
-                canEdit={supabaseConfigured && (isSelf || isAdmin(me) || isHr(me?.role))}
-                canDecide={!isSelf && (isHr(me?.role) || member.managerId === me?.id)}
-                asRequest={isSelf && !isHr(me?.role)}
+                canEdit={supabaseConfigured && (isSelf || isAdmin(me) || isHr(me))}
+                canDecide={!isSelf && (isHr(me) || member.managerId === me?.id)}
+                asRequest={isSelf && !isHr(me)}
               />
             </CardContent>
           </Card>

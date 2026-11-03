@@ -64,14 +64,14 @@ export function WorkTopbar({
         </SheetTrigger>
         <SheetContent side="left" className="w-64 p-0">
           <SheetTitle className="sr-only">Navegación</SheetTitle>
-          <WorkSidebar canSeeAll={seesAll(user?.role)} canSeeFinance={seesFinance(user?.role)} />
+          <WorkSidebar canSeeAll={seesAll(user)} canSeeFinance={seesFinance(user)} />
         </SheetContent>
       </Sheet>
 
       <h1 className="text-sm font-medium">{title}</h1>
 
       <div className="ml-auto flex items-center gap-2">
-        <CommandPalette canSeeAll={seesAll(user?.role)} canSeeFinance={seesFinance(user?.role)} />
+        <CommandPalette canSeeAll={seesAll(user)} canSeeFinance={seesFinance(user)} />
         <ThemeToggle />
         <NotificationBell notifications={notifications} />
         <DropdownMenu>

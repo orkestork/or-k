@@ -24,7 +24,7 @@ export default async function TeamPage({ searchParams }: { searchParams: Promise
   const { view } = await searchParams;
   const [workload, me, users] = await Promise.all([getWorkload(), getMe(), getUsers()]);
   const canManage = supabaseConfigured && isAdmin(me);
-  const canCreatePeople = supabaseConfigured && (isAdmin(me) || isHr(me?.role));
+  const canCreatePeople = supabaseConfigured && (isAdmin(me) || isHr(me));
   const clients = canManage ? await getClients() : [];
 
   return (

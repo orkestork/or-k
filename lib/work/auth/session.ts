@@ -1,5 +1,5 @@
 import { getMe } from "@/lib/work/data";
-import type { RoleSlug } from "@/types/work/domain";
+import type { RoleSlug, WorkUserRecord } from "@/types/work/domain";
 
 export type WorkUser = {
   id: string;
@@ -11,6 +11,7 @@ export type WorkUser = {
   color: string;
   active: boolean;
   avatarUrl?: string | null;
+  permissions?: WorkUserRecord["permissions"];
 };
 
 /**
@@ -31,5 +32,6 @@ export async function getCurrentUser(): Promise<WorkUser | null> {
     color: me.color,
     active: me.active,
     avatarUrl: me.avatarUrl,
+    permissions: me.permissions,
   };
 }

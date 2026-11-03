@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { EMPTY_HR, getAbsenceHistory, getHrDocuments, getHrProfile, getMe, getPayrollParams, getUser, getUsers } from "@/lib/work/data";
-import { isHr, seesPay, vacationBalance } from "@/lib/work/people";
+import { isHr, readsHr, seesPay, vacationBalance } from "@/lib/work/people";
 import { PageHeader } from "@/components/work/shared/page-header";
 import { PersonAvatar } from "@/components/work/shared/people";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/work/ui/card";
@@ -20,14 +20,15 @@ export default async function HrFilePage({ params }: { params: Promise<{ id: str
   const [me, person, users] = await Promise.all([getMe(), getUser(id), getUsers()]);
   if (!person) notFound();
   const isSelf = me?.id === person.id;
-  const hr = isHr(me?.role);
-  const pay = seesPay(me?.role);
+  const hr = isHr(me);
+  const hrRead = readsHr(me);
+  const pay = seesPay(me);
   const manages = person.managerId === me?.id;
-  if (!isSelf && !hr && !pay && !manages) redirect("/work/hr");
+  if (!isSelf && !hrRead && !pay && !manages) redirect("/work/hr");
 
   const [file, documents, absences, payroll] = await Promise.all([
-    isSelf || hr || pay ? getHrProfile(id) : Promise.resolve(null),
-    isSelf || hr ? getHrDocuments(id) : Promise.resolve([]),
+    isSelf || hrRead || pay ? getHrProfile(id) : Promise.resolve(null),
+    isSelf || hrRead ? getHrDocuments(id) : Promise.resolve([]),
     getAbsenceHistory(id),
     getPayrollParams(),
   ]);
@@ -39,7 +40,7 @@ export default async function HrFilePage({ params }: { params: Promise<{ id: str
 
   return (
     <div className="mx-auto max-w-7xl">
-      {hr || pay ? (
+      {hrRead || pay ? (
         <Link href="/work/hr" className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="size-4" /> Recursos humanos
         </Link>
@@ -61,7 +62,7 @@ export default async function HrFilePage({ params }: { params: Promise<{ id: str
 
       <div className="grid gap-4 lg:grid-cols-[1fr_20rem]">
         <div className="flex flex-col gap-4">
-          {isSelf || hr || pay ? (
+          {isSelf || hrRead || pay ? (
             <Card className="gap-0 py-0">
               <CardHeader className="border-b border-border py-3">
                 <CardTitle className="text-sm">Ficha</CardTitle>
@@ -101,7 +102,7 @@ export default async function HrFilePage({ params }: { params: Promise<{ id: str
             </CardContent>
           </Card>
 
-          {isSelf || hr ? (
+          {isSelf || hrRead ? (
             <Card className="gap-0 py-0">
               <CardHeader className="border-b border-border py-3">
                 <CardTitle className="text-sm">Documentos · {documents.length}</CardTitle>

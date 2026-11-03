@@ -15,6 +15,7 @@ import type {
   Project,
   Request,
   RoleSlug,
+  WorkUserRecord,
   WorkflowState,
 } from "@/types/work/domain";
 import {
@@ -99,7 +100,7 @@ import {
 } from "@/lib/work/data";
 import { adminConfigured, createAdminClient } from "@/lib/work/supabase/admin";
 import type { PayrollParams } from "@/lib/work/payroll";
-import { isHr, seesAll, seesFinance } from "@/lib/work/people";
+import { editsFinance, isHr, managesOperation } from "@/lib/work/people";
 import type { AppPlan, FinApp, Recurring } from "@/lib/work/finance";
 import { createClient } from "@/lib/work/supabase/server";
 
@@ -377,7 +378,7 @@ function clientInput(fd: FormData): ClientInput {
 
 export async function setClientActiveAction(id: string, active: boolean) {
   const me = await getMe();
-  if (!seesAll(me?.role)) throw new Error("No tienes permiso para cambiar el estado del cliente");
+  if (!managesOperation(me)) throw new Error("No tienes permiso para cambiar el estado del cliente");
   await setClientActive(id, active);
   revalidatePath("/work", "layout");
 }
@@ -566,9 +567,17 @@ export async function updateMemberAction(
   revalidatePath(`/work/team/${id}`);
 }
 
+/** Super admin only: per-module access overrides for one person. */
+export async function updateMemberPermissionsAction(id: string, permissions: WorkUserRecord["permissions"]) {
+  const me = await getMe();
+  if (me?.role !== "super_admin") throw new Error("Solo el super admin puede cambiar permisos");
+  await updateProfile(id, { permissions });
+  revalidatePath("/work", "layout");
+}
+
 export async function createMemberAction(_prev: FormState, fd: FormData): Promise<FormState> {
   const me = await getMe();
-  if (!isAdmin(me) && !isHr(me?.role)) return { error: "Solo administradores o Talento humano pueden crear personas" };
+  if (!isAdmin(me) && !isHr(me)) return { error: "Solo administradores o Talento humano pueden crear personas" };
   if (!adminConfigured) {
     return { error: "Falta SUPABASE_SERVICE_ROLE_KEY en .env.local para crear usuarios." };
   }
@@ -644,7 +653,7 @@ export async function updateRequestScheduleAction(
   id: string,
   input: { title: string; startOn: string; deadline: string; deliverables: string[]; state: WorkflowState },
 ) {
-  if (!seesAll((await getMe())?.role)) throw new Error("No tienes permiso para editar el cronograma");
+  if (!managesOperation(await getMe())) throw new Error("No tienes permiso para editar el cronograma");
   await updateRequestSchedule(id, input);
   revalidateRequest(id);
   revalidatePath("/work/calendar");
@@ -814,7 +823,7 @@ export async function searchAction(term: string) {
 
 async function requireFinance() {
   const me = await getMe();
-  if (!seesFinance(me?.role)) throw new Error("Solo Finanzas y la dirección pueden gestionar finanzas");
+  if (!editsFinance(me)) throw new Error("Tu acceso a Finanzas es solo de lectura");
 }
 
 const refreshFinance = () => revalidatePath("/work/finance", "layout");

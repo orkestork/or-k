@@ -67,6 +67,10 @@ export type AdjustmentTarget =
   | "format"
   | "other";
 
+/** Modules whose access can be set per person. */
+export type PermissionKey = "operation" | "finance" | "hr" | "pay" | "team";
+export type PermissionLevel = "none" | "view" | "edit";
+
 export interface WorkUserRecord {
   id: string;
   name: string;
@@ -84,6 +88,8 @@ export interface WorkUserRecord {
   managerId?: string | null;
   /** Default person covering them when they're off. */
   backupId?: string | null;
+  /** Per-module overrides of the role's default access. */
+  permissions?: Partial<Record<PermissionKey, PermissionLevel>>;
   /** Set while the person is off today (vacation, sick leave…). */
   away?: { kind: Absence["kind"]; until: string; substituteId: string | null } | null;
 }

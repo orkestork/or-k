@@ -17,7 +17,7 @@ import {
   getTimeEntries,
   getUsers,
 } from "@/lib/work/data";
-import { seesFinance } from "@/lib/work/people";
+import { editsFinance, seesFinance } from "@/lib/work/people";
 import { monthlyCost } from "@/lib/work/payroll";
 import {
   APP_STATUS_LABEL,
@@ -66,7 +66,8 @@ const day = (ymd: string) => new Date(`${ymd}T12:00:00`).toLocaleDateString("es"
 export default async function FinancePage({ searchParams }: { searchParams: Promise<{ tab?: string; month?: string }> }) {
   const sp = await searchParams;
   const me = await getMe();
-  if (!seesFinance(me?.role)) redirect("/work/home");
+  if (!seesFinance(me)) redirect("/work/home");
+  const readOnly = !editsFinance(me);
 
   const today = new Date().toLocaleDateString("en-CA");
   const ym = /^\d{4}-\d{2}$/.test(sp.month ?? "") ? sp.month! : today.slice(0, 7);
@@ -304,6 +305,14 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
           </div>
         </div>
       </PageHeader>
+
+      {readOnly ? (
+        <p className="mb-4 rounded-md border border-border bg-muted/40 px-3 py-2 text-sm text-muted-foreground">
+          Tienes acceso de solo lectura a Finanzas.
+        </p>
+      ) : null}
+      {/* A disabled fieldset turns off every form control and dialog trigger for read-only access. */}
+      <fieldset disabled={readOnly} className="contents">
 
       {tab === "summary" ? (
         <div className="flex flex-col gap-4">
@@ -839,6 +848,7 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
           </p>
         </div>
       ) : null}
+      </fieldset>
     </div>
   );
 }

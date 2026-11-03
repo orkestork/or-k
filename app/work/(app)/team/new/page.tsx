@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: "Nueva persona · OR-K WORK" };
 
 export default async function NewMemberPage() {
   const me = await getMe();
-  if (!isAdmin(me) && !isHr(me?.role)) redirect("/work/team");
+  if (!isAdmin(me) && !isHr(me)) redirect("/work/team");
   const [users, params] = await Promise.all([getUsers(), getPayrollParams()]);
   return (
     <div className="mx-auto max-w-7xl">
