@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import UtsSphere from "@/components/uts-sphere";
+import ProjectWheel from "@/components/project-wheel";
 
 const services = [
   {title:"Understand",axis:"Eje Z · Profundidad",desc:"Entendemos cómo funciona realmente el negocio: estrategia, estructura, procesos, personas, cultura, tecnología, datos, marca, ventas y oportunidades.",media:"/assets/sphere-growth-ork-final.png",motion:"/assets/sphere-growth-ork-final.mp4"},
@@ -94,9 +95,23 @@ const projects = [
     {src:"/assets/project-kliniu-film.mp4",duration:2000,startAt:5},
     {src:"/assets/project-kliniu-film.mp4",duration:3000,startAt:7},
   ]},
-  {title:"GEU",url:"https://geu-navy.vercel.app/",meta:"Identidad corporativa / Sistema visual",year:"2026",kind:"image",media:"/assets/project-ggeu.jpg"},
-  {title:"Totalpars",url:"https://unipars-tech.vercel.app",meta:"Identidad corporativa / Diseño de marca",year:"2026",kind:"image",media:"/assets/project-totalpars.jpg"},
-  {title:"Drokex",url:"https://drokex.com",meta:"Identidad de marca / Plataforma digital",year:"2026",kind:"image",media:"/assets/project-drokex.jpg"},
+  {title:"GEU",url:"https://geu-navy.vercel.app/",meta:"Identidad corporativa / Sistema visual",year:"2026",kind:"image",media:"/assets/project-ggeu.jpg",motion:[
+    {src:"/assets/project-geu-web.jpg",duration:2000,kind:"image" as const},
+    {src:"/assets/project-geu-energy.mp4",duration:2500,position:"right center"},
+    {src:"/assets/project-geu-structure.mp4",duration:2000},
+    {src:"/assets/project-geu-innovation.mp4",duration:2000},
+    {src:"/assets/project-geu-plastic.mp4",duration:1500},
+  ]},
+  {title:"Totalpars",url:"https://unipars-tech.vercel.app",meta:"Identidad corporativa / Diseño de marca",year:"2026",kind:"image",media:"/assets/project-totalpars.jpg",motion:[
+    {src:"/assets/project-totalpars-intro.mp4",duration:2000,startAt:2.5,fit:"contain" as const,bg:"#081528"},
+    {src:"/assets/project-totalpars-xray.mp4",duration:3000,startAt:0.5,fit:"contain" as const,bg:"#f4f5f7"},
+    {src:"/assets/project-totalpars-categorias.mp4",duration:2000,startAt:2.5,fit:"contain" as const,bg:"linear-gradient(#fff 50%,#0e213f 50%)"},
+    {src:"/assets/project-totalpars-web.mp4",duration:3000,fit:"contain" as const,bg:"#142b4d"},
+  ]},
+  {title:"Drokex",url:"https://drokex.com",meta:"Identidad de marca / Plataforma digital",year:"2026",kind:"image",media:"/assets/project-drokex.jpg",motion:[
+    {src:"/assets/project-drokex-motion-clean.mp4",duration:2000,startAt:3},
+    {src:"/assets/project-drokex-web-film.mp4",duration:8000},
+  ]},
 ];
 
 const teamMembers = [
@@ -106,25 +121,6 @@ const teamMembers = [
   {name:"Luis Urdaneta",role:"Commercial Director",photo:"/assets/team-04.png",bio:"Empresario colombiano con más de 30 años de experiencia en comunicación estratégica, desarrollo de marca y marketing. Es fundador de la reconocida agencia Audiovisual Huella Digital en Colombia, desde donde ha liderado proyectos para importantes compañías y organizaciones como Grupo Bolívar, MetLife, Alpina, Mercedes-Benz, Homecenter, DHL, Tetra Pak, Oracle, Avianca, PepsiCo, entre otras marcas de alto reconocimiento."},
   {name:"Brandon Bustos",role:"Technology & Creativity Director",photo:"/assets/team-05.jpg",bio:"Diseñador Gráfico Publicitario e Ingeniero de Software con más de 10 años de experiencia en medios digitales, creatividad y tecnología.\n\nSu trayectoria integra dirección creativa, branding, estrategia digital, desarrollo web, aplicaciones móviles, UI/UX, automatización e inteligencia artificial, liderando proyectos desde la conceptualización hasta su implementación.\n\nSu enfoque conecta creatividad, negocio y tecnología para desarrollar ideas que no solo generan impacto visual, sino que se convierten en productos, plataformas y experiencias con valor real."},
 ];
-
-function ProjectMotion({poster,title,clips}:{poster:string;title:string;clips:{src:string;duration:number;kind?:"image"|"video";startAt?:number}[]}){
-  const [activeClip,setActiveClip]=useState(-1);
-  const videoRefs=useRef<(HTMLVideoElement|null)[]>([]);
-  useEffect(()=>{
-    if(activeClip<0){videoRefs.current.forEach((video)=>{if(video){video.pause();video.currentTime=0;}});return;}
-    const video=videoRefs.current[activeClip];
-    if(video){video.currentTime=clips[activeClip].startAt??0;void video.play().catch(()=>{});}
-    const timer=window.setTimeout(()=>setActiveClip((activeClip+1)%clips.length),clips[activeClip].duration);
-    return ()=>{window.clearTimeout(timer);if(video){video.pause();video.currentTime=0;}};
-  },[activeClip,clips.length]);
-  return <div className="visual projectImage projectMotion" onPointerEnter={()=>setActiveClip(0)} onPointerLeave={()=>setActiveClip(-1)}>
-    <img src={poster} alt={`Proyecto ${title}`} draggable="false" loading="lazy" decoding="async"/>
-    {clips.map((clip,index)=>clip.kind==="image"
-      ? <img className={`projectMotionStill ${activeClip===index?"isActive":""}`} src={clip.src} alt="" aria-hidden="true" draggable="false" key={`${clip.src}-${index}`}/>
-      : <video ref={(node)=>{videoRefs.current[index]=node;}} className={activeClip===index?"isActive":""} muted playsInline preload="metadata" key={`${clip.src}-${index}`}><source src={clip.src} type="video/mp4"/></video>)}
-    <span className="projectMotionHint">10s · Hover film</span>
-  </div>;
-}
 
 export default function Home() {
   const [heroClip, setHeroClip] = useState(0);
@@ -139,11 +135,9 @@ export default function Home() {
   const [teamOpen, setTeamOpen] = useState(false);
   const [howProgress, setHowProgress] = useState(0);
   const [activeUtsAxis,setActiveUtsAxis] = useState<"X"|"Y"|"Z"|null>(null);
-  const projectRail = useRef<HTMLDivElement>(null);
   const howRail = useRef<HTMLDivElement>(null);
   const howTarget = useRef<number | null>(null);
   const howWheelLocked = useRef(false);
-  const projectDrag = useRef({ active: false, moved: false, startX: 0, scrollLeft: 0, url: "" });
   const heroTransitionTimers = useRef<number[]>([]);
   const audioContext = useRef<AudioContext | null>(null);
   const audioGain = useRef<GainNode | null>(null);
@@ -355,40 +349,6 @@ export default function Home() {
     gain.gain.linearRampToValueAtTime(next ? .018 : 0,context.currentTime+.7);
     setSoundEnabled(next);
   };
-  const startProjectDrag = (e: React.PointerEvent<HTMLDivElement>) => {
-    const rail = projectRail.current;
-    if (!rail || e.pointerType !== "mouse") return;
-    const link=(e.target as HTMLElement).closest<HTMLAnchorElement>(".projectTarget");
-    projectDrag.current = { active: true, moved: false, startX: e.clientX, scrollLeft: rail.scrollLeft, url: link?.href??"" };
-  };
-  const moveProjectDrag = (e: React.PointerEvent<HTMLDivElement>) => {
-    const rail = projectRail.current;
-    if (!rail || !projectDrag.current.active) return;
-    const distance=e.clientX-projectDrag.current.startX;
-    if(Math.abs(distance)<7&&!projectDrag.current.moved) return;
-    if(!projectDrag.current.moved){
-      projectDrag.current.moved=true;
-      rail.classList.add("isDragging");
-      // Capturar solo al arrastrar: en Chrome la captura redirige el click al rail y el enlace no abre.
-      rail.setPointerCapture(e.pointerId);
-    }
-    rail.scrollLeft = projectDrag.current.scrollLeft - distance * 1.35;
-  };
-  const stopProjectDrag = (e: React.PointerEvent<HTMLDivElement>) => {
-    const rail = projectRail.current;
-    if (!rail) return;
-    projectDrag.current.active = false;
-    if (rail.hasPointerCapture(e.pointerId)) rail.releasePointerCapture(e.pointerId);
-    rail.classList.remove("isDragging");
-    window.setTimeout(()=>{projectDrag.current.moved=false;},0);
-  };
-  const moveProjects = (direction:-1|1) => {
-    const rail=projectRail.current;
-    if(!rail) return;
-    const cards=rail.querySelectorAll<HTMLElement>(".project");
-    const step=cards.length>1?cards[1].offsetLeft-cards[0].offsetLeft:rail.clientWidth*.5;
-    rail.scrollBy({left:direction*step,behavior:"smooth"});
-  };
   const moveHowWithWheel = (event: React.WheelEvent<HTMLDivElement>) => {
     event.preventDefault();
     const rail=event.currentTarget;
@@ -549,19 +509,7 @@ export default function Home() {
 
     <section className="work" id="trabajo">
       <header><span className="sectionNo">03 / Trabajo seleccionado</span><h2>Ideas en<br/><i>acción.</i></h2></header>
-      <div className="projectControls" aria-label="Navegar proyectos"><button type="button" onClick={()=>moveProjects(-1)} aria-label="Proyecto anterior">←</button><button type="button" onClick={()=>moveProjects(1)} aria-label="Proyecto siguiente">→</button></div>
-      <div className="projectsFrame">
-        <button className="projectNav prev" type="button" tabIndex={-1} onClick={()=>moveProjects(-1)} aria-label="Proyecto anterior">←</button>
-        <button className="projectNav next" type="button" tabIndex={-1} onClick={()=>moveProjects(1)} aria-label="Proyecto siguiente">→</button>
-        <div className="projects" ref={projectRail} tabIndex={0} role="region" aria-label="Carrusel de proyectos, usa las flechas del teclado para navegar" onKeyDown={(event)=>{if(event.key==="ArrowRight"){event.preventDefault();moveProjects(1);}else if(event.key==="ArrowLeft"){event.preventDefault();moveProjects(-1);}}} onPointerDown={startProjectDrag} onPointerMove={moveProjectDrag} onPointerUp={stopProjectDrag} onPointerCancel={stopProjectDrag} onPointerLeave={(e)=>projectDrag.current.active&&stopProjectDrag(e)}>
-          {projects.map((project, index)=><article className={`project p${index+1}`} key={project.title}>
-            <a className="projectTarget" href={project.url} target="_blank" rel="noreferrer" draggable="false" aria-label={`Visitar sitio web de ${project.title}`} onDragStart={(event)=>event.preventDefault()} onClick={(event)=>{if(projectDrag.current.moved) event.preventDefault();}}>
-              {project.motion?<ProjectMotion poster={project.media} title={project.title} clips={project.motion}/>:<div className="visual projectImage"><img src={project.media} alt={`Proyecto ${project.title}`} draggable="false" loading="lazy" decoding="async"/></div>}
-              <div className="caption"><h3>{project.title}</h3><p>{project.meta}</p><span>{project.year} ↗</span></div>
-            </a>
-          </article>)}
-        </div>
-      </div>
+      <ProjectWheel projects={projects}/>
       <div className="caseMethod"><p>Un caso no termina en una imagen bonita.</p><div><span>01</span><b>Contexto</b><p>Entendemos el negocio, la audiencia y la oportunidad.</p></div><div><span>02</span><b>Idea</b><p>Construimos un concepto capaz de vivir en cualquier formato.</p></div><div><span>03</span><b>Sistema</b><p>Lo convertimos en identidad, contenido y experiencia digital.</p></div></div>
     </section>
 
