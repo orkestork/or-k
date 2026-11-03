@@ -360,7 +360,6 @@ export default function Home() {
     if (!rail || e.pointerType !== "mouse") return;
     const link=(e.target as HTMLElement).closest<HTMLAnchorElement>(".projectTarget");
     projectDrag.current = { active: true, moved: false, startX: e.clientX, scrollLeft: rail.scrollLeft, url: link?.href??"" };
-    rail.setPointerCapture(e.pointerId);
   };
   const moveProjectDrag = (e: React.PointerEvent<HTMLDivElement>) => {
     const rail = projectRail.current;
@@ -370,6 +369,8 @@ export default function Home() {
     if(!projectDrag.current.moved){
       projectDrag.current.moved=true;
       rail.classList.add("isDragging");
+      // Capturar solo al arrastrar: en Chrome la captura redirige el click al rail y el enlace no abre.
+      rail.setPointerCapture(e.pointerId);
     }
     rail.scrollLeft = projectDrag.current.scrollLeft - distance * 1.35;
   };
