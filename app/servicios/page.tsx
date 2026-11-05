@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "../development/development.css";
+import RegionalPresence from "@/components/regional-presence";
 import { serviceDetails } from "@/lib/services";
 
 export const metadata: Metadata = {
@@ -111,6 +112,8 @@ export default function ServicesPage() {
         </div>
         <p className="devPrinciple"><span className="devTypeSlice" data-text="La tecnología no es el punto de partida.">La tecnología no es el punto de partida.</span><br/><em className="devTypeSlice isLight" data-text="Tu negocio y lo que quieres lograr, sí.">Tu negocio y lo que quieres lograr, sí.</em></p>
       </section>
+
+      <RegionalPresence />
 
       <section className="devCta" id="contacto">
         <span className="devEyebrow">04 / ¿Construimos juntos?</span>
