@@ -56,3 +56,46 @@
 @media(max-width:800px){.devHero h1{font-size:14.2vw;line-height:.88}}
 .devHeroMedia video{display:block;width:100%;height:100%;object-fit:cover;transform:scale(1.025)}
 @media(max-width:800px){.devHeroMedia video{object-position:68% center}}
+
+/* Full OR-K service catalog */
+.serviceCatalog{padding:110px 4vw;background:var(--paper);color:var(--ink)}
+.serviceCatalog h2{margin:30px 0;font:400 clamp(46px,6.5vw,100px)/.95 "Anton",Impact,sans-serif;text-transform:uppercase}
+.serviceCatalog h2 em{color:var(--pink);font-style:normal}
+.serviceCatalogIntro{max-width:620px;font-size:15px;line-height:1.7;opacity:.7}
+.serviceJumpLinks{display:flex;flex-wrap:wrap;gap:14px;margin:35px 0 70px}
+.serviceJumpLinks a{padding:15px 22px;border:1px solid #0a090c30;font-size:12px;text-transform:uppercase;letter-spacing:.1em}
+.serviceJumpLinks a:hover{background:var(--ink);color:var(--paper)}
+.serviceJumpLinks span{margin-left:20px;color:var(--pink)}
+.serviceGroup{display:grid;grid-template-columns:1fr 1.4fr;gap:7vw;padding:65px 0;border-top:1px solid #0a090c30;scroll-margin-top:30px}
+.serviceGroupHeading img{display:block;width:140px;height:140px;object-fit:contain;margin-bottom:25px;border-radius:50%;background:var(--ink)}
+.serviceGroupHeading h3{font:400 clamp(30px,3.2vw,50px)/1.05 "Anton",Impact,sans-serif;text-transform:uppercase;margin:22px 0}
+.serviceGroupHeading p{max-width:420px;font-size:14px;line-height:1.7;opacity:.7}
+.serviceOfferList article{display:grid;grid-template-columns:40px 1fr 38px;gap:14px;align-items:start;padding:25px 0;border-bottom:1px solid #0a090c25}
+.serviceOfferNumber{font-size:11px;color:var(--pink);padding-top:5px}
+.serviceOfferList h4{font-size:19px;line-height:1.3;margin:0 0 10px}
+.serviceOfferList p{font-size:13px;line-height:1.65;margin:0;opacity:.65}
+.serviceOfferList a{display:grid;place-items:center;min-width:38px;min-height:44px;color:var(--pink);font-size:24px}
+.serviceOfferList a:hover{background:var(--ink);color:var(--paper)}
+.developmentPage a:focus-visible{outline:2px solid var(--pink);outline-offset:5px}
+@media(max-width:800px){.serviceCatalog{padding:75px 7vw}.serviceGroup{grid-template-columns:1fr;gap:20px;padding:40px 0}.serviceGroupHeading img{width:100px;height:100px}.serviceJumpLinks{gap:8px;margin-bottom:40px}.serviceJumpLinks a{padding:13px;font-size:10px}.serviceOfferList article{grid-template-columns:28px 1fr 38px;gap:8px}.serviceOfferList h4{font-size:17px}}
+.serviceJumpLinks{position:static;height:auto;width:auto;padding:0;justify-content:flex-start;border:0;z-index:auto}
+
+/* Orca editorial series: explore, connect, expand. */
+.serviceGroup{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:5vw;padding:64px 0 80px;align-items:center}
+.serviceArt{position:relative;overflow:hidden;background:#09080d;aspect-ratio:3/2;margin-bottom:30px;isolation:isolate}
+.serviceGroupHeading .serviceArt img{width:100%;height:100%;border-radius:0;object-fit:cover;margin:0;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.serviceArt:hover img{transform:scale(1.035)}
+.serviceArt:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.55),transparent 30%);pointer-events:none}
+.serviceArtNumber{position:absolute;z-index:1;left:22px;top:14px;font:400 65px/1 "Anton",Impact,sans-serif;color:#fff;opacity:.85}
+.serviceArtLabel{position:absolute;z-index:1;bottom:20px;left:23px;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#fff}
+.serviceGroupHeading h3{font-size:clamp(30px,3vw,48px);max-width:580px;margin:18px 0}
+.serviceGroupHeading p{max-width:540px;margin-bottom:0}
+.serviceOfferList{border-top:1px solid #0a090c25}
+.serviceOfferList article{padding:30px 12px;transition:background .25s,transform .25s}
+.serviceOfferList article:hover,.serviceOfferList article:focus-within{background:#e7dfd6;transform:translateX(4px)}
+.serviceOfferList h4{font-size:clamp(17px,1.4vw,22px)}
+.serviceOfferList a{border:1px solid #0a090c20;border-radius:50%;font-size:21px;width:44px;height:44px}
+.serviceOfferList article{grid-template-columns:36px 1fr 44px}
+@media(min-width:1000px){.serviceGroup:nth-of-type(2) .serviceGroupHeading{grid-column:2;grid-row:1}.serviceGroup:nth-of-type(2) .serviceOfferList{grid-column:1;grid-row:1}}
+@media(max-width:800px){.serviceGroup{grid-template-columns:1fr;gap:30px;padding:40px 0 55px}.serviceArt{margin-bottom:25px}.serviceArtNumber{font-size:48px}.serviceGroupHeading h3{font-size:34px}.serviceOfferList article{padding:22px 0;grid-template-columns:28px 1fr 44px}.serviceOfferList article:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.serviceGroupHeading .serviceArt img,.serviceOfferList article{transition:none}.serviceArt:hover img{transform:none}}
