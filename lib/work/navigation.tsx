@@ -4,6 +4,7 @@ import {
   CheckSquare,
   FolderKanban,
   HeartHandshake,
+  ContactRound,
   Landmark,
   Home,
   Inbox,
@@ -65,6 +66,7 @@ export const WORK_NAV: WorkNavGroup[] = [
     id: "people",
     label: "Personas",
     items: [
+      { label: "Prospectos", href: "/work/crm", icon: ContactRound, managersOnly: true },
       { label: "Team", href: "/work/team", icon: SquareStack },
       { label: "Recursos humanos", href: "/work/hr", icon: HeartHandshake },
     ],
