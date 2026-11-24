@@ -1,0 +1,277 @@
+/* UTS Method — descending zig-zag (components/uts-motion.tsx) */
+.services.utsFx { position: relative; isolation: isolate; }
+.services.utsFx .utsStage { position: relative; }
+.services.utsFx .utsStage > *:not(.utsPathWrap) { position: relative; z-index: 1; }
+
+/* Connecting line that draws with the scroll */
+.utsPathWrap { position: absolute; z-index: 0; inset: 0; pointer-events: none; }
+.utsPath { position: absolute; left: 0; top: 0; width: 100%; overflow: visible; }
+.utsPath path {
+  fill: none;
+  stroke: url(#utsPathGradient);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+/* Centred headline, words rise out of a mask */
+.services.utsFlow .utsStage > .sectionNo { display: flex; justify-content: center; }
+.services.utsFlow .utsBrief {
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  margin: 3vw auto 0;
+  padding: 0;
+  border: 0;
+  text-align: center;
+}
+.utsFx .utsBrief h2 { display: flex; flex-wrap: wrap; column-gap: .22em; }
+.services.utsFlow .utsBrief h2 { justify-content: center; max-width: 14em; margin: 0 auto; }
+.editorialIdentity .services .serviceBrief .utsWord,
+.editorialIdentity .services .serviceBrief .utsWord > span,
+.services .serviceBrief .utsWord,
+.services .serviceBrief .utsWord > span {
+  border: 0; padding: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; text-transform: inherit;
+}
+.editorialIdentity .services .serviceBrief .utsWord { display: inline-block; overflow: hidden; padding: .1em .02em .04em; margin: -.1em -.02em -.04em; vertical-align: top; }
+.utsWord > span {
+  display: inline-block;
+  transform: translate3d(0, 115%, 0);
+  transition: transform 1.15s cubic-bezier(.16, 1, .3, 1);
+  transition-delay: calc(var(--w) * .05s);
+}
+.utsBrief.isIn .utsWord > span { transform: none; }
+.utsFx .utsBrief > div { opacity: 0; transform: translateY(20px); transition: opacity .8s ease .5s, transform 1s cubic-bezier(.16, 1, .3, 1) .5s; }
+.utsFx .utsBrief.isIn > div { opacity: 1; transform: none; }
+
+/* Zig-zag column: right → left → right, going down */
+.services.utsFlow .serviceCards,
+.editorialIdentity .services.utsFlow .serviceCards {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 0;
+  margin-top: 16vh;
+  padding-bottom: 6vh;
+}
+.editorialIdentity .services.utsFlow .serviceCard:nth-child(n) { margin-top: 0; }
+.services.utsFlow .serviceCard[data-side="right"] { grid-column: 7 / span 6; }
+.services.utsFlow .serviceCard[data-side="left"] { grid-column: 1 / span 6; }
+.services.utsFlow .serviceCard:nth-child(1) { grid-row: 1; }
+.services.utsFlow .serviceCard:nth-child(2) { grid-row: 2; margin-top: -4vh !important; }
+.services.utsFlow .serviceCard:nth-child(3) { grid-row: 3; margin-top: -4vh !important; }
+.services.utsFlow .serviceMedia { aspect-ratio: 16 / 10.5; height: auto; }
+
+/* Entrance: slide in from its own side + rise; then drift */
+.services.utsFx .serviceCard,
+.services.utsFx.isVisible .serviceCard {
+  animation: none !important;
+  opacity: 0;
+  transform: translate3d(14vw, 120px, 0) rotate(2deg);
+  translate: 0 var(--drift, 0px);
+  transition: opacity 1s ease, transform 1.5s cubic-bezier(.16, 1, .3, 1);
+}
+.services.utsFx .serviceCard[data-side="left"] { transform: translate3d(-14vw, 120px, 0) rotate(-2deg); }
+.services.utsFx .serviceCard.isIn,
+.services.utsFx .serviceCard[data-side="left"].isIn { opacity: 1; transform: none; }
+.services.utsFx .serviceMedia,
+.services.utsFx.isVisible .serviceMedia,
+.services.utsFx .serviceMedia img { animation: none !important; clip-path: none; }
+
+/* Big outlined phase number on the empty side */
+.services.utsFlow .serviceNumber,
+.editorialIdentity .services.utsFlow .serviceNumber {
+  animation: none !important;
+  top: 42%;
+  font-size: clamp(120px, 15vw, 260px);
+  line-height: .8;
+  letter-spacing: -.02em;
+  color: transparent;
+  -webkit-text-stroke: 2px rgba(124, 60, 255, .45);
+  opacity: 0;
+  transition: opacity 1s ease .35s, transform 1.4s cubic-bezier(.16, 1, .3, 1) .35s;
+}
+.editorialIdentity .services.utsFlow .serviceCard[data-side="right"] .serviceNumber { left: auto; right: calc(100% + 6vw); transform: translate3d(-6vw, -50%, 0); }
+.editorialIdentity .services.utsFlow .serviceCard[data-side="left"] .serviceNumber { right: auto; left: calc(100% + 6vw); transform: translate3d(6vw, -50%, 0); }
+.editorialIdentity .services.utsFlow .serviceCard.isIn .serviceNumber { opacity: 1; transform: translate3d(0, -50%, 0); }
+.services.utsFlow .serviceCard:hover .serviceNumber { -webkit-text-stroke-color: #7C3CFF; }
+
+/* Text under the image fades up after the card */
+.services.utsFx .serviceLabel,
+.services.utsFx .serviceCard h3,
+.services.utsFx .serviceCard p { opacity: 0; transform: translateY(20px); transition: opacity .8s ease, transform 1s cubic-bezier(.16, 1, .3, 1); }
+.services.utsFx .serviceCard.isIn .serviceLabel { opacity: 1; transform: none; transition-delay: .45s; }
+.services.utsFx .serviceCard.isIn h3 { opacity: 1; transform: none; transition-delay: .55s; }
+.services.utsFx .serviceCard.isIn p { opacity: 1; transform: none; transition-delay: .65s; }
+
+/* WebGL liquid surface replaces the DOM image */
+.utsLiquid { position: absolute; z-index: 3; pointer-events: none; }
+.services.utsGL .serviceMedia { background: transparent !important; overflow: visible; }
+.services.utsGL .serviceMedia > img,
+.services.utsGL .serviceMedia > video { opacity: 0 !important; }
+.services.utsGL .serviceCard:before { z-index: 4; }
+
+/* Title letters roll to violet on hover */
+.rollText { display: inline-flex; overflow: hidden; padding: .06em 0; margin: -.06em 0; vertical-align: bottom; }
+.rollChar { position: relative; display: inline-block; transition: transform .65s cubic-bezier(.76, 0, .24, 1); transition-delay: calc(var(--i) * .028s); }
+.rollChar::after { content: attr(data-char); position: absolute; left: 0; top: 130%; color: var(--ork-electric, #7C3CFF); }
+.serviceCard:hover .rollChar, .serviceCard:focus-visible .rollChar { transform: translate3d(0, -130%, 0); }
+.serviceCard h3 b { transition: transform .5s cubic-bezier(.16, 1, .3, 1), background .3s; }
+.serviceCard:hover h3 b { transform: rotate(45deg); }
+
+@media (max-width: 900px) {
+  .services.utsFlow .serviceCard[data-side="right"] { grid-column: 3 / span 10; }
+  .services.utsFlow .serviceCard[data-side="left"] { grid-column: 1 / span 10; }
+  .services.utsFlow .serviceCard:nth-child(2),
+  .services.utsFlow .serviceCard:nth-child(3) { margin-top: 12vh !important; }
+  .services.utsFlow .serviceNumber { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .services.utsFx .serviceCard, .services.utsFx .serviceLabel, .services.utsFx .serviceCard h3, .services.utsFx .serviceCard p,
+  .utsWord > span, .utsFx .utsBrief > div, .services.utsFlow .serviceNumber {
+    opacity: 1 !important; transition: none !important; translate: none !important;
+  }
+  .services.utsFx .serviceCard, .utsWord > span, .utsFx .utsBrief > div { transform: none !important; }
+  .utsPath path { stroke-dashoffset: 0; }
+  .rollChar { transition: none; }
+}
+
+/* ---------- Desktop: horizontal method. The section pins and the phases slide sideways. ---------- */
+.services.utsScenes, .editorialIdentity .services.utsScenes { overflow: clip !important; }
+.services.utsScenes .utsPathWrap { display: none; }
+/* Scroll distance for the horizontal track (sticky can't travel into padding, so use real content). */
+.services.utsScenes .utsStage::after { content: ""; display: block; height: 230vh; }
+.services.utsScenes .utsStage > .sectionNo { display: flex; justify-content: center; }
+.services.utsScenes .utsBrief { flex-direction: column; align-items: center; gap: 22px; margin: 3vw auto 0; padding: 0; border: 0; text-align: center; }
+.services.utsScenes .utsBrief h2 { justify-content: center; max-width: 14em; margin: 0 auto; }
+
+.services.utsScenes .serviceCards,
+.editorialIdentity .services.utsScenes .serviceCards {
+  --x: 0;
+  --xp: 0;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100vw;
+  height: 100vh;
+  margin: 8vh 0 0 calc(50% - 50vw) !important;
+  padding: 0;
+  overflow: hidden;
+}
+/* Progress bar + phase counter along the bottom */
+.services.utsScenes .serviceCards::after {
+  content: "";
+  position: absolute;
+  z-index: 5;
+  left: 7vw;
+  right: 7vw;
+  bottom: 4.5vh;
+  height: 2px;
+  background: linear-gradient(90deg, var(--ork-pink, #7C3CFF) calc(var(--xp) * 100%), rgba(11, 7, 16, .14) 0);
+}
+.services.utsScenes .serviceCard,
+.services.utsScenes.isVisible .serviceCard,
+.editorialIdentity .services.utsScenes .serviceCard:nth-child(n) {
+  position: relative;
+  flex: 0 0 100vw;
+  width: 100vw;
+  height: 100vh;
+  margin: 0 !important;
+  opacity: 1;
+  transform: none;
+  translate: calc(var(--x) * -100vw) 0;
+  transition: none;
+  cursor: default;
+  will-change: translate;
+}
+.services.utsScenes .serviceCard:before { display: none; }
+.services.utsScenes .serviceSticky {
+  --e: 0;
+  --leave: 0;
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 10vh 0 8vh 7vw;
+  text-align: left;
+}
+.services.utsScenes .serviceCard[data-side="left"] .serviceSticky { padding-left: 57vw; }
+.services.utsScenes .serviceSticky::after { display: none; }
+.services.utsScenes .serviceMedia { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.utsLiquidFull { inset: 0; width: 100%; height: 100%; z-index: 1; }
+
+/* Text column: each line rises in after the previous one */
+.services.utsScenes .serviceSticky > :is(.serviceNumber, .serviceLabel, h3, p, .serviceFocus, .serviceCta) {
+  --d: 0;
+  position: relative;
+  z-index: 2;
+  max-width: 36vw;
+  color: var(--ork-ink, #0B0710);
+  opacity: calc(min(1, max(0, (var(--e) - var(--d)) * 3)) * (1 - var(--leave)));
+  transform: translateY(calc((1 - min(1, max(0, (var(--e) - var(--d)) * 3))) * 40px + var(--leave) * -30px));
+  transition: none;
+  animation: none !important;
+}
+.services.utsScenes .serviceSticky > .serviceLabel { --d: .08; }
+.services.utsScenes .serviceSticky > h3 { --d: .14; }
+.services.utsScenes .serviceSticky > p { --d: .22; }
+.services.utsScenes .serviceSticky > .serviceFocus { --d: .3; }
+.services.utsScenes .serviceSticky > .serviceCta { --d: .38; }
+
+.services.utsScenes .serviceNumber,
+.editorialIdentity .services.utsScenes .serviceNumber {
+  position: relative;
+  top: auto; left: auto; right: auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 26px;
+  font: 600 12px/1 "DM Sans", sans-serif;
+  letter-spacing: .2em;
+  -webkit-text-stroke: 0;
+}
+.services.utsScenes .serviceNumber::after { content: "/ 03"; opacity: .45; }
+.services.utsScenes .serviceNumber::before { content: ""; width: 34px; height: 2px; background: var(--ork-pink, #7C3CFF); }
+.services.utsScenes .serviceLabel { color: var(--ork-pink, #7C3CFF) !important; font-size: 11px; letter-spacing: .2em; }
+.services.utsScenes .serviceCard h3 {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  max-width: none;
+  margin: 12px 0 22px;
+  white-space: nowrap;
+  font-size: clamp(64px, 7.2vw, 132px);
+  line-height: .88;
+}
+.services.utsScenes .serviceCard h3 b { display: none; }
+.services.utsScenes .serviceCard p { font-size: clamp(16px, 1.2vw, 19px); line-height: 1.55; max-width: 31vw; opacity: .8; }
+.serviceFocus { display: none; }
+.services.utsScenes .serviceFocus { display: block; margin-top: 30px; }
+.services.utsScenes .serviceFocus > span { display: block; margin-bottom: 12px; font: 600 11px/1 "DM Sans", sans-serif; letter-spacing: .2em; text-transform: uppercase; color: var(--ork-pink, #7C3CFF); }
+.services.utsScenes .serviceFocus ul { display: grid; grid-template-columns: repeat(2, minmax(0, max-content)); gap: 6px 42px; margin: 0; padding: 0; list-style: none; font: 400 clamp(15px, 1.1vw, 18px)/1.45 "DM Sans", sans-serif; }
+.serviceCta { display: none; }
+.services.utsScenes .serviceCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 36px;
+  padding: 18px 28px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(11, 7, 16, .08);
+  font: 600 13px/1 "DM Sans", sans-serif;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .3s, color .3s;
+}
+.services.utsScenes .serviceCta i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; transition: transform .3s; }
+.services.utsScenes .serviceCard:hover .serviceCta { background: var(--ork-ink, #0B0710); color: #fff; }
+.services.utsScenes .serviceCard:hover .serviceCta i { transform: scale(1.8); }
+.rollText { overflow: visible clip; overflow-clip-margin: 0; }
+/* Tighter hand-off between phases */

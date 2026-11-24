@@ -31,7 +31,7 @@ export function scorePrequalification(a:PrequalificationAnswers) {
   const maturity = Math.min(4,a.tools.filter(tool=>tool!=="Ninguna").length);
   const total = Math.min(100,Math.round(((Math.max(0,revenue)*2 + Math.max(0,size) + Math.max(0,years) + maturity + Math.max(0,urgency)*2 + leadership*2 + investment*2) / 45) * 100));
   const compatibility = total>=72?"Alta":total>=46?"Potencial":"Todavía no es el momento";
-  const companyClass = size>=4 || revenue>=4?"OR-K Enterprise":size>=2 || revenue>=2?"OR-K Scale":"OR-K Growth";
+  const companyClass = size>=4 || revenue>=4?"O R-K Enterprise":size>=2 || revenue>=2?"O R-K Scale":"O R-K Growth";
   const positives = [
     urgency>=3?"Existe una decisión cercana y una urgencia clara para avanzar.":"",
     leadership>=3?"La alta dirección muestra disposición para participar.":"",

@@ -1,4 +1,4 @@
-/* In-memory data access for OR-K WORK.
+/* In-memory data access for O R-K WORK.
    Async on purpose — swapping these for Supabase calls later won't touch the UI.
    State lives for the lifetime of the server process (fine for the mock). */
 

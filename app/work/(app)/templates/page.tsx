@@ -3,7 +3,7 @@ import { getClients, getTemplates, getUsers, requireManager } from "@/lib/work/d
 import { PageHeader } from "@/components/work/shared/page-header";
 import { TemplateList } from "@/components/work/projects/template-list";
 
-export const metadata: Metadata = { title: "Plantillas · OR-K WORK" };
+export const metadata: Metadata = { title: "Plantillas · O R-K WORK" };
 
 export default async function TemplatesPage() {
   await requireManager();

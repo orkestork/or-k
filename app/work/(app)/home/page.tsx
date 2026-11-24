@@ -18,7 +18,7 @@ import {
   CardTitle,
 } from "@/components/work/ui/card";
 
-export const metadata: Metadata = { title: "Home · OR-K WORK" };
+export const metadata: Metadata = { title: "Home · O R-K WORK" };
 
 export default async function HomePage() {
   const [user, dash, clients, users] = await Promise.all([

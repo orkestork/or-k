@@ -132,7 +132,7 @@ export function RemoveMemberButton({ id, name, redirectTo }: { id: string; name:
         <AlertDialogHeader>
           <AlertDialogTitle>¿Eliminar a {name}?</AlertDialogTitle>
           <AlertDialogDescription>
-            Pierde el acceso a OR-K WORK. Sus comentarios y actividad quedan sin autor.
+            Pierde el acceso a O R-K WORK. Sus comentarios y actividad quedan sin autor.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

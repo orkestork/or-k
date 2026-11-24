@@ -66,7 +66,7 @@ function PendingAccess({ email }: { email: string }) {
       <div className="max-w-sm rounded-lg border border-border p-6 text-center">
         <p className="text-sm font-medium">Cuenta pendiente de activación</p>
         <p className="mt-2 text-sm text-muted-foreground">
-          {email} todavía no tiene acceso a OR-K WORK. Un administrador debe
+          {email} todavía no tiene acceso a O R-K WORK. Un administrador debe
           activarla desde Settings.
         </p>
         <form action={signOut} className="mt-4">

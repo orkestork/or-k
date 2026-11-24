@@ -8,7 +8,7 @@ import { adminConfigured } from "@/lib/work/supabase/admin";
 import { PageHeader } from "@/components/work/shared/page-header";
 import { NewMemberWizard } from "@/components/work/hr/new-member-wizard";
 
-export const metadata: Metadata = { title: "Nueva persona · OR-K WORK" };
+export const metadata: Metadata = { title: "Nueva persona · O R-K WORK" };
 
 export default async function NewMemberPage() {
   const me = await getMe();

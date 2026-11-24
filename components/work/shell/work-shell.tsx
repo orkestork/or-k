@@ -18,7 +18,7 @@ function titleForPath(pathname: string): string {
       }
     }
   }
-  return "OR-K WORK";
+  return "O R-K WORK";
 }
 
 export function WorkShell({

@@ -161,7 +161,7 @@ export function NewMemberWizard({
               <Field label="Contraseña temporal">
                 <PasswordInput value={account.password} onChange={(e) => set("password", e.target.value)} placeholder="Mínimo 8 caracteres" autoComplete="new-password" />
               </Field>
-              <Field label="Rol en OR-K WORK">
+              <Field label="Rol en O R-K WORK">
                 <select className={nativeSelectClass} value={account.role} onChange={(e) => set("role", e.target.value)}>
                   <RoleOptions />
                 </select>

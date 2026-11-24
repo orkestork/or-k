@@ -66,7 +66,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  return { title: `${id} · OR-K WORK` };
+  return { title: `${id} · O R-K WORK` };
 }
 
 export default async function RequestDetailPage({

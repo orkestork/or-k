@@ -1,4 +1,4 @@
-/* OR-K WORK — mock dataset. Dates are computed relative to "now" so the app
+/* O R-K WORK — mock dataset. Dates are computed relative to "now" so the app
    always feels current. Swap this module for Supabase queries later; the
    returned shapes already match `types/work/domain`. */
 
@@ -350,7 +350,7 @@ function buildCopy(seed: RequestSeed): Request["copy"] {
     subheadline: seed.objective,
     caption: `${seed.mainMessage} — ${seed.cta}. #ORK`,
     cta: seed.cta,
-    visualIdeas: "Composición con mucho aire, tipografía a gran escala, foto editorial con luz lateral. Rosa OR-K como acento puntual.",
+    visualIdeas: "Composición con mucho aire, tipografía a gran escala, foto editorial con luz lateral. Trazo magenta O R-K como acento puntual.",
     notes: "Mantener el tono declarativo. Evitar adjetivos de más.",
     drafts: [
       { label: "Draft 1", savedAt: ago(Math.max(1, seed.createdDaysAgo - 3)), savedById: "u-camila" },

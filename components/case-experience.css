@@ -1,0 +1,317 @@
+/* Full-screen project experience */
+.caseX {
+  --hero-p: 0;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--ork-ink, #0B0710);
+  color: var(--ork-paper, #E9E1D6);
+  animation: caseXFade .5s ease both;
+}
+.caseX.isMorph { animation: none; }
+@keyframes caseXFade { from { opacity: 0; } }
+
+.caseXBar {
+  position: fixed;
+  z-index: 5;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px clamp(18px, 3.5vw, 56px);
+  mix-blend-mode: difference;
+  color: #fff;
+  pointer-events: none;
+}
+.caseXBar > * { pointer-events: auto; }
+.caseXBack, .caseXLive {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid rgba(255, 255, 255, .6);
+  border-radius: 999px;
+  background: none;
+  color: inherit;
+  font: 600 12px/1 "DM Sans", sans-serif;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .3s, color .3s;
+}
+.caseXBack:hover, .caseXLive:hover, .caseXBack:focus-visible, .caseXLive:focus-visible { background: #fff; color: #000; }
+.caseXCount { font: 600 12px/1 "DM Sans", sans-serif; letter-spacing: .2em; }
+
+/* Hero */
+.caseXHero { position: relative; height: 100svh; overflow: hidden; }
+.caseXHeroMedia { position: absolute; inset: 0; margin: 0; overflow: hidden; background: #000; }
+.caseXHeroMedia img, .caseXHeroMedia video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translate3d(0, calc(var(--hero-p) * 18%), 0) scale(calc(1 + var(--hero-p) * .12));
+  will-change: transform;
+}
+.caseXHeroShade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(11, 7, 16, .85), rgba(11, 7, 16, .1) 55%, rgba(11, 7, 16, .35));
+  opacity: calc(.75 + var(--hero-p) * .25);
+}
+.caseXHeroCopy {
+  position: absolute;
+  left: clamp(18px, 3.5vw, 56px);
+  right: clamp(18px, 3.5vw, 56px);
+  bottom: clamp(24px, 5vh, 56px);
+  transform: translate3d(0, calc(var(--hero-p) * -30%), 0);
+  opacity: calc(1 - var(--hero-p) * 1.4);
+}
+.caseXKicker {
+  display: block;
+  white-space: pre-wrap;
+  font: 500 clamp(11px, .95vw, 14px)/1.4 "DM Sans", sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: caseXUp .9s var(--ork-ease, cubic-bezier(.16,1,.3,1)) .55s both;
+}
+.caseXHeroCopy h2 {
+  display: flex;
+  flex-wrap: wrap;
+  margin: .12em 0 0;
+  overflow: hidden;
+  padding: .06em 0;
+  font: 400 clamp(64px, 13vw, 230px)/.86 Anton, Impact, sans-serif;
+  letter-spacing: -.01em;
+  text-transform: uppercase;
+}
+.caseXChar {
+  display: inline-block;
+  white-space: pre;
+  transform: translateY(105%);
+  animation: caseXChar 1.1s var(--ork-ease, cubic-bezier(.16,1,.3,1)) both;
+  animation-delay: calc(.45s + var(--i) * .035s);
+}
+@keyframes caseXChar { to { transform: none; } }
+@keyframes caseXUp { from { opacity: 0; transform: translateY(24px); } to { opacity: .85; transform: none; } }
+.caseXScroll {
+  position: absolute;
+  right: 0;
+  bottom: .4em;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font: 600 11px/1 "DM Sans", sans-serif;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  animation: caseXUp .9s ease 1s both;
+}
+.caseXScroll b { display: inline-block; animation: caseXBob 1.6s ease-in-out infinite; }
+@keyframes caseXBob { 50% { transform: translateY(6px); } }
+
+/* Intro */
+.caseXIntro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(260px, 1fr);
+  gap: 6vw;
+  padding: clamp(80px, 12vw, 200px) clamp(18px, 3.5vw, 56px) clamp(60px, 8vw, 140px);
+  background: var(--ork-paper-light, #F3EFF8);
+  color: var(--ork-ink, #0B0710);
+}
+.caseXMark {
+  display: block;
+  width: 96px;
+  height: 96px;
+  margin-bottom: 36px;
+  background: var(--ork-electric, #7C3CFF);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: left center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: left center;
+}
+.caseXDesc { margin: 0; font: 400 clamp(26px, 2.9vw, 50px)/1.15 "DM Sans", sans-serif; letter-spacing: -.02em; }
+.caseXFacts { display: flex; flex-direction: column; gap: 34px; padding-top: 8px; }
+.caseXFacts h3 {
+  margin: 0 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(11, 7, 16, .2);
+  font: 600 11px/1 "DM Sans", sans-serif;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  opacity: .6;
+}
+.caseXFacts ul { margin: 0; padding: 0; list-style: none; }
+.caseXFacts li, .caseXFacts p { margin: 0; font: 400 clamp(17px, 1.3vw, 21px)/1.6 "DM Sans", sans-serif; }
+.caseXLaunch {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 30px;
+  border-radius: 999px;
+  background: var(--ork-ink, #0B0710);
+  color: #fff;
+  font: 600 13px/1 "DM Sans", sans-serif;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  transition: background .35s, transform .35s var(--ork-ease, ease);
+}
+.caseXLaunch i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; transition: transform .35s; }
+.caseXLaunch:hover { background: var(--ork-electric, #7C3CFF); }
+.caseXLaunch:hover i { transform: scale(1.8); }
+
+.caseXReveal { opacity: 0; transform: translate3d(0, 80px, 0); transition: opacity 1s ease, transform 1.3s var(--ork-ease, cubic-bezier(.16,1,.3,1)); }
+.caseXReveal.isIn { opacity: 1; transform: none; }
+.caseXFacts.caseXReveal { transition-delay: .12s; }
+
+/* Gallery */
+.caseXGallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(16px, 2vw, 32px);
+  padding: 0 clamp(18px, 3.5vw, 56px) clamp(80px, 10vw, 180px);
+  background: var(--ork-paper-light, #F3EFF8);
+  color: var(--ork-ink, #0B0710);
+}
+.caseXShot { margin: 0; }
+.caseXShot.isWide { grid-column: 1 / -1; }
+.caseXShot:nth-child(3n + 2).caseXReveal { transition-delay: 0s; }
+.caseXShot:nth-child(3n + 3).caseXReveal { transition-delay: .12s; }
+.caseXShotFrame {
+  --para: 0;
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border-radius: 48px;
+  background: #0B0710;
+  transform: scale(.9);
+  transition: transform 1.4s var(--ork-ease, cubic-bezier(.16,1,.3,1)), border-radius 1.4s var(--ork-ease, ease);
+  isolation: isolate;
+}
+.caseXShot.isWide .caseXShotFrame { aspect-ratio: 16 / 9; }
+.caseXShot.isIn .caseXShotFrame { transform: none; border-radius: clamp(14px, 1.4vw, 24px); }
+.caseXShotFrame img, .caseXShotFrame video {
+  position: absolute;
+  inset: -6% 0;
+  width: 100%;
+  height: 112%;
+  object-fit: cover;
+  transform: translate3d(0, calc(var(--para) * 5%), 0) scale(1.25);
+  transition: transform 1.6s var(--ork-ease, cubic-bezier(.16,1,.3,1));
+}
+.caseXShot.isIn .caseXShotFrame img, .caseXShot.isIn .caseXShotFrame video { transform: translate3d(0, calc(var(--para) * 5%), 0) scale(1.02); }
+.caseXShot figcaption {
+  display: flex;
+  gap: 14px;
+  margin-top: 14px;
+  font: 600 11px/1.3 "DM Sans", sans-serif;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+.caseXShot figcaption span { color: var(--ork-electric, #7C3CFF); }
+
+/* Next project */
+.caseXNext { --np: 0; position: relative; height: 210svh; background: var(--ork-ink, #0B0710); }
+.caseXNextPin { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+.caseXNextHit { position: absolute; inset: 0; padding: 0; border: 0; background: none; cursor: pointer; }
+.caseXNextMedia {
+  display: block;
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(calc((1 - var(--np)) * 24%) calc((1 - var(--np)) * 26%) calc((1 - var(--np)) * 24%) calc((1 - var(--np)) * 26%) round calc((1 - var(--np)) * 28px));
+}
+.caseXNextMedia img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(calc(1.3 - var(--np) * .3));
+  filter: grayscale(calc(1 - var(--np))) brightness(calc(.75 + var(--np) * .25));
+}
+.caseXNextCopy {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  transform: translateY(-50%) scale(calc(1 + var(--np) * .15));
+  pointer-events: none;
+  mix-blend-mode: difference;
+  color: #fff;
+  opacity: calc(1 - var(--np) * 1.2);
+}
+.caseXNextCopy span { font: 600 12px/1 "DM Sans", sans-serif; letter-spacing: .24em; text-transform: uppercase; }
+.caseXNextCopy strong { font: 400 clamp(60px, 11vw, 200px)/.9 Anton, Impact, sans-serif; text-transform: uppercase; text-align: center; }
+.caseXNextBar {
+  position: absolute;
+  left: 50%;
+  bottom: 9vh;
+  width: min(240px, 40vw);
+  height: 2px;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, .25);
+  opacity: calc(1 - var(--np) * 1.5);
+}
+.caseXNextBar i { display: block; height: 100%; background: #fff; transform-origin: left; transform: scaleX(var(--np)); }
+.caseXNextHint {
+  position: absolute;
+  left: 50%;
+  bottom: calc(9vh + 16px);
+  transform: translateX(-50%);
+  font: 600 10px/1 "DM Sans", sans-serif;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  opacity: calc(.7 - var(--np));
+}
+
+/* View transition: card → hero, next teaser → next hero */
+:root[data-case-transition]::view-transition-group(work-case-media) {
+  animation-duration: .9s;
+  animation-timing-function: cubic-bezier(.77, 0, .18, 1);
+}
+
+/* Cursor must stay above the experience */
+.editorialIdentity > .homeCursor { z-index: 3000; }
+
+@media (max-width: 760px) {
+  .caseXIntro { grid-template-columns: 1fr; }
+  .caseXGallery { grid-template-columns: 1fr; }
+  .caseXCount { display: none; }
+  .caseXScroll { display: none; }
+  .caseXNextMedia { clip-path: inset(calc((1 - var(--np)) * 28%) calc((1 - var(--np)) * 8%) calc((1 - var(--np)) * 28%) calc((1 - var(--np)) * 8%) round calc((1 - var(--np)) * 20px)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caseX, .caseXChar, .caseXKicker, .caseXScroll, .caseXScroll b { animation: none !important; opacity: 1; transform: none; }
+  .caseXReveal, .caseXShotFrame, .caseXShotFrame img, .caseXShotFrame video, .caseXHeroMedia img, .caseXHeroMedia video { transition: none !important; opacity: 1 !important; transform: none !important; }
+}
+
+/* No cropping: films keep 16:9 full width, square brand pieces sit in a 3-up grid at their real shape. */
+.caseXGallery { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.caseXShot.isWide { grid-column: 1 / -1; }
+.caseXShot.isTile { grid-column: span 2; }
+.caseXShot.isWide .caseXShotFrame { aspect-ratio: 16 / 9; }
+.caseXShot.isTile .caseXShotFrame { aspect-ratio: 1 / 1; }
+.caseXShotFrame img, .caseXShotFrame video { inset: 0; height: 100%; transform: scale(1.12); }
+.caseXShot.isIn .caseXShotFrame img, .caseXShot.isIn .caseXShotFrame video { transform: scale(1); }
+.caseXShot.isTile:nth-child(3n + 1).caseXReveal { transition-delay: 0s; }
+.caseXShot.isTile:nth-child(3n + 2).caseXReveal { transition-delay: .1s; }
+.caseXShot.isTile:nth-child(3n).caseXReveal { transition-delay: .2s; }
+@media (max-width: 760px) { .caseXShot.isTile { grid-column: span 3; } }
+/* Wide stills (web captures, product line-ups) keep their own proportions. */
+.caseXShot.isStill .caseXShotFrame { aspect-ratio: auto; }
+.caseXShot.isStill .caseXShotFrame img { position: relative; display: block; inset: auto; width: 100%; height: auto; }
+.caseXGallery.isPairs .caseXShot.isTile { grid-column: span 3; }

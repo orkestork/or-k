@@ -10,18 +10,16 @@ import {
   CardTitle,
 } from "@/components/work/ui/card";
 
-export const metadata: Metadata = { title: "Entrar · OR-K WORK" };
+export const metadata: Metadata = { title: "Entrar · O R-K WORK" };
 
 export default function LoginPage() {
   return (
     <main className="grid min-h-dvh place-items-center px-4 py-16">
       <div className="w-full max-w-sm">
         <div className="mb-8 flex items-center gap-3">
-          <span className="grid size-8 place-items-center rounded-md bg-primary text-sm font-bold text-primary-foreground">
-            O
-          </span>
+          <img src="/assets/brand/ork-app-icon.svg" alt="" aria-hidden="true" className="size-8 shrink-0 rounded-md" />
           <div className="leading-tight">
-            <p className="text-sm font-semibold tracking-tight">OR-K WORK</p>
+            <p className="text-sm font-semibold tracking-tight">O R-K WORK</p>
             <p className="text-xs text-muted-foreground">Operación interna</p>
           </div>
         </div>
@@ -30,7 +28,7 @@ export default function LoginPage() {
           <CardHeader>
             <CardTitle>Entrar</CardTitle>
             <CardDescription>
-              Acceso exclusivo para el equipo de OR-K.
+              Acceso exclusivo para el equipo de O R-K.
             </CardDescription>
           </CardHeader>
           <CardContent>

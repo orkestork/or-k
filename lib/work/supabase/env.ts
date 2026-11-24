@@ -1,5 +1,5 @@
 /**
- * Supabase environment access for the OR-K WORK module.
+ * Supabase environment access for the O R-K WORK module.
  * Centralised so the app degrades gracefully before the Supabase project
  * has been provisioned (env vars still missing).
  */

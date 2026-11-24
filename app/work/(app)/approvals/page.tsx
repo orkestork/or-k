@@ -12,7 +12,7 @@ import { EmptyState } from "@/components/work/shared/empty-state";
 import { RequestList } from "@/components/work/requests/request-list";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/work/ui/card";
 
-export const metadata: Metadata = { title: "Approvals · OR-K WORK" };
+export const metadata: Metadata = { title: "Approvals · O R-K WORK" };
 
 const REVIEW = ["copy_review", "creative_review", "account_review", "client_review"] as const;
 

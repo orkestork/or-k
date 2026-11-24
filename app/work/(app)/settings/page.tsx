@@ -9,7 +9,7 @@ import { PasswordForm, ProfileForm } from "@/components/work/settings/profile-fo
 import { AvatarUpload } from "@/components/work/settings/avatar-upload";
 import { NewMemberForm, TeamAdmin } from "@/components/work/settings/team-admin";
 
-export const metadata: Metadata = { title: "Settings · OR-K WORK" };
+export const metadata: Metadata = { title: "Settings · O R-K WORK" };
 
 export default async function SettingsPage() {
   const me = await getMe();

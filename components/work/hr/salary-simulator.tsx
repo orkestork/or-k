@@ -45,7 +45,7 @@ function salaryForBudget(budget: number, kind: Kind, risk: number, transport: bo
   return Math.floor(best / 1000) * 1000;
 }
 
-/** "If I offer X, what does it cost OR-K?" — and the reverse, from a budget. */
+/** "If I offer X, what does it cost O R-K?" — and the reverse, from a budget. */
 export function SalarySimulator({ params }: { params: PayrollParams }) {
   const [mode, setMode] = useState<"offer" | "budget">("offer");
   const [amount, setAmount] = useState(5_000_000);
@@ -86,7 +86,7 @@ export function SalarySimulator({ params }: { params: PayrollParams }) {
 
       <div className="grid gap-1">
         <Label htmlFor="sim-amount">
-          {mode === "offer" ? (kind === "services" ? "Honorarios mensuales" : "Salario mensual") : "Costo total mensual que puede asumir OR-K"}
+          {mode === "offer" ? (kind === "services" ? "Honorarios mensuales" : "Salario mensual") : "Costo total mensual que puede asumir O R-K"}
         </Label>
         <MoneyInput id="sim-amount" value={amount} onChange={setAmount} />
       </div>
@@ -127,7 +127,7 @@ export function SalarySimulator({ params }: { params: PayrollParams }) {
             </div>
           ) : null}
           <div className="flex items-baseline justify-between">
-            <span className="text-muted-foreground">Le cuesta a OR-K</span>
+            <span className="text-muted-foreground">Le cuesta a O R-K</span>
             <span className="text-xl font-semibold tabular-nums">{money(cost.company)}</span>
           </div>
           <div className="flex justify-between text-xs text-muted-foreground">

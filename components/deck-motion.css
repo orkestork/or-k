@@ -1,0 +1,59 @@
+/* /servicios deck — motion layer (components/deck-motion.ts) */
+
+/* Slides behave like cards while the rail moves: shrink + rounded corners, back to full when landed. */
+.deckRail.deckFx { background: #07050c; }
+.deckRail.deckFx > .deckSlide {
+  --pos: 0;
+  --apos: 0;
+  /* clip-path (not transform) so scroll-snap positions stay exact */
+  clip-path: inset(calc(var(--apos) * 6%) calc(var(--apos) * 5%) round calc(var(--apos) * 44px));
+}
+
+/* Image parallax: images lag behind their slide and settle with a slow zoom-out. */
+.deckRail.deckFx .deckCoverImage,
+.deckRail.deckFx .deckCapImage img {
+  transform: translate3d(calc(var(--pos) * -22%), 0, 0) scale(1.18);
+  transition: scale 1.8s cubic-bezier(.16, 1, .3, 1);
+}
+.deckRail.deckFx > .isActive .deckCoverImage,
+.deckRail.deckFx > .isActive .deckCapImage img { scale: .9; }
+
+/* Staggered reveal of every block in the landed slide. */
+.deckRail.deckFx .deckReveal {
+  opacity: 0;
+  transform: translate3d(0, 46px, 0);
+  transition: opacity .7s ease, transform 1.1s cubic-bezier(.16, 1, .3, 1);
+  transition-delay: 0s;
+}
+.deckRail.deckFx > .isActive .deckReveal {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(.12s + var(--r, 0) * .07s);
+}
+/* Big titles are uncovered from the bottom like a mask. */
+.deckRail.deckFx :is(h1, h2).deckReveal {
+  clip-path: inset(0 0 100% 0);
+  transform: translate3d(0, 60px, 0);
+  transition: clip-path 1.2s cubic-bezier(.77, 0, .18, 1), transform 1.2s cubic-bezier(.16, 1, .3, 1), opacity .3s;
+}
+.deckRail.deckFx > .isActive :is(h1, h2).deckReveal { clip-path: inset(-10% -5% -15% -5%); }
+
+/* Index: numbers roll on hover. */
+.deckRail.deckFx .deckIndex a { transition: transform .5s cubic-bezier(.16, 1, .3, 1); }
+.deckRail.deckFx .deckIndex a:hover { transform: translateY(-8px); }
+
+/* Capability image as a rounded liquid card bleeding off the right edge. */
+.deckRail.deckGL .deckCapImage { overflow: visible; }
+.deckRail.deckGL .deckCapImage > img { opacity: 0; }
+.deckLiquid { position: absolute; z-index: 1; left: -40px; top: calc(67px + 6vh - 40px); width: calc(100% + 40px); height: calc(100% - 67px - 12vh + 80px); pointer-events: none; }
+.deckRail.deckGL .deckCapImage { cursor: crosshair; }
+
+@media (max-width: 900px) {
+  .deckRail.deckFx > .deckSlide { clip-path: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deckRail.deckFx > .deckSlide { clip-path: none !important; }
+  .deckRail.deckFx .deckReveal { opacity: 1 !important; transform: none !important; clip-path: none !important; transition: none !important; }
+  .deckRail.deckFx .deckCoverImage, .deckRail.deckFx .deckCapImage img { transform: none !important; scale: 1 !important; }
+}

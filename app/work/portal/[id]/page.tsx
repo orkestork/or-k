@@ -18,7 +18,7 @@ import { cleanNote } from "@/lib/work/approvals";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  return { title: `${id} · OR-K` };
+  return { title: `${id} · O R-K` };
 }
 
 const STATUS_COPY: Record<ClientStage, string> = {

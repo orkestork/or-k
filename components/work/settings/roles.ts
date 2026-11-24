@@ -55,7 +55,7 @@ export const ROLE_LABEL: Record<RoleSlug, string> = {
   client: "Cliente",
 };
 
-/** What each role does inside OR-K WORK, in plain words. */
+/** What each role does inside O R-K WORK, in plain words. */
 export const ROLE_DUTIES: Record<RoleSlug, string[]> = {
   super_admin: [
     "Acceso total al workspace y a la configuración",

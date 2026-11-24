@@ -25,7 +25,7 @@ import { RemoveMemberButton } from "@/components/work/settings/team-admin";
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const u = await getUser(id);
-  return { title: `${u?.name ?? "Integrante"} · OR-K WORK` };
+  return { title: `${u?.name ?? "Integrante"} · O R-K WORK` };
 }
 
 export default async function TeamMemberPage({ params }: { params: Promise<{ id: string }> }) {

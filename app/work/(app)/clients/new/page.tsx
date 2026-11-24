@@ -6,7 +6,7 @@ import { EMPTY_BILLING, getUsers, requireManager } from "@/lib/work/data";
 import { PageHeader } from "@/components/work/shared/page-header";
 import { ClientForm } from "@/components/work/forms/client-form";
 
-export const metadata: Metadata = { title: "Nuevo cliente · OR-K WORK" };
+export const metadata: Metadata = { title: "Nuevo cliente · O R-K WORK" };
 
 export default async function NewClientPage() {
   await requireManager();

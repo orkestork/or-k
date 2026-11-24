@@ -81,7 +81,7 @@ export function CommandPalette({ canSeeAll = true, canSeeFinance = false }: { ca
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="overflow-hidden p-0 sm:max-w-xl" showCloseButton={false}>
-          <DialogTitle className="sr-only">Buscar en OR-K WORK</DialogTitle>
+          <DialogTitle className="sr-only">Buscar en O R-K WORK</DialogTitle>
           <DialogDescription className="sr-only">Solicitudes, clientes, proyectos, personas y páginas</DialogDescription>
           <Command shouldFilter={false}>
             <CommandInput

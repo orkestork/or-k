@@ -12,7 +12,7 @@ import { AssetDelete } from "@/components/work/assets/asset-delete";
 import { SearchFilter } from "@/components/work/shared/search-filter";
 import { clientOptions } from "@/components/work/shared/filter-options";
 
-export const metadata: Metadata = { title: "Assets · OR-K WORK" };
+export const metadata: Metadata = { title: "Assets · O R-K WORK" };
 
 export default async function AssetsPage({
   searchParams,

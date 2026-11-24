@@ -14,7 +14,7 @@ import { PendingRequests } from "@/components/work/hr/pending-requests";
 import { CONTRACT_LABEL, money } from "@/components/work/hr/labels";
 import { monthlyCost } from "@/lib/work/payroll";
 
-export const metadata: Metadata = { title: "Recursos humanos · OR-K WORK" };
+export const metadata: Metadata = { title: "Recursos humanos · O R-K WORK" };
 
 const ymd = (d: Date) => d.toLocaleDateString("en-CA");
 const day = (s: string) => new Date(`${s}T12:00:00`).toLocaleDateString("es", { day: "numeric", month: "short" });

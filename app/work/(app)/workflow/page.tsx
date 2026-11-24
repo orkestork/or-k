@@ -6,7 +6,7 @@ import { KanbanBoard } from "@/components/work/workflow/kanban-board";
 import { SearchFilter } from "@/components/work/shared/search-filter";
 import { clientOptions, peopleOptions } from "@/components/work/shared/filter-options";
 
-export const metadata: Metadata = { title: "Workflow · OR-K WORK" };
+export const metadata: Metadata = { title: "Workflow · O R-K WORK" };
 
 export default async function WorkflowPage({
   searchParams,

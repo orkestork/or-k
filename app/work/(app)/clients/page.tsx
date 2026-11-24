@@ -18,7 +18,7 @@ import { ClientActiveToggle } from "@/components/work/clients/client-active-togg
 import { cn } from "@/lib/work/utils";
 import { Plus, Users } from "lucide-react";
 
-export const metadata: Metadata = { title: "Clients · OR-K WORK" };
+export const metadata: Metadata = { title: "Clients · O R-K WORK" };
 
 export default async function ClientsPage({ searchParams }: { searchParams: Promise<{ show?: string }> }) {
   const showInactive = (await searchParams).show === "inactive";
@@ -37,7 +37,7 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
     <div className="mx-auto max-w-7xl">
       <PageHeader
         title="Clientes"
-        description={showInactive ? "Clientes inactivos: conservan su historial, pero no aparecen al crear proyectos o solicitudes." : "Cuentas activas de OR-K."}
+        description={showInactive ? "Clientes inactivos: conservan su historial, pero no aparecen al crear proyectos o solicitudes." : "Cuentas activas de O R-K."}
         actions={
           canManage ? <Button size="sm" asChild>
             <Link href="/work/clients/new">

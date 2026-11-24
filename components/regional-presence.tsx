@@ -13,8 +13,8 @@ const countries = [
 
 export default function RegionalPresence() {
   return (
-    <section className="regionalPresence" aria-label="Presencia de OR-K en Latinoamérica">
-      <div className="regionalBannerLabel"><span>OR-K</span> Sin fronteras <b aria-hidden="true">↗</b></div>
+    <section className="regionalPresence" aria-label="Presencia de O R-K en Latinoamérica">
+      <div className="regionalBannerLabel"><span>O R-K</span> Sin fronteras <b aria-hidden="true">↗</b></div>
       <div className="regionalMarquee">
         <div className="regionalTrack">
           {[0, 1].map(copy => (

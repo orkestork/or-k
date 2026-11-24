@@ -5,7 +5,7 @@ import { getProjects } from "@/lib/work/data";
 import { Card } from "@/components/work/ui/card";
 import { IntakeForm } from "@/components/work/portal/intake-form";
 
-export const metadata: Metadata = { title: "Nueva solicitud · OR-K" };
+export const metadata: Metadata = { title: "Nueva solicitud · O R-K" };
 
 export default async function PortalNewRequest() {
   // RLS returns only this client's projects.
@@ -18,7 +18,7 @@ export default async function PortalNewRequest() {
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Pedir algo nuevo</h1>
         <p className="text-sm text-muted-foreground">
-          Llega directo al equipo de OR-K. Tu responsable de cuenta la revisa y te confirma tiempos.
+          Llega directo al equipo de O R-K. Tu responsable de cuenta la revisa y te confirma tiempos.
         </p>
       </div>
       <Card className="p-5">

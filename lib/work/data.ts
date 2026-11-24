@@ -1,4 +1,4 @@
-/* Data access for OR-K WORK.
+/* Data access for O R-K WORK.
    Reads and writes Supabase as the signed-in user (RLS decides what they can
    touch). Before Supabase is configured every call falls back to the
    in-memory mock so the UI keeps rendering in preview mode. */

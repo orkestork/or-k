@@ -12,7 +12,7 @@ import { EmptyState } from "@/components/work/shared/empty-state";
 import { PersonAvatar } from "@/components/work/shared/people";
 import { clientActivity, clientProgress, clientStage, clientStatus } from "@/components/work/portal/client-status";
 
-export const metadata: Metadata = { title: "Tu proyecto · OR-K" };
+export const metadata: Metadata = { title: "Tu proyecto · O R-K" };
 
 const day = (iso: string) => new Date(iso).toLocaleDateString("es", { day: "numeric", month: "short" });
 const ymd = (iso: string) => new Date(iso).toLocaleDateString("en-CA");
@@ -52,7 +52,7 @@ export default async function PortalHome() {
         <EmptyState
           icon={Inbox}
           title="Todavía no hay trabajo en curso"
-          description="Aquí verás el avance de tus proyectos en cuanto el equipo de OR-K los comparta contigo."
+          description="Aquí verás el avance de tus proyectos en cuanto el equipo de O R-K los comparta contigo."
         />
       </div>
     );
@@ -143,7 +143,7 @@ export default async function PortalHome() {
         <aside className="flex flex-col gap-4">
           {/* Team */}
           <Card className="gap-3 p-4">
-            <p className="text-sm font-medium">Tu equipo en OR-K</p>
+            <p className="text-sm font-medium">Tu equipo en O R-K</p>
             {manager ? <Contact person={manager} role="Responsable de cuenta" /> : null}
             {[...new Set(activeProjects.map((p) => p.leadId))]
               .filter((id) => id && id !== manager?.id)
@@ -209,7 +209,7 @@ function Greeting({ name, clientName }: { name: string; clientName: string }) {
         <h1 className="text-2xl font-semibold tracking-tight">
           {hello}, {name.split(" ")[0]}
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">Así va tu trabajo con OR-K.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Así va tu trabajo con O R-K.</p>
       </div>
       <Button size="sm" asChild>
         <Link href="/work/portal/new">

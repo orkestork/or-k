@@ -13,7 +13,7 @@ import { HrProfileForm } from "@/components/work/hr/hr-profile-form";
 import { HrDocuments } from "@/components/work/hr/hr-documents";
 import { CONTRACT_LABEL, money, PERIOD_LABEL } from "@/components/work/hr/labels";
 
-export const metadata: Metadata = { title: "Ficha de empleado · OR-K WORK" };
+export const metadata: Metadata = { title: "Ficha de empleado · O R-K WORK" };
 
 export default async function HrFilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

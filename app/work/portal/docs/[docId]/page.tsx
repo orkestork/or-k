@@ -7,7 +7,7 @@ import { relativeTime } from "@/lib/work/format";
 import { Card } from "@/components/work/ui/card";
 import { Markdown } from "@/components/work/docs/markdown";
 
-export const metadata: Metadata = { title: "Documento · OR-K" };
+export const metadata: Metadata = { title: "Documento · O R-K" };
 
 export default async function PortalDocPage({ params }: { params: Promise<{ docId: string }> }) {
   const { docId } = await params;

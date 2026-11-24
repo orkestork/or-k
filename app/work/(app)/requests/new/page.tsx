@@ -8,7 +8,7 @@ import { NewRequestForm } from "@/components/work/forms/new-request-form";
 import { Card, CardContent } from "@/components/work/ui/card";
 import { Button } from "@/components/work/ui/button";
 
-export const metadata: Metadata = { title: "Nueva solicitud · OR-K WORK" };
+export const metadata: Metadata = { title: "Nueva solicitud · O R-K WORK" };
 
 export default async function NewRequestPage({
   searchParams,

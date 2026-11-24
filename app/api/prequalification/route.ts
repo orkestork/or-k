@@ -21,13 +21,13 @@ export async function POST(request:Request) {
     const resend=new Resend(apiKey);
     const recipient=process.env.ORCA_LEADS_EMAIL??"or-kk@outlook.com";
     const sendingDomain=process.env.RESEND_EMAIL_DOMAIN??"or-k.co";
-    const from=process.env.RESEND_FROM_EMAIL??`OR-K <formularios@${sendingDomain}>`;
+    const from=process.env.RESEND_FROM_EMAIL??`O R-K <formularios@${sendingDomain}>`;
     const {data,error}=await resend.emails.send({
       from,
       to:[recipient],
       replyTo:answers.email,
-      subject:`Preclasificación OR-K: ${answers.company} - ${result.compatibility}`,
-      html:`<div style="font-family:Arial,sans-serif;color:#111;max-width:620px"><p style="color:#ec007c;font-size:12px;letter-spacing:.12em">NUEVA PRECLASIFICACIÓN OR-K</p><h1>${escapeHtml(answers.company)}</h1><p><strong>Razón social:</strong> ${escapeHtml(answers.legalName)}</p><p><strong>Ubicación:</strong> ${escapeHtml(answers.location)}</p><p><strong>Compatibilidad:</strong> ${result.compatibility} (${result.total}/100)</p><p><strong>Clasificación:</strong> ${result.companyClass}</p><p><strong>Contacto:</strong> ${escapeHtml(answers.contact)} · ${escapeHtml(answers.email)}</p><p><strong>WhatsApp:</strong> ${escapeHtml(answers.whatsapp)}</p>${research?`<p><strong>Investigación pública:</strong> incluida en el PDF con ${research.sources.length} fuente(s).</p><p><strong>Ingresos anuales estimados:</strong> ${escapeHtml(research.estimatedAnnualRevenue)} <em>(estimación no confirmada)</em></p>`:`<p><strong>Investigación pública:</strong> no disponible; se adjunta el reporte de preclasificación.</p>`}<p>El reporte completo está adjunto en PDF.</p></div>`,
+      subject:`Preclasificación O R-K: ${answers.company} - ${result.compatibility}`,
+      html:`<div style="font-family:Arial,sans-serif;color:#0B0710;max-width:620px"><p style="color:#4B1F8C;font-size:12px;letter-spacing:.12em">NUEVA PRECLASIFICACIÓN O R-K</p><h1>${escapeHtml(answers.company)}</h1><p><strong>Razón social:</strong> ${escapeHtml(answers.legalName)}</p><p><strong>Ubicación:</strong> ${escapeHtml(answers.location)}</p><p><strong>Compatibilidad:</strong> ${result.compatibility} (${result.total}/100)</p><p><strong>Clasificación:</strong> ${result.companyClass}</p><p><strong>Contacto:</strong> ${escapeHtml(answers.contact)} · ${escapeHtml(answers.email)}</p><p><strong>WhatsApp:</strong> ${escapeHtml(answers.whatsapp)}</p>${research?`<p><strong>Investigación pública:</strong> incluida en el PDF con ${research.sources.length} fuente(s).</p><p><strong>Ingresos anuales estimados:</strong> ${escapeHtml(research.estimatedAnnualRevenue)} <em>(estimación no confirmada)</em></p>`:`<p><strong>Investigación pública:</strong> no disponible; se adjunta el reporte de preclasificación.</p>`}<p>El reporte completo está adjunto en PDF.</p></div>`,
       attachments:[{filename:`or-k-preclasificacion-${slug(answers.company)}.pdf`,content:Buffer.from(bytes)}],
     });
     if(error) return NextResponse.json({error:"No fue posible enviar el reporte"},{status:502});

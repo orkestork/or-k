@@ -1,0 +1,299 @@
+.homeShowreel {
+  position: relative;
+  padding: clamp(52px, 8vw, 120px) clamp(18px, 4.5vw, 90px);
+  background: radial-gradient(ellipse at 45% 28%, #271844, transparent 62%), var(--ork-ink);
+  color: var(--ork-paper);
+  scroll-margin-top: 76px;
+}
+
+.homeReelStage {
+  position: relative;
+  width: min(100%, 1620px);
+  margin-inline: auto;
+}
+
+.homeReelCredit {
+  width: min(100%, 1620px);
+  margin: 16px auto 0;
+  text-align: right;
+  color: #d8cce6;
+  font-size: .75rem;
+  line-height: 1.5;
+}
+
+.homeReelCredit a { text-decoration: underline; text-underline-offset: .22em; }
+
+.homeReelScreen {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  max-height: 78svh;
+  overflow: hidden;
+  isolation: isolate;
+  background: #10091c;
+  box-shadow: 0 2px 0 #9b6bd6, 0 30px 80px #07050cb3;
+}
+
+.homeReelScreen > video,
+.homeReelPlayback > video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.homeReelScreen > video { transform-origin: 50% 45%; }
+
+.homeReelLaunch {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  border: 0;
+  background: linear-gradient(0deg, #10091c66, #10091c1a 70%);
+  color: #fff;
+  cursor: pointer;
+}
+
+.homeReelLaunch:focus-visible {
+  outline: 2px solid #e5d4ff;
+  outline-offset: -6px;
+}
+
+.homeReelLaunchLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 13px;
+  padding: 12px 20px;
+  min-height: 55px;
+  border: 1px solid #e9e1d680;
+  background: #10091ce6;
+  font: 600 clamp(.72rem, 1.1vw, .9rem)/1.2 "DM Sans", sans-serif;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  transition: background .24s ease, border-color .24s ease, scale .3s var(--ork-ease);
+}
+
+.homeReelLaunchLabel > i {
+  width: 13px;
+  height: 14px;
+  flex: 0 0 13px;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  background: #e5d4ff;
+}
+
+.homeReelLaunch:hover .homeReelLaunchLabel,
+.homeReelLaunch:focus-visible .homeReelLaunchLabel {
+  border-color: #e5d4ff;
+  background: #4b1f8c;
+  scale: 1.06;
+}
+
+.homeReelOverlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: #0b0710;
+  color: var(--ork-paper);
+  cursor: auto;
+}
+
+.homeReelOverlay[open] { display: grid; }
+.homeReelOverlay::backdrop { background: #0b0710; }
+
+.homeReelPlayback { min-height: 0; }
+.homeReelPlayback > video { object-fit: contain; background: #0b0710; }
+
+.homeReelClose {
+  position: absolute;
+  z-index: 1;
+  top: max(16px, env(safe-area-inset-top));
+  right: max(16px, env(safe-area-inset-right));
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  min-height: 44px;
+  color: var(--ork-paper);
+  background: #10091cee;
+  border: 1px solid #e9e1d680;
+  cursor: pointer;
+  font: 600 .7rem/1.2 "DM Sans", sans-serif;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.homeReelClose:focus-visible { outline: 2px solid #e5d4ff; outline-offset: 3px; }
+.homeReelClose span { font-size: 1.35rem; line-height: .72; }
+
+:root[data-reel-transition] .homeShowreel:not(:has(.homeReelOverlay[open])) .homeReelScreen,
+:root[data-reel-transition] .homeReelOverlay[open] .homeReelPlayback {
+  view-transition-name: ork-reel-screen;
+}
+
+:root[data-reel-transition]::view-transition-group(ork-reel-screen) {
+  animation-duration: .68s;
+  animation-timing-function: var(--ork-ease);
+  z-index: 1;
+}
+
+:root[data-reel-transition]::view-transition-old(root),
+:root[data-reel-transition]::view-transition-new(root) { animation-duration: .32s; }
+
+@media (max-width: 680px) {
+  .homeShowreel { padding-block: 46px; }
+  .homeReelScreen { aspect-ratio: 16 / 10; --reel-scale: .88; --reel-tilt: -10deg; }
+  .homeReelLaunchLabel { min-height: 44px; padding: 9px 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .homeReelLaunchLabel { transition: none; }
+  .homeReelLaunch:hover .homeReelLaunchLabel,
+  .homeReelLaunch:focus-visible .homeReelLaunchLabel { scale: none; }
+}
+
+/* ---- Lusion-style expanding reel ---- */
+.homeShowreel {
+  --reel-e: 0;
+  --reel-k: calc(1 - var(--reel-e));
+  height: 260svh;
+  padding: 0;
+  background: var(--ork-ink);
+}
+
+.homeReelPin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.homeReelStage {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  z-index: 1;
+}
+
+.homeShowreel .homeReelScreen {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+  max-height: none;
+  box-shadow: none;
+  background: transparent;
+  --reel-top: calc(var(--reel-k) * 40%);
+  --reel-right: calc(var(--reel-k) * 48%);
+  --reel-bottom: calc(var(--reel-k) * 9%);
+  --reel-left: calc(var(--reel-k) * 4.5%);
+  clip-path: inset(var(--reel-top) var(--reel-right) var(--reel-bottom) var(--reel-left) round calc(var(--reel-k) * 26px));
+  will-change: clip-path;
+}
+
+.homeShowreel .homeReelScreen > video {
+  transform: scale(calc(1.18 - var(--reel-e) * .18));
+  transform-origin: 30% 70%;
+  filter: grayscale(var(--reel-k)) contrast(calc(1 + var(--reel-k) * .15));
+  will-change: transform;
+}
+
+.homeReelTint {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, #7C3CFF, #4B1F8C);
+  mix-blend-mode: screen;
+  opacity: max(0, calc(1 - var(--reel-e) * 1.35));
+}
+
+.homeShowreel .homeReelLaunch {
+  inset: var(--reel-top) var(--reel-right) var(--reel-bottom) var(--reel-left);
+  background: linear-gradient(0deg, rgba(16,9,28, calc(var(--reel-e) * .45)), transparent 60%);
+}
+
+.homeReelRing {
+  position: absolute;
+  z-index: 0;
+  left: -6vw;
+  top: 4svh;
+  width: min(62vw, 92svh);
+  aspect-ratio: 1;
+  overflow: visible;
+  pointer-events: none;
+  transform: rotate(calc(-40deg + var(--reel-e) * 140deg)) scale(calc(1 + var(--reel-e) * 1.8));
+  opacity: max(0, calc(1 - var(--reel-e) * 1.6));
+}
+
+.homeReelRing circle {
+  fill: none;
+  stroke: #7C3CFF;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-dasharray: 289;
+  stroke-dashoffset: 289;
+}
+
+.homeShowreel .homeReelCredit {
+  position: absolute;
+  right: clamp(18px, 4.5vw, 90px);
+  bottom: 18px;
+  margin: 0;
+  width: auto;
+  z-index: 2;
+}
+
+@media (max-width: 680px) {
+  .homeShowreel { height: 220svh; padding: 0; }
+  .homeShowreel .homeReelScreen {
+    --reel-top: calc(var(--reel-k) * 34%);
+    --reel-right: calc(var(--reel-k) * 5%);
+    --reel-bottom: calc(var(--reel-k) * 30%);
+    --reel-left: calc(var(--reel-k) * 5%);
+  }
+  .homeReelRing { width: 110vw; left: -30vw; top: 18svh; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .homeShowreel { height: auto; --reel-e: 1; }
+  .homeReelPin { position: relative; height: auto; aspect-ratio: 16 / 9; max-height: 90svh; }
+  .homeReelRing { display: none; }
+}
+
+/* WebGL liquid version */
+.homeReelCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  display: none;
+}
+.homeShowreel.isGL .homeReelCanvas { display: block; }
+.homeShowreel.isGL .homeReelStage { z-index: 2; }
+.homeShowreel.isGL .homeReelScreen { clip-path: none; }
+.homeShowreel.isGL .homeReelScreen > video { opacity: 0; }
+.homeShowreel.isGL .homeReelTint { display: none; }
+.homeShowreel.isGL .homeReelLaunch { background: none; }
+
+.homeReelRing circle { stroke: url(#homeReelRingGradient); }
+
+/* YouTube fallback for the Huella reel (CSS expansion, no shader) */
+.homeReelYT { position: absolute; inset: 0; overflow: hidden; pointer-events: none; background: #0b0710; }
+.homeReelYT iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100vw, 177.78svh);
+  height: max(100svh, 56.25vw);
+  border: 0;
+  transform: translate(-50%, -50%) scale(calc(1.18 - var(--reel-e) * .18));
+  filter: grayscale(var(--reel-k)) contrast(calc(1 + var(--reel-k) * .15));
+}
+.homeReelYTFull { display: block; width: 100%; height: 100%; border: 0; background: #0b0710; }

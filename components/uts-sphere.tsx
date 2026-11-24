@@ -26,8 +26,8 @@ export default function UtsSphere({activeAxis}:{activeAxis:Axis|null}) {
     scene.add(sphereGroup);
     const geometry = new THREE.SphereGeometry(3, 48, 32);
     const material = new THREE.MeshPhysicalMaterial({
-      color: "#351049",
-      emissive: "#160622",
+      color: "#2A1450",
+      emissive: "#0B0710",
       emissiveIntensity: 0.5,
       metalness: 0.72,
       roughness: 0.18,
@@ -40,7 +40,7 @@ export default function UtsSphere({activeAxis}:{activeAxis:Axis|null}) {
     const interactionMaterial=new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,colorWrite:false});
     const interactionSphere=new THREE.Mesh(geometry,interactionMaterial);
     sphereGroup.add(interactionSphere);
-    const wireMaterial = new THREE.MeshBasicMaterial({color:0xff2689,wireframe:true,transparent:true,opacity:0.045});
+    const wireMaterial = new THREE.MeshBasicMaterial({color:0x7C3CFF,wireframe:true,transparent:true,opacity:0.045});
     const wireSphere = new THREE.Mesh(geometry, wireMaterial);
     wireSphere.scale.setScalar(1.006);
 
@@ -49,7 +49,7 @@ export default function UtsSphere({activeAxis}:{activeAxis:Axis|null}) {
       depthWrite:false,
       blending:THREE.AdditiveBlending,
       side:THREE.BackSide,
-      uniforms:{glowColor:{value:new THREE.Color(0xe31572)}},
+      uniforms:{glowColor:{value:new THREE.Color(0x7C3CFF)}},
       vertexShader:`varying vec3 vNormal; varying vec3 vView; void main(){vec4 mv=modelViewMatrix*vec4(position,1.0);vNormal=normalize(normalMatrix*normal);vView=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}`,
       fragmentShader:`uniform vec3 glowColor; varying vec3 vNormal; varying vec3 vView; void main(){float fresnel=pow(1.0-abs(dot(vNormal,vView)),2.35);gl_FragColor=vec4(glowColor,fresnel*.42);}`,
     });
@@ -60,7 +60,7 @@ export default function UtsSphere({activeAxis}:{activeAxis:Axis|null}) {
       transparent:true,
       depthWrite:false,
       blending:THREE.AdditiveBlending,
-      uniforms:{time:{value:0},scanColor:{value:new THREE.Color(0xff2689)}},
+      uniforms:{time:{value:0},scanColor:{value:new THREE.Color(0x7C3CFF)}},
       vertexShader:`varying vec3 vObjectPosition; varying vec3 vNormal; varying vec3 vView; void main(){vObjectPosition=position;vec4 mv=modelViewMatrix*vec4(position,1.0);vNormal=normalize(normalMatrix*normal);vView=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}`,
       fragmentShader:`uniform float time; uniform vec3 scanColor; varying vec3 vObjectPosition; varying vec3 vNormal; varying vec3 vView; void main(){float fresnel=pow(1.0-abs(dot(vNormal,vView)),2.0);float wave=sin(vObjectPosition.y*25.0-time*3.2)*.5+.5;float band=smoothstep(.9,1.0,wave);float sweep=smoothstep(.0,.12,abs(fract(vObjectPosition.y*.13-time*.08)-.5));float alpha=fresnel*.08+band*.04+sweep*.008;gl_FragColor=vec4(scanColor,alpha);}`,
     });
@@ -73,7 +73,7 @@ export default function UtsSphere({activeAxis}:{activeAxis:Axis|null}) {
     const topologyIndex=topologyGeometry.getIndex();
     const nodeCount=topologyPositions.count;
     let randomSeed=721347;
-    const seededRandom=()=>{randomSeed|=0;randomSeed=randomSeed+0x6D2B79F5|0;let value=Math.imul(randomSeed^randomSeed>>>15,1|randomSeed);value=value+Math.imul(value^value>>>7,61|value)^value;return ((value^value>>>14)>>>0)/4294967296;};
+    const seededRandom=()=>{randomSeed|=0;randomSeed=randomSeed+0x4B1F8CF5|0;let value=Math.imul(randomSeed^randomSeed>>>15,1|randomSeed);value=value+Math.imul(value^value>>>7,61|value)^value;return ((value^value>>>14)>>>0)/4294967296;};
     for(let index=0;index<nodeCount;index++){
       const direction=new THREE.Vector3().fromBufferAttribute(topologyPositions,index).normalize();
       direction.x+=(seededRandom()-.5)*.035;
@@ -129,11 +129,11 @@ export default function UtsSphere({activeAxis}:{activeAxis:Axis|null}) {
     }
     const particleGeometry=new THREE.BufferGeometry();
     particleGeometry.setAttribute("position",new THREE.Float32BufferAttribute(particlePositions,3));
-    const particleMaterial=new THREE.PointsMaterial({color:0x9c6be3,size:.032,transparent:true,opacity:.48,blending:THREE.AdditiveBlending,depthWrite:false});
+    const particleMaterial=new THREE.PointsMaterial({color:0xBDA5FF,size:.032,transparent:true,opacity:.48,blending:THREE.AdditiveBlending,depthWrite:false});
     const particleField=new THREE.Points(particleGeometry,particleMaterial);
     sphereGroup.add(particleField);
 
-    const orbitMaterials = [0xe31572,0x8d54d8,0xff6f9f].map((color,index)=>new THREE.MeshBasicMaterial({color,transparent:true,opacity:index===2?.4:.56}));
+    const orbitMaterials = [0x7C3CFF,0x7C3CFF,0xBDA5FF].map((color,index)=>new THREE.MeshBasicMaterial({color,transparent:true,opacity:index===2?.4:.56}));
     const orbitGeometries = [3.72,3.95,4.18].map(radius=>new THREE.TorusGeometry(radius,.018,8,160));
     const orbits = orbitGeometries.map((orbitGeometry,index)=>{
       const orbit=new THREE.Mesh(orbitGeometry,orbitMaterials[index]);
@@ -142,7 +142,7 @@ export default function UtsSphere({activeAxis}:{activeAxis:Axis|null}) {
       return orbit;
     });
     const satelliteGeometry=new THREE.SphereGeometry(.09,16,16);
-    const satelliteMaterials=[0xff2689,0xa56dff,0xff6f9f].map(color=>new THREE.MeshBasicMaterial({color,transparent:true,opacity:.95,blending:THREE.AdditiveBlending}));
+    const satelliteMaterials=[0x7C3CFF,0xBDA5FF,0xBDA5FF].map(color=>new THREE.MeshBasicMaterial({color,transparent:true,opacity:.95,blending:THREE.AdditiveBlending}));
     const satellites=orbits.map((orbit,index)=>{
       const satellite=new THREE.Mesh(satelliteGeometry,satelliteMaterials[index]);
       orbit.add(satellite);
@@ -163,8 +163,8 @@ export default function UtsSphere({activeAxis}:{activeAxis:Axis|null}) {
       context.roundRect(35,10,122,76,18);
       context.fill();
       context.stroke();
-      context.fillStyle="#b9b4bf";
-      context.font="700 52px Arial";
+      context.fillStyle="#E9E1D6";
+      context.font="600 52px 'DM Sans', Arial";
       context.textAlign="center";
       context.textBaseline="middle";
       context.fillText(label,96,50);
@@ -179,9 +179,9 @@ export default function UtsSphere({activeAxis}:{activeAxis:Axis|null}) {
       axisTextures.push(texture);
       axisMaterials.push(labelMaterial);
     };
-    makeAxisLabel("X","#66507e",new THREE.Vector3(3.55,.15,.7));
-    makeAxisLabel("Y","#ff6f9f",new THREE.Vector3(-.3,2.85,.75));
-    makeAxisLabel("Z","#8d315e",new THREE.Vector3(-2.85,-1.45,1.35));
+    makeAxisLabel("X","#4B1F8C",new THREE.Vector3(3.55,.15,.7));
+    makeAxisLabel("Y","#7C3CFF",new THREE.Vector3(-.3,2.85,.75));
+    makeAxisLabel("Z","#BDA5FF",new THREE.Vector3(-2.85,-1.45,1.35));
 
     const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
     camera.position.z = 14.5;
@@ -190,7 +190,7 @@ export default function UtsSphere({activeAxis}:{activeAxis:Axis|null}) {
     const keyLight = new THREE.PointLight(0xffffff, 34, 100);
     keyLight.position.set(3, 7, 9);
     scene.add(keyLight);
-    const rimLight = new THREE.PointLight(0x6f35b5, 34, 100);
+    const rimLight = new THREE.PointLight(0x4B1F8C, 34, 100);
     rimLight.position.set(-7, -2, 4);
     scene.add(rimLight);
     scene.add(new THREE.AmbientLight(0xffffff, 0.35));
@@ -282,10 +282,10 @@ export default function UtsSphere({activeAxis}:{activeAxis:Axis|null}) {
 
     let frame = 0;
     const startedAt=performance.now();
-    const baseCoreColor=new THREE.Color(0x17131e);
+    const baseCoreColor=new THREE.Color(0x0B0710);
     const baseWireColor=new THREE.Color(0x746a80);
-    const axisCoreColors={Z:new THREE.Color(0x70002f),X:new THREE.Color(0x321060),Y:new THREE.Color(0x6e1f3c)};
-    const axisWireColors={Z:new THREE.Color(0xff1681),X:new THREE.Color(0xa56dff),Y:new THREE.Color(0xff6f9f)};
+    const axisCoreColors={Z:new THREE.Color(0x2A1450),X:new THREE.Color(0x2A1450),Y:new THREE.Color(0x4B1F8C)};
+    const axisWireColors={Z:new THREE.Color(0x7C3CFF),X:new THREE.Color(0xBDA5FF),Y:new THREE.Color(0xBDA5FF)};
     const labelAxes:Axis[]=["X","Y","Z"];
     const orbitAxisIndexes:Record<Axis,number>={Z:0,X:1,Y:2};
     const render = () => {

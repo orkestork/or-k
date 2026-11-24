@@ -30,7 +30,7 @@ export function AppDialog({ app }: { app?: FinApp }) {
   const [open, setOpen] = useState(false);
   const { pending, run } = useRun();
   const [v, setV] = useState<Omit<FinApp, "id">>(
-    app ?? { name: "", description: "", status: "building", launchOn: null, monthlyCost: 0, accentColor: "#e31572" },
+    app ?? { name: "", description: "", status: "building", launchOn: null, monthlyCost: 0, accentColor: "#4B1F8C" },
   );
   const set = <K extends keyof typeof v>(k: K, x: (typeof v)[K]) => setV((o) => ({ ...o, [k]: x }));
 
@@ -54,7 +54,7 @@ export function AppDialog({ app }: { app?: FinApp }) {
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="sm:col-span-2">
             <F label="Nombre" htmlFor="app-name">
-              <Input id="app-name" value={v.name} onChange={(e) => set("name", e.target.value)} placeholder="Ej. OR-K CRM" />
+              <Input id="app-name" value={v.name} onChange={(e) => set("name", e.target.value)} placeholder="Ej. O R-K CRM" />
             </F>
           </div>
           <F label="Estado" htmlFor="app-status">

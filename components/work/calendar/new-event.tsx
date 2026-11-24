@@ -51,7 +51,7 @@ export function NewEventButton({ clients }: { clients: Client[] }) {
             </SelectField>
           </div>
           <SelectField name="clientId" label="Cliente">
-            <option value="">Interno OR-K</option>
+            <option value="">Interno O R-K</option>
             {clients.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}

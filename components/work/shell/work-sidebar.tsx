@@ -25,10 +25,8 @@ export function WorkSidebar({
   return (
     <div className={cn("flex h-full flex-col bg-sidebar", className)}>
       <div className="flex h-14 items-center gap-2.5 px-4">
-        <span className="grid size-7 place-items-center rounded-md bg-primary text-xs font-bold text-primary-foreground">
-          O
-        </span>
-        <span className="text-sm font-semibold tracking-tight">OR-K WORK</span>
+        <img src="/assets/brand/ork-app-icon.svg" alt="" aria-hidden="true" className="size-7 shrink-0 rounded-md" />
+        <span className="text-sm font-semibold tracking-tight">O R-K WORK</span>
       </div>
 
       <div className="flex-1 overflow-y-auto px-2 py-2">

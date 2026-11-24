@@ -7,7 +7,7 @@ import { relativeTime } from "@/lib/work/format";
 import { ClientMark } from "@/components/work/shared/page-header";
 import { DocEditor } from "@/components/work/docs/doc-editor";
 
-export const metadata: Metadata = { title: "Documento · OR-K WORK" };
+export const metadata: Metadata = { title: "Documento · O R-K WORK" };
 
 export default async function ClientDocPage({ params }: { params: Promise<{ id: string; docId: string }> }) {
   const { id, docId } = await params;

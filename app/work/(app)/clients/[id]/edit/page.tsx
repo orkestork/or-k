@@ -9,7 +9,7 @@ import { Card } from "@/components/work/ui/card";
 import { PageHeader } from "@/components/work/shared/page-header";
 import { ClientForm } from "@/components/work/forms/client-form";
 
-export const metadata: Metadata = { title: "Editar cliente · OR-K WORK" };
+export const metadata: Metadata = { title: "Editar cliente · O R-K WORK" };
 
 export default async function EditClientPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

@@ -7,7 +7,7 @@ import { supabaseConfigured } from "@/lib/work/supabase/env";
 import { SearchFilter } from "@/components/work/shared/search-filter";
 import { clientOptions } from "@/components/work/shared/filter-options";
 
-export const metadata: Metadata = { title: "Calendar · OR-K WORK" };
+export const metadata: Metadata = { title: "Calendar · O R-K WORK" };
 
 export default async function CalendarPage({ searchParams }: { searchParams: Promise<{ client?: string }> }) {
   const sp = await searchParams;

@@ -12,7 +12,7 @@ import { MetricCard } from "@/components/work/shared/metric-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/work/ui/card";
 import type { Request } from "@/types/work/domain";
 
-export const metadata: Metadata = { title: "Insights · OR-K WORK" };
+export const metadata: Metadata = { title: "Insights · O R-K WORK" };
 
 const isActive = (r: Request) => !["completed", "archived"].includes(r.state);
 const isDone = (r: Request) => ["completed", "published"].includes(r.state);

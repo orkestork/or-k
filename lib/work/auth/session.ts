@@ -15,7 +15,7 @@ export type WorkUser = {
 };
 
 /**
- * Returns the current OR-K WORK user from their profile.
+ * Returns the current O R-K WORK user from their profile.
  * While Supabase is not provisioned this resolves to the mock session user so
  * the whole app behaves "as if" someone is signed in.
  */

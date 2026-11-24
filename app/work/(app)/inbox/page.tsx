@@ -8,7 +8,7 @@ import { MarkAllRead } from "@/components/work/shared/mark-read";
 import { NOTIFICATION_ICON } from "@/components/work/shared/notification-icons";
 import { NotificationLink } from "@/components/work/shared/notification-link";
 
-export const metadata: Metadata = { title: "Inbox · OR-K WORK" };
+export const metadata: Metadata = { title: "Inbox · O R-K WORK" };
 
 export default async function InboxPage() {
   const notifications = await getNotifications();

@@ -13,7 +13,7 @@ import { Button } from "@/components/work/ui/button";
 import { EmptyState } from "@/components/work/shared/empty-state";
 import { FolderKanban, Plus } from "lucide-react";
 
-export const metadata: Metadata = { title: "Projects · OR-K WORK" };
+export const metadata: Metadata = { title: "Projects · O R-K WORK" };
 
 const STATUS_LABEL = { active: "Activo", on_hold: "En pausa", closed: "Cerrado" } as const;
 

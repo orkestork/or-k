@@ -1,12 +1,22 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Anton, DM_Sans, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/work/theme/theme-provider";
 import { THEME_BOOTSTRAP } from "@/components/work/theme/theme";
 import "./work.css";
 
-const geistSans = Geist({
+// Tipografías de marca (Manual de identidad 2026): DM Sans para interfaz,
+// Anton para titulares.
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-geist-sans",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-dm-sans",
+  display: "swap",
+});
+
+const anton = Anton({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-anton",
   display: "swap",
 });
 
@@ -17,13 +27,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "OR-K WORK",
-  description: "Operación interna de OR-K — solicitudes, proyectos, revisión y entregas.",
+  title: "O R-K WORK",
+  description: "Operación interna de O R-K — solicitudes, proyectos, revisión y entregas.",
   robots: { index: false, follow: false },
 };
 
 /**
- * Layout for the OR-K WORK module. Everything lives inside `[data-orkwork]`,
+ * Layout for the O R-K WORK module. Everything lives inside `[data-orkwork]`,
  * which re-establishes a clean baseline over the public site's global reset
  * (app/globals.css). `work.css` is imported here only, so Next scopes it to
  * `/work/*` — the marketing site never loads it.
@@ -38,7 +48,7 @@ export default function WorkLayout({
     <div
       data-orkwork=""
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
+      className={`${dmSans.variable} ${anton.variable} ${geistMono.variable} font-sans antialiased`}
     >
       <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP }} />
       <ThemeProvider>{children}</ThemeProvider>

@@ -9,7 +9,7 @@ import { ProjectForm } from "@/components/work/forms/project-form";
 import { Button } from "@/components/work/ui/button";
 import { Users } from "lucide-react";
 
-export const metadata: Metadata = { title: "Nuevo proyecto · OR-K WORK" };
+export const metadata: Metadata = { title: "Nuevo proyecto · O R-K WORK" };
 
 export default async function NewProjectPage({
   searchParams,

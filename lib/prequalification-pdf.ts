@@ -2,15 +2,16 @@ import { PDFDocument, PDFFont, PDFPage, StandardFonts, rgb } from "pdf-lib";
 import { PrequalificationAnswers, scorePrequalification } from "@/lib/prequalification";
 import type { CompanyResearch } from "@/lib/company-research";
 
-const ink=rgb(.055,.05,.05), pink=rgb(.93,0,.45), purple=rgb(.42,.16,.72);
-const muted=rgb(.39,.37,.36), line=rgb(.79,.77,.73), paper=rgb(.965,.952,.925);
-const white=rgb(1,1,1), softPink=rgb(.985,.9,.945), softPurple=rgb(.92,.87,.97), softGray=rgb(.91,.9,.88);
+// Paleta del Manual de identidad O R-K 2026: tinta, violeta O R-K, violeta noche.
+const ink=rgb(.043,.027,.063), pink=rgb(.294,.122,.549), purple=rgb(.165,.078,.314);
+const muted=rgb(.35,.33,.39), line=rgb(.812,.773,.722), paper=rgb(.953,.937,.973);
+const white=rgb(1,1,1), softPink=rgb(.925,.898,1), softPurple=rgb(.92,.87,.97), softGray=rgb(.91,.9,.88);
 type Fonts={regular:PDFFont;bold:PDFFont};
 type Metric={label:string;value:number;detail:string;color:ReturnType<typeof rgb>};
 
 export async function createPrequalificationPdf(answers:PrequalificationAnswers,research:CompanyResearch|null=null) {
   const result=scorePrequalification(answers), pdf=await PDFDocument.create();
-  pdf.setTitle(`Preclasificación OR-K - ${answers.company}`);pdf.setAuthor("OR-K");pdf.setSubject("Reporte ejecutivo de compatibilidad empresarial");
+  pdf.setTitle(`Preclasificación O R-K - ${answers.company}`);pdf.setAuthor("O R-K");pdf.setSubject("Reporte ejecutivo de compatibilidad empresarial");
   const fonts:Fonts={regular:await pdf.embedFont(StandardFonts.Helvetica),bold:await pdf.embedFont(StandardFonts.HelveticaBold)};
   const metrics=buildMetrics(answers,result.total);
   drawExecutivePage(pdf.addPage([595.28,841.89]),fonts,answers,result,metrics);
@@ -25,7 +26,7 @@ function drawExecutivePage(page:PDFPage,fonts:Fonts,answers:PrequalificationAnsw
   text(page,fonts,"COMPATIBILIDAD EMPRESARIAL",52,748,8,pink,fonts.bold);
   wrapped(page,fonts,answers.company,52,705,490,29,31,ink,fonts.bold,2);
   page.drawRectangle({x:52,y:563,width:491,height:108,color:ink});
-  text(page,fonts,"COMPATIBILIDAD OR-K",72,642,7,paper,fonts.bold);text(page,fonts,result.compatibility.toUpperCase(),72,591,29,pink,fonts.bold);
+  text(page,fonts,"COMPATIBILIDAD O R-K",72,642,7,paper,fonts.bold);text(page,fonts,result.compatibility.toUpperCase(),72,591,29,pink,fonts.bold);
   text(page,fonts,String(result.total),414,584,47,white,fonts.bold);text(page,fonts,"/ 100",483,591,13,paper,fonts.bold);progress(page,52,545,491,8,result.total,pink,softGray);
   text(page,fonts,"LECTURA RAPIDA",52,512,8,pink,fonts.bold);
   const intro=result.compatibility==="Alta"?"La empresa muestra una combinación sólida de escala, liderazgo y capacidad de implementación. El siguiente paso recomendado es profundizar en la operación y priorizar una hoja de ruta.":result.compatibility==="Potencial"?"Hay condiciones interesantes para avanzar, aunque conviene alinear algunas variables antes de iniciar una transformación integral.":"La empresa está construyendo las condiciones para una siguiente etapa. El foco inicial debe estar en preparar liderazgo, inversión y madurez operativa.";
@@ -61,7 +62,7 @@ function drawResearchPages(pdf:PDFDocument,fonts:Fonts,answers:PrequalificationA
   contentBlock(page,fonts,"BASE DE LA ESTIMACION",research.estimateBasis,52,156,491,88);
   const page2=pdf.addPage([595.28,841.89]);background(page2);header(page2,fonts,"OPORTUNIDADES Y RIESGOS",answers.company);
   bulletPanel(page2,fonts,52,564,239,136,"OPORTUNIDADES",research.opportunities,pink);bulletPanel(page2,fonts,304,564,239,136,"RIESGOS POR VALIDAR",research.risks,purple);
-  bulletPanel(page2,fonts,52,386,491,145,"RECOMENDACIONES OR-K",research.recommendations,ink);
+  bulletPanel(page2,fonts,52,386,491,145,"RECOMENDACIONES O R-K",research.recommendations,ink);
   bulletPanel(page2,fonts,52,178,239,176,"SEÑALES FINANCIERAS",research.financialSignals,pink,3);
   bulletPanel(page2,fonts,304,178,239,176,"COMERCIO EXTERIOR",research.tradeSignals,purple,3);
 
@@ -85,8 +86,8 @@ function buildMetrics(a:PrequalificationAnswers,total:number):Metric[] {
 }
 
 function background(page:PDFPage){const {width,height}=page.getSize();page.drawRectangle({x:0,y:0,width,height,color:paper});}
-function header(page:PDFPage,fonts:Fonts,leftTitle:string,rightTitle:string){text(page,fonts,"OR-K",52,793,22,pink,fonts.bold);text(page,fonts,leftTitle,52,775,6.5,muted,fonts.bold);const rt=safe(rightTitle.toUpperCase());text(page,fonts,rt,543-fonts.bold.widthOfTextAtSize(rt,7),792,7,muted,fonts.bold);page.drawLine({start:{x:52,y:762},end:{x:543,y:762},thickness:1,color:ink});}
-function drawFooter(page:PDFPage,fonts:Fonts,current:number,total:number){page.drawLine({start:{x:52,y:48},end:{x:543,y:48},thickness:.45,color:line});text(page,fonts,"OR-K / CONFIDENCIAL",52,30,6.5,muted,fonts.bold);text(page,fonts,`${current} / ${total}`,520,30,6.5,muted,fonts.bold);}
+function header(page:PDFPage,fonts:Fonts,leftTitle:string,rightTitle:string){text(page,fonts,"O R-K",52,793,22,pink,fonts.bold);text(page,fonts,leftTitle,52,775,6.5,muted,fonts.bold);const rt=safe(rightTitle.toUpperCase());text(page,fonts,rt,543-fonts.bold.widthOfTextAtSize(rt,7),792,7,muted,fonts.bold);page.drawLine({start:{x:52,y:762},end:{x:543,y:762},thickness:1,color:ink});}
+function drawFooter(page:PDFPage,fonts:Fonts,current:number,total:number){page.drawLine({start:{x:52,y:48},end:{x:543,y:48},thickness:.45,color:line});text(page,fonts,"O R-K / CONFIDENCIAL",52,30,6.5,muted,fonts.bold);text(page,fonts,`${current} / ${total}`,520,30,6.5,muted,fonts.bold);}
 function text(page:PDFPage,_fonts:Fonts,value:string,x:number,y:number,size:number,color:ReturnType<typeof rgb>,font:PDFFont){page.drawText(safe(value),{x,y,size,font,color});}
 function wrapped(page:PDFPage,fonts:Fonts,value:string,x:number,y:number,maxWidth:number,size:number,lineHeight:number,color:ReturnType<typeof rgb>,font=fonts.regular,maxLines=99){const rows=wrap(font,safe(value),size,maxWidth).slice(0,maxLines);rows.forEach((row,index)=>text(page,fonts,row,x,y-index*lineHeight,size,color,font));return y-rows.length*lineHeight;}
 function wrap(font:PDFFont,value:string,size:number,maxWidth:number){const words=value.split(/\s+/),rows:string[]=[];let row="";for(const word of words){const candidate=row?`${row} ${word}`:word;if(font.widthOfTextAtSize(candidate,size)<=maxWidth)row=candidate;else{if(row)rows.push(row);row=word;}}if(row)rows.push(row);return rows;}
@@ -100,4 +101,4 @@ function contentBlock(page:PDFPage,fonts:Fonts,title:string,value:string,x:numbe
 function bulletPanel(page:PDFPage,fonts:Fonts,x:number,y:number,width:number,height:number,title:string,items:string[],accent:ReturnType<typeof rgb>,maxLines=2){page.drawRectangle({x,y,width,height,color:white,borderColor:line,borderWidth:.5});text(page,fonts,title,x+15,y+height-23,7,accent,fonts.bold);let cursor=y+height-43;(items.length?items:["No encontrado en fuentes públicas"]).slice(0,4).forEach(item=>{page.drawCircle({x:x+18,y:cursor+2,size:2,color:accent});cursor=wrapped(page,fonts,item,x+29,cursor,width-44,8.2,10.5,ink,fonts.regular,maxLines)-7;});}
 function sourceCard(page:PDFPage,fonts:Fonts,x:number,top:number,width:number,index:number,title:string,url:string){const titleRows=wrap(fonts.bold,safe(title),9.2,width-62).slice(0,2),urlRows=wrap(fonts.regular,safe(url),7.2,width-62).slice(0,3);const height=24+titleRows.length*12+urlRows.length*9;page.drawRectangle({x,y:top-height,width,height,color:white,borderColor:line,borderWidth:.5});text(page,fonts,String(index).padStart(2,"0"),x+14,top-23,8,pink,fonts.bold);wrapped(page,fonts,title,x+48,top-20,width-62,9.2,12,ink,fonts.bold,2);wrapped(page,fonts,url,x+48,top-20-titleRows.length*12,width-62,7.2,9,muted,fonts.regular,3);return top-height;}
 function join(values:string[]){return values.length?values.join(", "):"No informado";}
-function companyClassLabel(a:PrequalificationAnswers){const size=["1–20","21–50","51–100","101–250","Más de 250"].indexOf(a.employees)+1,revenue=["$300M–$499M COP","$500M–$1.499M COP","$1.500M COP–USD 999.999","Más de USD 1 millón"].indexOf(a.revenue)+1;return size>=4||revenue>=4?"OR-K Enterprise":size>=2||revenue>=2?"OR-K Scale":"OR-K Growth";}
+function companyClassLabel(a:PrequalificationAnswers){const size=["1–20","21–50","51–100","101–250","Más de 250"].indexOf(a.employees)+1,revenue=["$300M–$499M COP","$500M–$1.499M COP","$1.500M COP–USD 999.999","Más de USD 1 millón"].indexOf(a.revenue)+1;return size>=4||revenue>=4?"O R-K Enterprise":size>=2||revenue>=2?"O R-K Scale":"O R-K Growth";}

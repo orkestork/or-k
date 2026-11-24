@@ -50,7 +50,7 @@ export function ClientForm({
                 id="accentColor"
                 name="accentColor"
                 type="color"
-                defaultValue={client?.accentColor ?? "#e31572"}
+                defaultValue={client?.accentColor ?? "#4B1F8C"}
                 className="h-9 p-1"
               />
             </div>

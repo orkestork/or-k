@@ -10,7 +10,7 @@ import { DeleteRequestButton } from "@/components/work/requests/delete-request";
 import { Card, CardContent } from "@/components/work/ui/card";
 import { Button } from "@/components/work/ui/button";
 
-export const metadata: Metadata = { title: "Editar solicitud · OR-K WORK" };
+export const metadata: Metadata = { title: "Editar solicitud · O R-K WORK" };
 
 export default async function EditRequestPage({
   params,

@@ -34,7 +34,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const p = await getProject(id);
-  return { title: `${p?.name ?? "Proyecto"} · OR-K WORK` };
+  return { title: `${p?.name ?? "Proyecto"} · O R-K WORK` };
 }
 
 export default async function ProjectDetailPage({

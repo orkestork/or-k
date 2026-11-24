@@ -7,5 +7,5 @@
    inside an @layer block is invalid CSS — the copy inside globals.css is
    ignored once that file is pulled into layer(marketing), so the fonts must be
    requested from here instead. */
-@import url("https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:wght@400;500;600&display=swap");
 @import "../globals.css" layer(marketing);

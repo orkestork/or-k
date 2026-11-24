@@ -17,7 +17,7 @@ import { EmptyState } from "@/components/work/shared/empty-state";
 import { RequestList } from "@/components/work/requests/request-list";
 import { Button } from "@/components/work/ui/button";
 
-export const metadata: Metadata = { title: "Requests · OR-K WORK" };
+export const metadata: Metadata = { title: "Requests · O R-K WORK" };
 
 type SP = { state?: string; client?: string; scope?: string; assignee?: string };
 

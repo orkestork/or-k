@@ -1,5 +1,5 @@
 /* ============================================================================
-   OR-K WORK — isolated stylesheet for the internal agency workspace.
+   O R-K WORK — isolated stylesheet for the internal agency workspace.
    Imported ONLY by app/work/layout.tsx, so Next.js scopes it to /work/* routes.
    The public marketing site (app/globals.css) is never touched by this file.
    ========================================================================== */
@@ -23,88 +23,88 @@
   --radius: 0.5rem;
 
   /* Light theme (default). */
-  --background: oklch(0.985 0.002 90);
-  --foreground: oklch(0.2 0.012 300);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.012 300);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0.012 300);
-  --primary: oklch(0.575 0.235 5.4);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.965 0.003 90);
-  --secondary-foreground: oklch(0.24 0.012 300);
-  --muted: oklch(0.965 0.003 90);
-  --muted-foreground: oklch(0.46 0.012 300);
-  --accent: oklch(0.955 0.006 340);
-  --accent-foreground: oklch(0.24 0.012 300);
-  --destructive: oklch(0.58 0.22 25);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.905 0.003 90);
-  --input: oklch(0.9 0.003 90);
-  --ring: oklch(0.575 0.235 5.4);
+  --background: #F3EFF8;
+  --foreground: #0B0710;
+  --card: #FFFFFF;
+  --card-foreground: #0B0710;
+  --popover: #FFFFFF;
+  --popover-foreground: #0B0710;
+  --primary: #7C3CFF;
+  --primary-foreground: #FFFFFF;
+  --secondary: #E9E1D6;
+  --secondary-foreground: #0B0710;
+  --muted: #ECE6F2;
+  --muted-foreground: #5A5363;
+  --accent: #E8DEFF;
+  --accent-foreground: #2A1450;
+  --destructive: #E3262F;
+  --destructive-foreground: #FFFFFF;
+  --border: #DDD5E6;
+  --input: #D6CDE0;
+  --ring: #7C3CFF;
 
-  --chart-1: oklch(0.585 0.233 5.4);
-  --chart-2: oklch(0.6 0.13 250);
-  --chart-3: oklch(0.7 0.15 160);
-  --chart-4: oklch(0.75 0.16 70);
-  --chart-5: oklch(0.65 0.19 300);
+  --chart-1: #4B1F8C;
+  --chart-2: #7C3CFF;
+  --chart-3: #BDA5FF;
+  --chart-4: #E0156B;
+  --chart-5: #CFC5B8;
 
-  --sidebar: oklch(0.975 0.003 90);
-  --sidebar-foreground: oklch(0.2 0.012 300);
-  --sidebar-primary: oklch(0.575 0.235 5.4);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.95 0.006 340);
-  --sidebar-accent-foreground: oklch(0.24 0.012 300);
-  --sidebar-border: oklch(0.91 0.003 90);
-  --sidebar-ring: oklch(0.575 0.235 5.4);
+  --sidebar: #EEE9F4;
+  --sidebar-foreground: #0B0710;
+  --sidebar-primary: #4B1F8C;
+  --sidebar-primary-foreground: #F3EFF8;
+  --sidebar-accent: #E8DEFF;
+  --sidebar-accent-foreground: #2A1450;
+  --sidebar-border: #DDD5E6;
+  --sidebar-ring: #7C3CFF;
 
   /* Semantic tones for badges / statuses (light). */
   --tone-info: oklch(0.5 0.14 250);
-  --tone-progress: oklch(0.52 0.2 300);
+  --tone-progress: #4B1F8C;
   --tone-warn: oklch(0.56 0.14 70);
   --tone-positive: oklch(0.52 0.14 160);
 }
 
 .dark {
-  /* OR-K ink + pink, tuned for a Linear-style operations UI. */
-  --background: oklch(0.155 0.012 305);
-  --foreground: oklch(0.94 0.006 90);
-  --card: oklch(0.19 0.012 305);
-  --card-foreground: oklch(0.94 0.006 90);
-  --popover: oklch(0.175 0.012 305);
-  --popover-foreground: oklch(0.94 0.006 90);
-  --primary: oklch(0.62 0.235 5.4);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.24 0.012 305);
-  --secondary-foreground: oklch(0.94 0.006 90);
-  --muted: oklch(0.24 0.012 305);
-  --muted-foreground: oklch(0.73 0.014 305);
-  --accent: oklch(0.27 0.02 340);
-  --accent-foreground: oklch(0.96 0.006 90);
-  --destructive: oklch(0.64 0.21 22);
-  --destructive-foreground: oklch(0.99 0 0);
+  /* O R-K tinta + violeta (Manual de identidad 2026). */
+  --background: #0B0710;
+  --foreground: #E9E1D6;
+  --card: #161216;
+  --card-foreground: #E9E1D6;
+  --popover: #161216;
+  --popover-foreground: #E9E1D6;
+  --primary: #7C3CFF;
+  --primary-foreground: #FFFFFF;
+  --secondary: #1E1824;
+  --secondary-foreground: #E9E1D6;
+  --muted: #1E1824;
+  --muted-foreground: #A79FB0;
+  --accent: #2A1450;
+  --accent-foreground: #F3EFF8;
+  --destructive: #E3262F;
+  --destructive-foreground: #FFFFFF;
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 13%);
-  --ring: oklch(0.62 0.235 5.4);
+  --ring: #BDA5FF;
 
-  --chart-1: oklch(0.62 0.235 5.4);
-  --chart-2: oklch(0.66 0.14 250);
-  --chart-3: oklch(0.72 0.15 160);
-  --chart-4: oklch(0.78 0.16 70);
-  --chart-5: oklch(0.68 0.19 300);
+  --chart-1: #BDA5FF;
+  --chart-2: #7C3CFF;
+  --chart-3: #E9E1D6;
+  --chart-4: #E0156B;
+  --chart-5: #4B1F8C;
 
-  --sidebar: oklch(0.17 0.012 305);
-  --sidebar-foreground: oklch(0.9 0.006 90);
-  --sidebar-primary: oklch(0.62 0.235 5.4);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.25 0.014 305);
-  --sidebar-accent-foreground: oklch(0.94 0.006 90);
+  --sidebar: #100B16;
+  --sidebar-foreground: #E9E1D6;
+  --sidebar-primary: #7C3CFF;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #2A1450;
+  --sidebar-accent-foreground: #F3EFF8;
   --sidebar-border: oklch(1 0 0 / 8%);
-  --sidebar-ring: oklch(0.62 0.235 5.4);
+  --sidebar-ring: #BDA5FF;
 
   /* Semantic tones for badges / statuses (dark). */
   --tone-info: oklch(0.75 0.13 250);
-  --tone-progress: oklch(0.76 0.15 300);
+  --tone-progress: #BDA5FF;
   --tone-warn: oklch(0.82 0.15 75);
   --tone-positive: oklch(0.78 0.15 160);
 }
@@ -150,7 +150,8 @@
   --color-tone-warn: var(--tone-warn);
   --color-tone-positive: var(--tone-positive);
 
-  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-dm-sans), "DM Sans", Arial, Helvetica, ui-sans-serif, sans-serif;
+  --font-display: var(--font-anton), Anton, Impact, "Arial Narrow", sans-serif;
   --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
 
   --radius-sm: calc(var(--radius) - 4px);

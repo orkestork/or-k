@@ -11,7 +11,7 @@ export function CostSummary({ profile, params }: { profile: HrProfile; params: P
   return (
     <div className="flex flex-col gap-2 text-sm">
       <div className="flex items-baseline justify-between">
-        <span className="text-muted-foreground">{cost.kind === "contractor" ? "Costo para OR-K" : "Costo total empresa"}</span>
+        <span className="text-muted-foreground">{cost.kind === "contractor" ? "Costo para O R-K" : "Costo total empresa"}</span>
         <span className="text-xl font-semibold tabular-nums">{money(cost.company)}</span>
       </div>
       <p className="text-xs text-muted-foreground">al mes · estimado</p>

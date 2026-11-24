@@ -23,10 +23,8 @@ export default async function PortalLayout({ children }: { children: React.React
       <header className="border-b border-border">
         <div className="mx-auto flex h-14 max-w-6xl items-center gap-3 px-4">
           <Link href="/work/portal" className="flex items-center gap-2.5">
-            <span className="grid size-7 place-items-center rounded-md bg-primary text-xs font-bold text-primary-foreground">
-              O
-            </span>
-            <span className="text-sm font-semibold tracking-tight">OR-K</span>
+            <img src="/assets/brand/ork-app-icon.svg" alt="" aria-hidden="true" className="size-7 shrink-0 rounded-md" />
+            <span className="text-sm font-semibold tracking-tight">O R-K</span>
           </Link>
           {client ? (
             <span className="flex items-center gap-2 border-l border-border pl-3 text-sm text-muted-foreground">
@@ -52,7 +50,7 @@ export default async function PortalLayout({ children }: { children: React.React
           <div className="rounded-lg border border-border p-6 text-center">
             <p className="text-sm font-medium">Tu acceso está en preparación</p>
             <p className="mt-2 text-sm text-muted-foreground">
-              El equipo de OR-K todavía no ha vinculado tu cuenta ({me.email}) a tu empresa. Escríbele a tu responsable
+              El equipo de O R-K todavía no ha vinculado tu cuenta ({me.email}) a tu empresa. Escríbele a tu responsable
               de cuenta.
             </p>
           </div>

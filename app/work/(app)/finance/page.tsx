@@ -47,7 +47,7 @@ import {
 } from "@/components/work/finance/forms";
 import { AppDialog, DeleteAppItem, PlanDialog, SubscribersInput } from "@/components/work/finance/apps";
 
-export const metadata: Metadata = { title: "Finanzas · OR-K WORK" };
+export const metadata: Metadata = { title: "Finanzas · O R-K WORK" };
 
 const TABS = [
   { id: "summary", label: "Resumen" },
@@ -277,7 +277,7 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
 
   return (
     <div className="mx-auto max-w-[110rem]">
-      <PageHeader title="Finanzas" description="Nómina, gastos fijos, gastos del mes, ingresos y presupuesto de OR-K.">
+      <PageHeader title="Finanzas" description="Nómina, gastos fijos, gastos del mes, ingresos y presupuesto de O R-K.">
         <div className="flex flex-wrap items-center gap-3">
           <div className="inline-flex rounded-md border border-border p-0.5 text-sm">
             {TABS.map((t) => (
@@ -857,7 +857,7 @@ type BalanceRow = {
   m: string;
   billed: number;
   scheduled: number;
-  /** Subscription revenue of OR-K's own apps. */
+  /** Subscription revenue of O R-K's own apps. */
   apps: number;
   payroll: number;
   /** Fixed costs plus what the apps cost to run. */

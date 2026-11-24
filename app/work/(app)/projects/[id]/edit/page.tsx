@@ -6,7 +6,7 @@ import { getClients, getProject, getUsers, requireManager } from "@/lib/work/dat
 import { PageHeader } from "@/components/work/shared/page-header";
 import { ProjectForm } from "@/components/work/forms/project-form";
 
-export const metadata: Metadata = { title: "Editar proyecto · OR-K WORK" };
+export const metadata: Metadata = { title: "Editar proyecto · O R-K WORK" };
 
 export default async function EditProjectPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

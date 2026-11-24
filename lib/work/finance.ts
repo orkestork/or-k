@@ -13,7 +13,7 @@ export const FIN_CATEGORIES = [
   { id: "production", label: "Producción (locaciones, props, impresión)", group: "Proyectos" },
   { id: "media", label: "Pauta y medios", group: "Proyectos" },
   { id: "travel", label: "Transporte y viáticos", group: "Proyectos" },
-  { id: "marketing", label: "Marketing propio de OR-K", group: "Comercial" },
+  { id: "marketing", label: "Marketing propio de O R-K", group: "Comercial" },
   { id: "accounting", label: "Contabilidad, legal y asesorías", group: "Administración" },
   { id: "taxes", label: "Impuestos (ICA, renta, IVA, 4×1000)", group: "Administración" },
   { id: "banking", label: "Bancos y comisiones", group: "Administración" },

@@ -177,7 +177,7 @@ export function ExpenseDialog({
           </div>
           <F label="Proyecto (gasto directo, opcional)" htmlFor="ex-project">
             <select id="ex-project" className={nativeSelectClass} value={v.projectId} onChange={(e) => set("projectId", e.target.value)}>
-              <option value="">Gasto general de OR-K</option>
+              <option value="">Gasto general de O R-K</option>
               {projects.map((p) => (
                 <option key={p.id} value={p.id}>
                   {clients.find((c) => c.id === p.clientId)?.name} · {p.name}

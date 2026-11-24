@@ -12,7 +12,7 @@ import { UserPlus } from "lucide-react";
 import { isHr } from "@/lib/work/people";
 import { RemoveMemberButton } from "@/components/work/settings/team-admin";
 
-export const metadata: Metadata = { title: "Team · OR-K WORK" };
+export const metadata: Metadata = { title: "Team · O R-K WORK" };
 
 const LOAD: Record<string, { label: string; className: string }> = {
   low: { label: "Ligera", className: "bg-tone-positive/10 text-tone-positive" },
@@ -31,7 +31,7 @@ export default async function TeamPage({ searchParams }: { searchParams: Promise
     <div className="mx-auto max-w-7xl">
       <PageHeader
         title="Equipo"
-        description="Integrantes de OR-K y su carga de trabajo actual."
+        description="Integrantes de O R-K y su carga de trabajo actual."
         actions={
           canCreatePeople ? (
             <Button size="sm" asChild>

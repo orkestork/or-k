@@ -82,7 +82,7 @@ export function PayrollParamsForm({
 
       <label className="flex items-start gap-2 text-xs">
         <input type="checkbox" className="mt-0.5" checked={p.exempt} disabled={!canEdit} onChange={(e) => setP({ ...p, exempt: e.target.checked })} />
-        OR-K está exonerada de salud (8.5%), SENA e ICBF para salarios menores a 10 SMMLV (art. 114-1 E.T.)
+        O R-K está exonerada de salud (8.5%), SENA e ICBF para salarios menores a 10 SMMLV (art. 114-1 E.T.)
       </label>
 
       {canEdit ? (

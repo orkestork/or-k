@@ -1,126 +1,187 @@
 import type { Metadata } from "next";
 import "../development/development.css";
-import RegionalPresence from "@/components/regional-presence";
-import { serviceDetails } from "@/lib/services";
+import DeckRail from "@/components/deck-rail";
+import CapabilityWork from "@/components/capability-work";
 
 export const metadata: Metadata = {
   title: "Servicios — O R-K",
-  description: "Estrategia, transformación empresarial, marca, marketing, desarrollo, datos e inteligencia artificial para entender, transformar y escalar tu negocio.",
+  description: "Technology & Development, Marketing & Performance, Community & Content, Corporate Design y Strategy & Organization: las capabilities de O R-K.",
 };
 
-const capabilities = [
-  { number: "01", title: "Productos digitales", items: "Apps · Web Apps · SaaS · Experiencias digitales", image: "/assets/development-digital-products.png" },
-  { number: "02", title: "Plataformas para tu empresa", items: "Sistemas internos · Portales · Operación · Marketplaces", image: "/assets/development-enterprise-platforms.png" },
-  { number: "03", title: "Todo conectado", items: "ERP · CRM · APIs · Integraciones · Automatización · Datos", image: "/assets/development-connected-solutions.png" },
-  { number: "04", title: "IA que sí te sirve", items: "Agentes · Asistentes · Procesos inteligentes · Soluciones con IA", image: "/assets/development-ai-solutions.png" },
+type Capability = {
+  number: string;
+  title: [string, string];
+  lead: string;
+  body: string;
+  tags: string[];
+  image?: string;
+  work?: string[];
+  tone: "ink" | "violet" | "paper";
+};
+
+const capabilities: Capability[] = [
+  {
+    number: "01",
+    title: ["Technology &", "Development."],
+    lead: "Tecnología que transforma negocios y potencia su crecimiento.",
+    body: "Diseñamos y desarrollamos plataformas, aplicaciones, herramientas digitales y sitios web que impulsan la transformación empresarial. Creamos soluciones a la medida para optimizar procesos, integrar operaciones y generar capacidades que permitan innovar y escalar con eficiencia.",
+    tags: ["Plataformas", "Aplicaciones", "Herramientas digitales", "Sitios web"],
+    image: "/assets/ork-service-platform-v3.png",
+    work: ["fruit-of-adam"],
+    tone: "ink",
+  },
+  {
+    number: "02",
+    title: ["Marketing &", "Performance."],
+    lead: "Marketing digital estratégico que impulsa resultados de negocio.",
+    body: "Diseñamos e implementamos estrategias integrales de marketing digital junto con la estrategia de marca, campañas en Google Ads y Meta y el seguimiento de KPIs, para atraer, convertir, fidelizar y escalar el crecimiento de la empresa.",
+    tags: ["Estrategia de marca", "Google Ads y Meta", "Embudos de conversión", "KPIs y analítica"],
+    image: "/assets/ork-service-campaign-v2.png",
+    work: ["claro", "oppo"],
+    tone: "violet",
+  },
+  {
+    number: "03",
+    title: ["Community &", "Content."],
+    lead: "Contenido y comunidades que conectan, inspiran y potencian tu marca.",
+    body: "Diseñamos y ejecutamos estrategias de social media y comunicación digital, con contenido relevante, creativo y de alto impacto, alineado a los objetivos de la marca, para construir comunidad, fortalecer el engagement y generar resultados medibles.",
+    tags: ["Estrategia de contenidos", "Producción audiovisual", "Gestión de comunidades", "Engagement y KPIs"],
+    image: "/assets/service-campaign-editorial.jpg",
+    work: ["cali", "oppo"],
+    tone: "ink",
+  },
+  {
+    number: "04",
+    title: ["Corporate", "Design."],
+    lead: "Diseño y desarrollo de marca que comunica, diferencia y genera valor.",
+    body: "Creamos la identidad visual y todo el ecosistema de comunicación de tu marca: diseño corporativo, piezas impresas y digitales, catálogos, brochures y material comercial, con una visión estratégica y coherente que fortalece el posicionamiento.",
+    tags: ["Branding e identidad", "Diseño de piezas", "Catálogos y brochures", "Medios digitales"],
+    image: "/assets/ork-service-identity-v2.png",
+    work: ["tarrito-rojo", "monterojo"],
+    tone: "paper",
+  },
 ];
 
-const process = ["Entender", "Diseñar", "Construir", "Conectar", "Evolucionar"];
+const uts = [
+  ["U", "Understand", "Entender"],
+  ["T", "Transform", "Transformar"],
+  ["S", "Scale", "Escalar"],
+];
+
+const index = ["Technology & Development", "Marketing & Performance", "Community & Content", "Corporate Design", "Strategy & Organization"];
+
+const process = [
+  ["Entender", "Escuchamos y diagnosticamos el negocio antes de proponer nada."],
+  ["Diseñar", "Definimos la solución, el alcance y cómo vamos a medirla."],
+  ["Construir", "Desarrollamos por etapas, con entregas que puedes probar."],
+  ["Conectar", "Integramos con tus sistemas, tus datos y tu equipo."],
+  ["Evolucionar", "Medimos, ajustamos y seguimos mejorando contigo."],
+];
 
 export default function ServicesPage() {
   return (
-    <main className="developmentPage">
+    <main className="developmentPage deckPage">
       <nav className="devNav" aria-label="Navegación principal">
         <a className="devLogo" href="/" aria-label="O R-K inicio">
-          <img src="/assets/ork-logo-white.png" alt="O R-K" />
+          <img src="/assets/brand/ork-logo-papel.svg" alt="O R-K" />
         </a>
         <div className="devLinks">
           <a href="/#trabajo">Trabajo</a>
           <a href="/#servicios">Método UTS</a>
           <a href="/#nosotros">Nosotros</a>
           <a className="isActive" href="/servicios" aria-current="page">Servicios</a>
-          <a href="/#contacto">Hablemos</a>
+          <a href="/#contacto">Conversemos</a>
         </div>
       </nav>
 
-      <section className="devHero">
-        <div className="devHeroMedia" aria-hidden="true"><video autoPlay muted loop playsInline preload="metadata" poster="/assets/development-orca-hero-v3.png"><source src="/assets/development-orca-hero-loop.mp4" type="video/mp4" /></video></div>
-        <div className="devHeroIndex" aria-hidden="true"><span>01</span><i /><small>DE LA IDEA A LA REALIDAD</small></div>
-        <div className="devHeroCopy">
-          <span className="devEyebrow">Servicios / Understand · Transform · Scale</span>
-          <h1>¿Qué necesita<br/>tu negocio para<br/><em>avanzar?</em></h1>
-          <div className="devHeroIntro">
-            <p>Puede ser una idea nueva, un proceso que ya no da más o una oportunidad que vale la pena aprovechar. Empezamos por escucharte.</p>
-            <p>Unimos estrategia, personas, operación, marca, creatividad y tecnología para entender tu empresa, transformar sus capacidades y acompañar su crecimiento.</p>
+      <DeckRail>
+      {/* 01 · Portada */}
+      <section className="deckSlide deckCover" aria-labelledby="deck-title">
+        <img className="deckCoverImage" src="/assets/ork-editorial-hero-v2.png" alt="" />
+        <div className="deckCoverVeil" aria-hidden="true" />
+        <div className="deckCoverCopy">
+          <span className="deckLabel">Presentación de capabilities</span>
+          <h1 id="deck-title" className="deckTrazo">Business<br/>innovation &amp;<br/>technology.</h1>
+          <span className="deckMeta">O R-K · Bogotá · 2026</span>
+        </div>
+        <a className="deckScroll" href="#capabilities" aria-label="Ver capabilities">↓</a>
+      </section>
+
+      {/* 02 · Índice */}
+      <section className="deckSlide deckIndex" id="capabilities" aria-labelledby="index-title">
+        <span className="deckLabel">Business innovation &amp; technology</span>
+        <h2 id="index-title">Nuestras<br/>capabilities.</h2>
+        <ol>
+          {index.map((item, i) => (
+            <li key={item}><a href={`#capability-0${i + 1}`}><b>0{i + 1}</b><span>{item}</span></a></li>
+          ))}
+        </ol>
+      </section>
+
+      {/* 03–06 · Capabilities */}
+      {capabilities.map((cap) => (
+        <section className={`deckSlide deckCap tone-${cap.tone}`} id={`capability-${cap.number}`} key={cap.number} aria-labelledby={`cap-${cap.number}`}>
+          <div className="deckCapCopy">
+            <span className="deckLabel">Capability {cap.number}</span>
+            <h2 id={`cap-${cap.number}`} className="deckTrazo">{cap.title[0]}<br/>{cap.title[1]}</h2>
+            <p className="deckLead">{cap.lead}</p>
+            <p className="deckBody">{cap.body}</p>
+            <ul className="deckTags">{cap.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>
+            {cap.work && <CapabilityWork title={`${cap.title[0]} ${cap.title[1]}`} items={cap.work} />}
           </div>
-          <div className="devHeroTags" aria-label="Capacidades principales"><span>Estrategia</span><span>Diseño</span><span>Marca</span><span>Marketing</span><span>Tecnología e IA</span></div>
+          {cap.image && <div className="deckCapImage"><img src={cap.image} alt="" loading="lazy" /></div>}
+        </section>
+      ))}
+
+      {/* 07 · Strategy & Organization */}
+      <section className="deckSlide deckStrategy" id="capability-05" aria-labelledby="cap-05">
+        <div className="deckStrategyTop">
+          <div>
+            <span className="deckLabel">Capability 05</span>
+            <h2 id="cap-05" className="deckTrazo">Strategy &amp;<br/>organization.</h2>
+          </div>
+          <div>
+            <p className="deckLead">Alineamos estrategia, estructura y equipos para que tu empresa opere con mayor eficiencia y esté lista para escalar.</p>
+            <p className="deckBody">Partimos de lo que tu empresa ya hace bien para potenciar sus fortalezas e identificar oportunidades de mejora. Con nuestro método UTS analizamos el rumbo corporativo, la estructura interna, los roles y los canales de comunicación, y alineamos a los equipos para una operación más eficiente, ordenada y orientada a resultados.</p>
+          </div>
         </div>
-        <a className="devScroll" href="#catalogo">Explorar <b>↓</b></a>
+        <div className="deckUts">
+          <span className="deckLabel">Método UTS by O R-K</span>
+          <ol>{uts.map(([letter, en, es]) => <li key={letter}><b>{letter}</b><span><strong>{en}</strong>{es}</span></li>)}</ol>
+        </div>
       </section>
 
-      <section className="serviceCatalog" id="catalogo" aria-labelledby="catalog-title">
-        <span className="devEyebrow">01 / Nuestros servicios</span>
-        <h2 id="catalog-title">Todo lo que necesitas<br/><em>para avanzar.</em></h2>
-        <p className="serviceCatalogIntro">Tres formas de acompañarte. Cada servicio responde a un reto de tu negocio y se conecta con los demás para generar resultados.</p>
-        <nav className="serviceJumpLinks" aria-label="Áreas de servicio">
-          {serviceDetails.map(group => <a key={group.number} href={`#${group.title.toLowerCase()}`}>{group.number} / {group.title} <span aria-hidden="true">↓</span></a>)}
-        </nav>
-        {serviceDetails.map(group => (
-          <section className="serviceGroup" id={group.title.toLowerCase()} key={group.number} aria-labelledby={`title-${group.number}`}>
-            <div className="serviceGroupHeading">
-              <div className="serviceArt">
-                <img src={`/assets/services-orca-${group.title.toLowerCase()}-v1.png`} alt={`Orca de OR-K · ${group.title}`} width={1536} height={1024} loading="lazy" />
-                <span className="serviceArtNumber" aria-hidden="true">{group.number}</span>
-                <span className="serviceArtLabel" aria-hidden="true">OR-K / {group.title}</span>
-              </div>
-              <span className="devEyebrow">{group.number} / {group.title}</span>
-              <h3 id={`title-${group.number}`}>{group.statement}</h3>
-              <p>{group.intro}</p>
-            </div>
-            <div className="serviceOfferList">
-              {group.offers.map(([title, description], index) => (
-                <article key={title}>
-                  <span className="serviceOfferNumber">{group.number}.{index + 1}</span>
-                  <div><h4>{title}</h4><p>{description}</p></div>
-                  <a href="/formulario" aria-label={`Hablemos de ${title}`}><span aria-hidden="true">↗</span></a>
-                </article>
-              ))}
-            </div>
-          </section>
-        ))}
-      </section>
-
-      <section className="devCapabilities" id="what-we-build">
-        <header>
-          <div><span className="devEyebrow">02 / Desarrollo y tecnología</span><p>Desde una herramienta puntual hasta un ecosistema completo. La solución se adapta a tu negocio, no tu negocio a la tecnología.</p></div>
-          <h2><span className="devTypeSlice" data-text="¿Qué quieres">¿Qué quieres</span><br/><em className="devTypeSlice isPink" data-text="construir?">construir?</em></h2>
-        </header>
-        <div className="devCapabilityGrid">
-          {capabilities.map((capability) => (
-            <article key={capability.number}>
-              <div className="devCapabilityPhoto"><img src={capability.image} alt="" loading="lazy" /><i /></div>
-              <span>{capability.number}</span>
-              <h3>{capability.title}</h3>
-              <p>{capability.items}</p>
-              <b>↗</b>
-            </article>
+      <section className="deckSlide devMethod" aria-labelledby="method-title">
+        <div className="devMethodTop">
+          <div>
+            <span className="devEyebrow">Cómo trabajamos</span>
+            <h2 id="method-title">De una idea<br/><em>a algo real.</em></h2>
+          </div>
+          <blockquote>
+            <p>La tecnología no es el punto de partida. Tu negocio y lo que quieres lograr, sí.</p>
+            <cite>Un solo equipo contigo · Cinco pasos</cite>
+          </blockquote>
+        </div>
+        <ol className="devMethodSteps">
+          {process.map(([step, text], index) => (
+            <li key={step} style={{ "--step": index } as React.CSSProperties}>
+              <span>0{index + 1}</span>
+              <h3>{step}.</h3>
+              <p>{text}</p>
+            </li>
           ))}
-        </div>
+        </ol>
       </section>
 
-      <section className="devProcess">
-        <div className="devProcessHead"><span className="devEyebrow">03 / Así lo hacemos</span><span>Un solo equipo contigo<br/>Cinco pasos para avanzar</span></div>
-        <h2><span className="devTypeSlice" data-text="De una idea">De una idea</span><br/><em className="devTypeSlice isPink" data-text="a algo real.">a algo real.</em></h2>
-        <div className="devProcessFlow">
-          {process.map((step, index) => (
-            <div key={step}>
-              <small>0{index + 1}</small>
-              <strong>{step}</strong>
-              {index < process.length - 1 && <b>→</b>}
-            </div>
-          ))}
-        </div>
-        <p className="devPrinciple"><span className="devTypeSlice" data-text="La tecnología no es el punto de partida.">La tecnología no es el punto de partida.</span><br/><em className="devTypeSlice isLight" data-text="Tu negocio y lo que quieres lograr, sí.">Tu negocio y lo que quieres lograr, sí.</em></p>
-      </section>
 
-      <RegionalPresence />
-
-      <section className="devCta" id="contacto">
-        <span className="devEyebrow">04 / ¿Construimos juntos?</span>
-        <p>¿Tienes un reto, una idea o una oportunidad dando vueltas?</p>
-        <h2><span className="devTypeSlice" data-text="Hablemos de lo">Hablemos de lo</span><br/><em className="devTypeSlice isPink" data-text="que viene.">que viene.</em></h2>
-        <a href="/formulario">Cuéntanos tu idea <b>→</b></a>
+      {/* Cierre */}
+      <section className="deckSlide deckClose" id="contacto" aria-label="Contacto">
+        <img src="/assets/brand/ork-logo-papel.svg" alt="O R-K" />
+        <span className="deckClaim">Business innovation &amp; technology</span>
+        <i aria-hidden="true" />
+        <a href="/formulario">Conversemos <span aria-hidden="true">→</span></a>
       </section>
+      </DeckRail>
     </main>
   );
 }
