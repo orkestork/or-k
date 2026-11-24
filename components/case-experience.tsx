@@ -4,7 +4,8 @@ import { useEffect, useRef } from "react";
 import type { ProjectClip, WheelProject } from "@/components/project-wheel";
 import "./case-experience.css";
 
-export type CaseData = { desc: string; scope: string[]; pieces: { id: string; label: string }[] };
+/** `src` overrides /assets/pieces/<id>.jpg; `wide` shows the piece full width at its own proportions (no square crop). */
+export type CaseData = { desc: string; scope: string[]; pieces: { id: string; label: string; src?: string; wide?: boolean }[] };
 
 type Shot = { key: string; kind: "video" | "image"; src: string; label?: string; clip?: ProjectClip };
 
@@ -43,7 +44,10 @@ export default function CaseExperience({
   const lead = leadClip(clips);
   const allShots: Shot[] = [
     ...clips.filter((clip) => clip !== lead).map((clip) => ({ key: clip.src, kind: (clip.kind === "image" ? "image" : "video") as Shot["kind"], src: clip.src, clip })),
-    ...(data?.pieces ?? []).map((piece) => ({ key: piece.id, kind: "image" as const, src: `/assets/pieces/${piece.id}.jpg`, label: piece.label })),
+    ...(data?.pieces ?? []).map((piece) => {
+      const src = piece.src ?? `/assets/pieces/${piece.id}.jpg`;
+      return { key: piece.id, kind: "image" as const, src, label: piece.label, clip: piece.wide ? { src, duration: 0, kind: "image" as const } : undefined };
+    }),
   ];
   // Films run full width (16:9); the square brand pieces go in a 3-up grid so nothing gets cropped.
   const wide = (shot: Shot) => shot.kind === "video" || !!shot.clip;

@@ -6,7 +6,7 @@ import type { WheelProject } from "@/components/project-wheel";
 import "./work-grid.css";
 import CaseExperience, { caseTags, leadClip } from "./case-experience";
 
-type Piece = { id: string; label: string };
+type Piece = { id: string; label: string; src?: string; wide?: boolean };
 type Case = { desc: string; scope: string[]; pieces: Piece[] };
 type WorkProject = WheelProject & { preview?: string };
 
@@ -24,7 +24,7 @@ const cases: Record<string, Case> = {
   "Kliniu": {
     desc: "Dispensadores y soluciones de limpieza. Creamos el nombre, la identidad, la mascota y una tienda con catálogo y puntos de venta.",
     scope: ["Naming", "Identidad", "Mascota", "Tienda y catálogo"],
-    pieces: [{ id: "kli-prod", label: "Línea de producto" }, { id: "kli-masc", label: "Mascota" }, { id: "kli-puntos", label: "Puntos Kliniu" }, { id: "kli-serv", label: "Servicio" }],
+    pieces: [{ id: "kli-prod", label: "Línea de producto" }, { id: "kli-masc", label: "Mascota" }, { id: "kli-puntos", label: "Puntos Kliniu", src: "/assets/project-kliniu-puntos.jpg", wide: true }, { id: "kli-serv", label: "Servicio", src: "/assets/project-kliniu-service.jpg", wide: true }],
   },
   "GEU": {
     desc: "Seis unidades de negocio bajo una sola marca. Diseñamos el sistema visual, el ecosistema web multimarca y a Gus, su mascota.",
@@ -34,7 +34,7 @@ const cases: Record<string, Case> = {
   "Totalpars": {
     desc: "Repuestos para transporte masivo, de carga y maquinaria. Hicimos su identidad, una búsqueda por sistema del bus y la tienda web y móvil.",
     scope: ["Identidad", "UX de búsqueda", "Tienda web", "App móvil"],
-    pieces: [{ id: "tp-xray", label: "Bus rayos X" }, { id: "tp-cat", label: "Categorías" }, { id: "tp-movil", label: "App móvil" }],
+    pieces: [{ id: "tp-xray", label: "Bus rayos X", src: "/assets/pieces/tp-xray-full.jpg", wide: true }, { id: "tp-cat", label: "Categorías", src: "/assets/pieces/tp-cat-full.jpg", wide: true }, { id: "tp-movil", label: "App móvil" }],
   },
   "Drokex": {
     desc: "Catálogo digital para que las empresas de LATAM vendan al mundo. Creamos la marca, la plataforma con globo interactivo y un agente 3D.",
