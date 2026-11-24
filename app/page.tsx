@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import UtsSphere from "@/components/uts-sphere";
 import RegionalPresence from "@/components/regional-presence";
 import HomeShowreel from "@/components/home-showreel";
 import WorkGrid from "@/components/work-grid";
 import SiteMotion from "@/components/site-motion";
 import UtsMotion from "@/components/uts-motion";
+import LanguageSwitch from "@/components/language-switch";
+import FilmType, { beatAt } from "@/components/film-type";
+import { tr, useLang } from "@/lib/i18n";
 
 function openingRamp(value: number, from: number, to: number) {
   const t = Math.min(1, Math.max(0, (value - from) / (to - from)));
@@ -56,34 +59,34 @@ const sectors = [
   "STARTUPS",
 ];
 const projects = [
-  {title:"4U Studio",url:"https://4ustudioacademy.com",meta:"Estrategia de marca / Identidad visual",year:"2026",kind:"image",media:"/assets/pieces/4u-clip.jpg",preview:"/assets/project-4u-clip-01.mp4",motion:[
+  {title:"4U Studio",url:"https://4ustudioacademy.com",meta:"Estrategia de marca / Identidad visual",year:"2026",kind:"image",media:"/assets/covers/4u.jpg",preview:"/assets/project-4u-clip-01.mp4",motion:[
     {src:"/assets/project-4u-web-film.mp4",duration:4000},
     {src:"/assets/project-4u-clip-01.mp4",duration:3000},
     {src:"/assets/project-4u-clip-02.mp4",duration:3000},
   ]},
-  {title:"L'Origine",url:"https://www.lorigine.com.co",meta:"Identidad de marca / Dirección visual",year:"2026",kind:"image",media:"/assets/pieces/lor-film2.jpg",motion:[
+  {title:"L'Origine",url:"https://www.lorigine.com.co",meta:"Identidad de marca / Dirección visual",year:"2026",kind:"image",media:"/assets/covers/lor.jpg",motion:[
     {src:"/assets/project-lorigine-film.mp4",duration:10000},
   ]},
-  {title:"Kliniu",url:"https://kliniucolombia.com",meta:"Naming / Identidad de marca",year:"2026",kind:"image",media:"/assets/project-kliniu-puntos.jpg",motion:[
+  {title:"Kliniu",url:"https://kliniucolombia.com",meta:"Naming / Identidad de marca",year:"2026",kind:"image",media:"/assets/covers/kli.jpg",motion:[
     {src:"/assets/project-kliniu-film.mp4",duration:2000,startAt:0},
     {src:"/assets/project-kliniu-products.jpg",duration:3000,kind:"image" as const},
     {src:"/assets/project-kliniu-film.mp4",duration:2000,startAt:5},
     {src:"/assets/project-kliniu-film.mp4",duration:3000,startAt:7},
   ]},
-  {title:"GEU",url:"https://geu-navy.vercel.app/",meta:"Identidad corporativa / Sistema visual",year:"2026",kind:"image",media:"/assets/pieces/geu-cfd.jpg",motion:[
+  {title:"GEU",url:"https://geu-navy.vercel.app/",meta:"Identidad corporativa / Sistema visual",year:"2026",kind:"image",media:"/assets/covers/geu.jpg",motion:[
     {src:"/assets/project-geu-web.jpg",duration:2000,kind:"image" as const},
     {src:"/assets/project-geu-energy.mp4",duration:2500,position:"right center"},
     {src:"/assets/project-geu-structure.mp4",duration:2000},
     {src:"/assets/project-geu-innovation.mp4",duration:2000},
     {src:"/assets/project-geu-plastic.mp4",duration:1500},
   ]},
-  {title:"Totalpars",url:"https://unipars-tech.vercel.app",meta:"Identidad corporativa / Diseño de marca",year:"2026",kind:"image",media:"/assets/pieces/tp-xray.jpg",motion:[
+  {title:"Totalpars",url:"https://unipars-tech.vercel.app",meta:"Identidad corporativa / Diseño de marca",year:"2026",kind:"image",media:"/assets/covers/tp.jpg",motion:[
     {src:"/assets/project-totalpars-intro.mp4",duration:2000,startAt:2.5,fit:"contain" as const,bg:"#081528"},
     {src:"/assets/project-totalpars-xray.mp4",duration:3000,startAt:0.5,fit:"contain" as const,bg:"#f4f5f7"},
     {src:"/assets/project-totalpars-categorias.mp4",duration:2000,startAt:2.5,fit:"contain" as const,bg:"linear-gradient(#fff 50%,#0e213f 50%)"},
     {src:"/assets/project-totalpars-web.mp4",duration:3000,fit:"contain" as const,bg:"#142b4d"},
   ]},
-  {title:"Drokex",url:"https://drokex.com",meta:"Identidad de marca / Plataforma digital",year:"2026",kind:"image",media:"/assets/pieces/dx-robot.jpg",motion:[
+  {title:"Drokex",url:"https://drokex.com",meta:"Identidad de marca / Plataforma digital",year:"2026",kind:"image",media:"/assets/covers/dx.jpg",motion:[
     {src:"/assets/project-drokex-motion-clean.mp4",duration:2000,startAt:3},
     {src:"/assets/project-drokex-web-film.mp4",duration:8000},
   ]},
@@ -98,6 +101,8 @@ const teamMembers = [
 ];
 
 export default function Home() {
+  const lang = useLang();
+  const [filmBeat, setFilmBeat] = useState(-1);
   const [filmMode, setFilmMode] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(false);
@@ -137,12 +142,10 @@ export default function Home() {
       if (progress === lastProgress) return;
       lastProgress = progress;
       const style = stage.style;
-      stage.toggleAttribute("data-title-out", progress >= .46);
-      style.setProperty("--opening-copy-out", String(openingRamp(progress, .06, .46)));
-      style.setProperty("--opening-grow", String(openingRamp(progress, .04, .50)));
-      style.setProperty("--opening-wipe-top", `${100 * (1 - openingRamp(progress, .49, .86))}%`);
-      style.setProperty("--opening-wipe-bottom", `${100 * (1 - openingRamp(progress, .42, .86))}%`);
-      style.setProperty("--opening-matte", String(openingRamp(progress, .88, 1)));
+      stage.toggleAttribute("data-title-out", progress >= .14);
+      style.setProperty("--opening-copy-out", String(openingRamp(progress, .02, .14)));
+      style.setProperty("--opening-grow", String(openingRamp(progress, .01, .16)));
+      style.setProperty("--opening-matte", String(openingRamp(progress, .95, 1)));
       style.setProperty("--opening-progress", String(progress));
     };
     const schedule = () => {
@@ -165,6 +168,48 @@ export default function Home() {
       window.removeEventListener("resize", schedule);
       preference.removeEventListener("change", syncPreference);
     };
+  }, [filmMode]);
+  // The hero film follows the scroll: idle it loops its first shot, scrolling scrubs it forward/back.
+  useEffect(() => {
+    const track = opening.current;
+    const video = openingStage.current?.querySelector<HTMLVideoElement>(".orkHomeFilm");
+    if (!track || !video || filmMode) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const IDLE_END = 3.8;
+    let frame = 0;
+    let shown = 0;
+    let scrubbing = false;
+    let beat = -1;
+    const syncBeat = (time: number) => {
+      const next = beatAt(time);
+      if (next !== beat) { beat = next; setFilmBeat(next); }
+    };
+    const tick = () => {
+      frame = window.requestAnimationFrame(tick);
+      const bounds = track.getBoundingClientRect();
+      if (bounds.bottom < 0 || !video.duration) return;
+      if (reduced.matches) {
+        if (video.paused) void video.play().catch(() => {});
+        return;
+      }
+      const distance = Math.max(1, bounds.height - window.innerHeight);
+      const progress = Math.min(1, Math.max(0, -bounds.top / distance));
+      if (progress < .004) {
+        if (scrubbing) { scrubbing = false; if (video.currentTime > IDLE_END) video.currentTime = 0; }
+        if (video.paused) void video.play().catch(() => {});
+        if (video.currentTime > IDLE_END) video.currentTime = 0;
+        shown = video.currentTime;
+        syncBeat(shown);
+        return;
+      }
+      if (!scrubbing) { scrubbing = true; video.pause(); shown = video.currentTime; }
+      const target = progress * (video.duration - .05);
+      shown += (target - shown) * .14;
+      if (!video.seeking && Math.abs(video.currentTime - shown) > 1 / 60) video.currentTime = shown;
+      syncBeat(shown);
+    };
+    frame = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(frame);
   }, [filmMode]);
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
@@ -396,6 +441,7 @@ export default function Home() {
       <a className="logo brandLogo" href="#inicio" aria-label="O R-K inicio"><img src="/assets/brand/ork-logo-tinta.svg" alt="O R-K"/></a>
       <button className="navHow" type="button" onClick={()=>setHowOpen(true)}><span>Explora UTS Method</span><b>↗</b></button>
       <div className="navlinks"><a href="#trabajo">Trabajo</a><a href="#servicios">Método UTS</a><a href="#nosotros" onClick={(event)=>{event.preventDefault();setTeamOpen(true);}}>Nosotros</a><a href="/servicios">Servicios</a><a href="#contacto">Conversemos</a></div>
+      <LanguageSwitch />
       <a className="navLogin" href="/work/login">Iniciar sesión <span aria-hidden="true">↗</span></a>
     </nav>
 
@@ -458,14 +504,10 @@ export default function Home() {
       event.currentTarget.style.setProperty("--hero-y", "0");
     }}>
       <div className="heroMedia tone-0 openingScreen" aria-hidden="true">
-        <video className="orkHomeFilm" data-lazy-motion muted loop playsInline preload="none" poster="/assets/ork-home-studio-poster.jpg">
-          <source src="/assets/ork-home-studio.mp4" type="video/mp4"/>
+        <video className="orkHomeFilm" muted loop playsInline preload="auto" poster="/assets/ork-hero-film-poster.jpg">
+          <source src="/assets/ork-hero-film.mp4" type="video/mp4"/>
         </video>
-        <div className="openingSecondShot">
-          <video data-lazy-motion muted loop playsInline preload="none" poster="/assets/ork-brand-mural-poster.jpg">
-            <source src="/assets/ork-brand-mural.mp4" type="video/mp4"/>
-          </video>
-        </div>
+        <FilmType index={filmBeat} lang={lang} />
       </div>
       <div className="heroShade" />
       <div className="studioHeroCopy">
@@ -489,8 +531,8 @@ export default function Home() {
       <div className="utsStage">
       <span className="sectionNo">01 / UTS METHOD</span>
       <UtsMotion />
-      <div className="serviceBrief utsBrief"><h2 aria-label="Una lógica para trabajar sobre el negocio completo."><span className="utsWord" aria-hidden="true"><span style={{"--w":0} as React.CSSProperties}>Una</span></span> <span className="utsWord" aria-hidden="true"><span style={{"--w":1} as React.CSSProperties}>lógica</span></span> <span className="utsWord" aria-hidden="true"><span style={{"--w":2} as React.CSSProperties}>para</span></span> <span className="utsWord" aria-hidden="true"><span style={{"--w":3} as React.CSSProperties}>trabajar</span></span> <span className="utsWord" aria-hidden="true"><span style={{"--w":4} as React.CSSProperties}>sobre</span></span> <span className="utsWord" aria-hidden="true"><span style={{"--w":5} as React.CSSProperties}>el</span></span> <span className="utsWord" aria-hidden="true"><span style={{"--w":6} as React.CSSProperties}>negocio</span></span> <span className="utsWord" aria-hidden="true"><span style={{"--w":7} as React.CSSProperties}>completo.</span></span></h2><div><span>UTS by O R-K</span></div></div>
-      <div className="serviceCards">{services.map((service,i)=><article className="serviceCard" role="button" tabIndex={0} aria-label={`Abrir faceta ${service.title}`} style={{"--card-delay":`${i * .13}s`} as React.CSSProperties} key={service.title} onClick={()=>openHowAt(i)} onKeyDown={(event)=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();openHowAt(i);}}} onPointerEnter={(event)=>{if(window.matchMedia("(hover:hover) and (prefers-reduced-motion: no-preference)").matches){const video=event.currentTarget.querySelector("video");if(video) void video.play().catch(()=>{});}}} onPointerLeave={(event)=>{if(window.matchMedia("(hover:hover)").matches){const video=event.currentTarget.querySelector("video");if(video){video.pause();video.currentTime=0;}}}}><div className="serviceSticky"><span className="serviceNumber">0{i+1}</span><div className="serviceMedia"><img src={service.media} alt="" loading="lazy" decoding="async"/>{service.motion&&<video className="serviceHoverVideo" muted loop playsInline preload="none" poster={service.media}><source src={service.motion} type="video/mp4"/></video>}</div><span className="serviceLabel">{service.axis}</span><h3><span className="rollText" aria-label={service.title}>{Array.from(service.title).map((char,ci)=><span className="rollChar" aria-hidden="true" data-char={char} style={{"--i":ci} as React.CSSProperties} key={ci}>{char}</span>)}</span><b>↗</b></h3><p>{service.desc}</p><div className="serviceFocus"><span>Qué trabajamos</span><ul>{service.focus.map((item)=><li key={item}>{item}</li>)}</ul></div><span className="serviceCta"><i aria-hidden="true"/>Ver la fase</span></div></article>)}</div>
+      <div className="serviceBrief utsBrief"><h2 aria-label={tr("Una lógica para trabajar sobre el negocio completo.",lang)}>{tr("Una lógica para trabajar sobre el negocio completo.",lang).split(" ").map((word,wi)=><Fragment key={`${word}-${wi}`}>{wi>0&&" "}<span className="utsWord" aria-hidden="true"><span style={{"--w":wi} as React.CSSProperties}>{word}</span></span></Fragment>)}</h2><div><span>UTS by O R-K</span></div></div>
+      <div className="serviceCards">{services.map((service,i)=><article className="serviceCard" role="button" tabIndex={0} aria-label={`Abrir faceta ${service.title}`} style={{"--card-delay":`${i * .13}s`} as React.CSSProperties} key={service.title} onClick={()=>openHowAt(i)} onKeyDown={(event)=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();openHowAt(i);}}} onPointerEnter={(event)=>{if(window.matchMedia("(hover:hover) and (prefers-reduced-motion: no-preference)").matches){const video=event.currentTarget.querySelector("video");if(video) void video.play().catch(()=>{});}}} onPointerLeave={(event)=>{if(window.matchMedia("(hover:hover)").matches){const video=event.currentTarget.querySelector("video");if(video){video.pause();video.currentTime=0;}}}}><div className="serviceSticky"><span className="serviceNumber">0{i+1}</span><div className="serviceMedia"><img src={service.media} alt="" loading="lazy" decoding="async"/>{service.motion&&<video className="serviceHoverVideo" muted loop playsInline preload="none" poster={service.media}><source src={service.motion} type="video/mp4"/></video>}</div><span className="serviceLabel">{service.axis}</span><h3><span className="rollText" aria-label={tr(service.title,lang)}>{Array.from(tr(service.title,lang)).map((char,ci)=><span className="rollChar" aria-hidden="true" data-char={char} style={{"--i":ci} as React.CSSProperties} key={ci}>{char}</span>)}</span><b>↗</b></h3><p>{service.desc}</p><div className="serviceFocus"><span>Qué trabajamos</span><ul>{service.focus.map((item)=><li key={item}>{item}</li>)}</ul></div><span className="serviceCta"><i aria-hidden="true"/>Ver la fase</span></div></article>)}</div>
       </div>
     </section>
 
@@ -522,7 +564,7 @@ export default function Home() {
         {huellaClips.slice(4,6).map((clip)=><CollageClip clip={clip} key={clip.id}/>)}
         {huellaClips.slice(6,8).map((clip)=><CollageClip clip={clip} key={clip.id}/>)}
         <div className="collageTile tileNote">
-          <span className="brandStreetLabel">Producción audiovisual · Huella Digital</span>
+          <span className="brandStreetLabel">Producción audiovisual</span>
           <p>Comerciales para televisión y digital de marcas que se ven todos los días.</p>
         </div>
       </div>
@@ -552,7 +594,7 @@ export default function Home() {
       const bounds = event.currentTarget.getBoundingClientRect();
       event.currentTarget.style.setProperty("--glow-x", `${event.clientX - bounds.left}px`);
       event.currentTarget.style.setProperty("--glow-y", `${event.clientY - bounds.top}px`);
-    }}><video className="contactBg" data-lazy-motion muted loop playsInline preload="none" poster="/assets/ork-brand-mupi-poster.jpg" aria-hidden="true"><source src="/assets/ork-brand-poster-rain.mp4" type="video/mp4"/></video><div className="contactVeil" aria-hidden="true"/><p>¿Tienes algo en mente?</p><h2 aria-label="Hagámoslo inevitable."><span className="contactWord contactWordTop" aria-hidden="true">{Array.from("HAGÁMOSLO").map((char,index)=><span data-char={char} style={{"--char-index":index} as React.CSSProperties} key={`${char}-${index}`}>{char}</span>)}</span><span className="contactWord contactWordImpact" aria-hidden="true">{Array.from("INEVITABLE.").map((char,index)=><span data-char={char} style={{"--char-index":index} as React.CSSProperties} key={`${char}-${index}`}>{char}</span>)}</span></h2><div className="contactMeta"><span>Un proyecto nuevo<br/>Una colaboración<br/>Una idea sin resolver</span><a className="contactLaunch" href="/formulario">Descubre si tu empresa está preparada <span>↗</span></a></div></section>
+    }}><video className="contactBg" data-lazy-motion muted loop playsInline preload="none" poster="/assets/ork-brand-mupi-poster.jpg" aria-hidden="true"><source src="/assets/ork-brand-poster-rain.mp4" type="video/mp4"/></video><div className="contactVeil" aria-hidden="true"/><p>¿Tienes algo en mente?</p><h2 aria-label="Hagámoslo inevitable."><span className="contactWord contactWordTop" aria-hidden="true">{Array.from(lang==="en"?"LET'S MAKE IT":"HAGÁMOSLO").map((char,index)=><span data-char={char} style={{"--char-index":index} as React.CSSProperties} key={`${char}-${index}`}>{char}</span>)}</span><span className="contactWord contactWordImpact" aria-hidden="true">{Array.from("INEVITABLE.").map((char,index)=><span data-char={char} style={{"--char-index":index} as React.CSSProperties} key={`${char}-${index}`}>{char}</span>)}</span></h2><div className="contactMeta"><span>Un proyecto nuevo<br/>Una colaboración<br/>Una idea sin resolver</span><a className="contactLaunch" href="/formulario">Descubre si tu empresa está preparada <span>↗</span></a></div></section>
     <footer><a className="logo brandLogo brandLogoFooter" href="#inicio" aria-label="O R-K inicio"><img src="/assets/brand/ork-logo-papel.svg" alt="O R-K"/></a><p>Business innovation & technology.</p><div className="footerMeta"><p>© 2026 O R-K</p></div></footer>
   </main>;
 }
