@@ -59,6 +59,10 @@ const sectors = [
   "STARTUPS",
 ];
 const projects = [
+  {title:"Kliniu",url:"https://kliniucolombia.com",meta:"Naming / Identidad de marca",year:"2026",kind:"image",media:"/assets/portfolio/kliniu-cover.webp"},
+  {title:"GEU",url:"https://geu-navy.vercel.app/",meta:"Identidad corporativa / Sistema visual",year:"2026",kind:"image",media:"/assets/portfolio/geu-cover.webp"},
+  {title:"Totalpars",url:"https://unipars-tech.vercel.app",meta:"Identidad corporativa / Diseño de marca",year:"2026",kind:"image",media:"/assets/portfolio/totalpars-cover.webp"},
+  {title:"Drokex",url:"https://drokex.com",meta:"Identidad de marca / Plataforma digital",year:"2026",kind:"image",media:"/assets/portfolio/drokex-cover.webp"},
   {title:"4U Studio",url:"https://4ustudioacademy.com",meta:"Estrategia de marca / Identidad visual",year:"2026",kind:"image",media:"/assets/covers/4u.jpg",preview:"/assets/project-4u-clip-01.mp4",motion:[
     {src:"/assets/project-4u-web-film.mp4",duration:4000},
     {src:"/assets/project-4u-clip-01.mp4",duration:3000},
@@ -66,29 +70,6 @@ const projects = [
   ]},
   {title:"L'Origine",url:"https://www.lorigine.com.co",meta:"Identidad de marca / Dirección visual",year:"2026",kind:"image",media:"/assets/covers/lor.jpg",motion:[
     {src:"/assets/project-lorigine-film.mp4",duration:10000},
-  ]},
-  {title:"Kliniu",url:"https://kliniucolombia.com",meta:"Naming / Identidad de marca",year:"2026",kind:"image",media:"/assets/covers/kli.jpg",motion:[
-    {src:"/assets/project-kliniu-film.mp4",duration:2000,startAt:0},
-    {src:"/assets/project-kliniu-products.jpg",duration:3000,kind:"image" as const},
-    {src:"/assets/project-kliniu-film.mp4",duration:2000,startAt:5},
-    {src:"/assets/project-kliniu-film.mp4",duration:3000,startAt:7},
-  ]},
-  {title:"GEU",url:"https://geu-navy.vercel.app/",meta:"Identidad corporativa / Sistema visual",year:"2026",kind:"image",media:"/assets/covers/geu.jpg",motion:[
-    {src:"/assets/project-geu-web.jpg",duration:2000,kind:"image" as const},
-    {src:"/assets/project-geu-energy.mp4",duration:2500,position:"right center"},
-    {src:"/assets/project-geu-structure.mp4",duration:2000},
-    {src:"/assets/project-geu-innovation.mp4",duration:2000},
-    {src:"/assets/project-geu-plastic.mp4",duration:1500},
-  ]},
-  {title:"Totalpars",url:"https://unipars-tech.vercel.app",meta:"Identidad corporativa / Diseño de marca",year:"2026",kind:"image",media:"/assets/covers/tp.jpg",motion:[
-    {src:"/assets/project-totalpars-intro.mp4",duration:2000,startAt:2.5,fit:"contain" as const,bg:"#081528"},
-    {src:"/assets/project-totalpars-xray.mp4",duration:3000,startAt:0.5,fit:"contain" as const,bg:"#f4f5f7"},
-    {src:"/assets/project-totalpars-categorias.mp4",duration:2000,startAt:2.5,fit:"contain" as const,bg:"linear-gradient(#fff 50%,#0e213f 50%)"},
-    {src:"/assets/project-totalpars-web.mp4",duration:3000,fit:"contain" as const,bg:"#142b4d"},
-  ]},
-  {title:"Drokex",url:"https://drokex.com",meta:"Identidad de marca / Plataforma digital",year:"2026",kind:"image",media:"/assets/covers/dx.jpg",motion:[
-    {src:"/assets/project-drokex-motion-clean.mp4",duration:2000,startAt:3},
-    {src:"/assets/project-drokex-web-film.mp4",duration:8000},
   ]},
 ];
 

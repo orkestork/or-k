@@ -139,18 +139,10 @@ export default function CaseExperience({
 
       <section className="caseXHero">
         <figure className="caseXHeroMedia" style={{ viewTransitionName: morph ? "work-case-media" : undefined }}>
-          {lead ? renderMedia({ kind: lead.kind === "image" ? "image" : "video", src: lead.src, clip: lead }, true) : <img src={project.media} alt="" />}
+          {lead ? renderMedia({ kind: lead.kind === "image" ? "image" : "video", src: lead.src, clip: lead }, true) : <img className="caseXHeroCover" src={project.media} alt="" />}
         </figure>
-        <div className="caseXHeroShade" aria-hidden="true" />
-        <div className="caseXHeroCopy">
-          <span className="caseXKicker">{caseTags(project.meta).join("  •  ")}</span>
-          <h2 id="caseX-title" aria-label={title}>
-            {Array.from(title).map((char, i) => (
-              <span className="caseXChar" aria-hidden="true" style={{ "--i": i } as React.CSSProperties} key={`${char}-${i}`}>{char === " " ? " " : char}</span>
-            ))}
-          </h2>
-          <span className="caseXScroll" aria-hidden="true">Desplázate para explorar <b>↓</b></span>
-        </div>
+        <h2 id="caseX-title" className="sr-only">{title}</h2>
+        <span className="caseXScroll" aria-hidden="true">Desplázate para explorar <b>↓</b></span>
       </section>
 
       <section className="caseXIntro">

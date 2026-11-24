@@ -284,21 +284,28 @@
 .workGrid .workCaseTitle {
   display: flex;
   align-items: center;
+  gap: 12px;
   margin-top: clamp(8px, .9vw, 14px);
   font-size: clamp(34px, 4.4vw, 78px);
   line-height: 1;
 }
 .workCaseTitleArrow {
-  display: inline-block;
-  overflow: hidden;
-  width: 0;
+  display: grid;
+  place-items: center;
   flex: none;
-  opacity: 0;
-  font: 300 .8em/1 "DM Sans", sans-serif;
-  transform: translateX(-60%);
-  transition: width .7s var(--ork-ease), opacity .4s ease, transform .7s var(--ork-ease);
+  width: clamp(38px, 4vw, 60px);
+  aspect-ratio: 1;
+  margin-inline-start: auto;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font: 400 clamp(17px, 1.6vw, 25px)/1 "DM Sans", sans-serif;
+  transition: background .3s ease, color .3s ease, border-color .3s ease;
 }
-.workCaseButton:is(:hover, :focus-visible) .workCaseTitleArrow { width: 1.25em; opacity: 1; transform: none; }
+.workCaseButton:is(:hover, :focus-visible) .workCaseTitleArrow {
+  background: var(--ork-electric, #7C3CFF);
+  border-color: var(--ork-electric, #7C3CFF);
+  color: #fff;
+}
 .workCaseTitleText { display: inline-block; transition: color .4s ease; }
 .workCaseButton:is(:hover, :focus-visible) .workCaseTitleText { color: var(--ork-electric, #7C3CFF); }
 
@@ -322,7 +329,6 @@
 @media (max-width: 760px) {
   .workHead { grid-template-columns: 1fr !important; }
   .workGrid { grid-template-columns: minmax(0, 1fr); }
-  .workCaseTitleArrow { width: 1.1em; opacity: 1; transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -330,12 +336,13 @@
   .workGrid .workCaseMedia img, .workGrid .workCaseMedia video { transform: none !important; }
 }
 
-/* Covers are square 640px pieces: show them square, no extra zoom/parallax crop. */
-.workGrid .workCaseMedia { aspect-ratio: 1 / 1; --s: 1.08; }
+/* Keep the complete artwork visible at the supplied cover proportions. */
+.workGrid .workCaseMedia { aspect-ratio: 808 / 632; --s: 1.08; }
+.workGrid .workCaseMedia img { object-fit: contain; }
 .workCase.isIn .workCaseMedia { --s: 1; }
 .workGrid .workCaseMedia img,
 .workGrid .workCaseMedia video,
 .workGrid .workCaseMedia[data-preview] video.isPlaying,
 .workGrid .workCaseButton:is(:hover, :focus-visible) .workCaseMedia img { transform: scale(var(--s)); }
 .workCaseButton:is(:hover, :focus-visible) .workCaseMedia { --s: 1.04; }
-.workGrid { max-width: 1500px; margin-inline: auto; }
+.workGrid { position: relative; z-index: 199; max-width: 1500px; margin-inline: auto; }

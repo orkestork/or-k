@@ -59,55 +59,19 @@
   transform: translate3d(0, calc(var(--hero-p) * 18%), 0) scale(calc(1 + var(--hero-p) * .12));
   will-change: transform;
 }
-.caseXHeroShade {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(0deg, rgba(11, 7, 16, .85), rgba(11, 7, 16, .1) 55%, rgba(11, 7, 16, .35));
-  opacity: calc(.75 + var(--hero-p) * .25);
-}
-.caseXHeroCopy {
-  position: absolute;
-  left: clamp(18px, 3.5vw, 56px);
-  right: clamp(18px, 3.5vw, 56px);
-  bottom: clamp(24px, 5vh, 56px);
-  transform: translate3d(0, calc(var(--hero-p) * -30%), 0);
-  opacity: calc(1 - var(--hero-p) * 1.4);
-}
-.caseXKicker {
-  display: block;
-  white-space: pre-wrap;
-  font: 500 clamp(11px, .95vw, 14px)/1.4 "DM Sans", sans-serif;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  opacity: 0;
-  animation: caseXUp .9s var(--ork-ease, cubic-bezier(.16,1,.3,1)) .55s both;
-}
-.caseXHeroCopy h2 {
-  display: flex;
-  flex-wrap: wrap;
-  margin: .12em 0 0;
-  overflow: hidden;
-  padding: .06em 0;
-  font: 400 clamp(64px, 13vw, 230px)/.86 Anton, Impact, sans-serif;
-  letter-spacing: -.01em;
-  text-transform: uppercase;
-}
-.caseXChar {
-  display: inline-block;
-  white-space: pre;
-  transform: translateY(105%);
-  animation: caseXChar 1.1s var(--ork-ease, cubic-bezier(.16,1,.3,1)) both;
-  animation-delay: calc(.45s + var(--i) * .035s);
-}
-@keyframes caseXChar { to { transform: none; } }
+.caseXHeroMedia .caseXHeroCover { object-fit: contain; transform: none; }
 @keyframes caseXUp { from { opacity: 0; transform: translateY(24px); } to { opacity: .85; transform: none; } }
 .caseXScroll {
   position: absolute;
-  right: 0;
-  bottom: .4em;
+  right: clamp(18px, 3.5vw, 56px);
+  bottom: clamp(24px, 5vh, 56px);
   display: flex;
   gap: 12px;
   align-items: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #0B0710;
+  color: #fff;
   font: 600 11px/1 "DM Sans", sans-serif;
   letter-spacing: .18em;
   text-transform: uppercase;
@@ -295,7 +259,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .caseX, .caseXChar, .caseXKicker, .caseXScroll, .caseXScroll b { animation: none !important; opacity: 1; transform: none; }
+  .caseX, .caseXScroll, .caseXScroll b { animation: none !important; opacity: 1; transform: none; }
   .caseXReveal, .caseXShotFrame, .caseXShotFrame img, .caseXShotFrame video, .caseXHeroMedia img, .caseXHeroMedia video { transition: none !important; opacity: 1 !important; transform: none !important; }
 }
 

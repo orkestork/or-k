@@ -4,13 +4,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import type { WheelProject } from "@/components/project-wheel";
 import "./work-grid.css";
-import CaseExperience, { caseTags, leadClip } from "./case-experience";
+import CaseExperience, { type CaseData, caseTags, leadClip } from "./case-experience";
 
-type Piece = { id: string; label: string; src?: string; wide?: boolean };
-type Case = { desc: string; scope: string[]; pieces: Piece[] };
 type WorkProject = WheelProject & { preview?: string };
 
-const cases: Record<string, Case> = {
+const cases: Record<string, CaseData> = {
   "4U Studio": {
     desc: "Academia de música y producción en Bogotá. Construimos su marca, el sitio web de la academia y las piezas audiovisuales para comunicar «Play your talent».",
     scope: ["Estrategia de marca", "Identidad visual", "Sitio web", "Producción audiovisual"],
@@ -22,24 +20,40 @@ const cases: Record<string, Case> = {
     pieces: [{ id: "lor-film2", label: "Producto" }, { id: "lor-film", label: "Tienda web" }],
   },
   "Kliniu": {
-    desc: "Dispensadores y soluciones de limpieza. Creamos el nombre, la identidad, la mascota y una tienda con catálogo y puntos de venta.",
-    scope: ["Naming", "Identidad", "Mascota", "Tienda y catálogo"],
-    pieces: [{ id: "kli-prod", label: "Línea de producto" }, { id: "kli-masc", label: "Mascota" }, { id: "kli-puntos", label: "Puntos Kliniu", src: "/assets/project-kliniu-puntos.jpg", wide: true }, { id: "kli-serv", label: "Servicio", src: "/assets/project-kliniu-service.jpg", wide: true }],
+    desc: "Kliniu vende dispensadores e insumos de higiene a hogares y empresas. Diseñamos una tienda que permite comprar por unidad, en packs o en combos, con la foca Kliniu como personaje de marca y Puntos K como programa de fidelización.",
+    scope: ["Identidad de marca", "Diseño de personaje", "E-commerce", "Fidelización"],
+    pieces: [
+      { id: "kliniu-identidad", label: "Identidad de marca", src: "/assets/portfolio/kliniu-identidad.webp", wide: true },
+      { id: "kliniu-la-foca", label: "La foca de Kliniu", src: "/assets/portfolio/kliniu-la-foca.webp", wide: true },
+      { id: "kliniu-home", label: "Tienda digital", src: "/assets/portfolio/kliniu-home.webp", wide: true },
+    ],
   },
   "GEU": {
-    desc: "Seis unidades de negocio bajo una sola marca. Diseñamos el sistema visual, el ecosistema web multimarca y a Gus, su mascota.",
-    scope: ["Identidad corporativa", "Arquitectura de marca", "Ecosistema web", "Mascota y contenido"],
-    pieces: [{ id: "geu-marca", label: "Sistema de marca" }, { id: "geu-web", label: "Ecosistema web" }, { id: "geu-energy", label: "GEU Energy" }, { id: "geu-gus", label: "Gus" }],
+    desc: "Diseñamos una plataforma para las seis unidades del Grupo Empresarial Universal. Cada marca tiene su propio catálogo e identidad y comparte el carrito y las cuentas de cliente. Gus, un castor ingeniero, conecta las seis experiencias.",
+    scope: ["Arquitectura de marca", "Plataforma multimarca", "Diseño de personaje", "Herramientas interactivas"],
+    pieces: [
+      { id: "geu-sistema-de-marca", label: "Sistema de marca", src: "/assets/portfolio/geu-sistema-de-marca.webp", wide: true },
+      { id: "geu-home", label: "Ecosistema web", src: "/assets/portfolio/geu-home.webp", wide: true },
+      { id: "geu-gus-mascota", label: "Gus, la mascota", src: "/assets/portfolio/geu-gus-mascota.webp", wide: true },
+    ],
   },
   "Totalpars": {
-    desc: "Repuestos para transporte masivo, de carga y maquinaria. Hicimos su identidad, una búsqueda por sistema del bus y la tienda web y móvil.",
-    scope: ["Identidad", "UX de búsqueda", "Tienda web", "App móvil"],
-    pieces: [{ id: "tp-xray", label: "Bus rayos X", src: "/assets/pieces/tp-xray-full.jpg", wide: true }, { id: "tp-cat", label: "Categorías", src: "/assets/pieces/tp-cat-full.jpg", wide: true }, { id: "tp-movil", label: "App móvil" }],
+    desc: "Totalpars es un marketplace B2B de repuestos para buses, camiones y maquinaria pesada. El catálogo usa un bus en rayos X para explorar sus sistemas y ofrece búsqueda por imagen y un asistente que orienta desde el síntoma.",
+    scope: ["Identidad visual", "Marketplace B2B", "Diseño de búsqueda", "Diseño de personaje"],
+    pieces: [
+      { id: "totalpars-identidad", label: "Identidad visual", src: "/assets/portfolio/totalpars-identidad.webp", wide: true },
+      { id: "totalpars-home", label: "Tienda de repuestos", src: "/assets/portfolio/totalpars-home.webp", wide: true },
+      { id: "totalpars-bus-rayos-x", label: "Búsqueda por sistema del bus", src: "/assets/portfolio/totalpars-bus-rayos-x.webp", wide: true },
+    ],
   },
   "Drokex": {
-    desc: "Catálogo digital para que las empresas de LATAM vendan al mundo. Creamos la marca, la plataforma con globo interactivo y un agente 3D.",
-    scope: ["Identidad", "Plataforma digital", "Experiencia 3D", "Agente con IA"],
-    pieces: [{ id: "dx-site", label: "Catálogo global" }, { id: "dx-world", label: "Drokex World" }, { id: "dx-robot", label: "Agente Drokex" }],
+    desc: "Drokex conecta a proveedores latinoamericanos con compradores internacionales. Los proveedores publican su catálogo y los compradores los encuentran por país o categoría para negociar directamente. Drokex World y el agente 3D forman parte de la experiencia.",
+    scope: ["Identidad de marca", "Catálogo B2B", "Diseño de personaje", "Experiencia 3D"],
+    pieces: [
+      { id: "drokex-identidad", label: "Identidad de marca", src: "/assets/portfolio/drokex-identidad.webp", wide: true },
+      { id: "drokex-personaje", label: "Personaje 3D", src: "/assets/portfolio/drokex-personaje.webp", wide: true },
+      { id: "drokex-drokex-world", label: "Drokex World", src: "/assets/portfolio/drokex-drokex-world.webp", wide: true },
+    ],
   },
 };
 
@@ -292,7 +306,7 @@ export default function WorkGrid({ projects }: { projects: WorkProject[] }) {
                 </span>
                 <span className="workCaseInfo">
                   <span className="workCaseMeta">{caseTags(project.meta).join("  •  ")}{project.year ? `  •  ${project.year}` : ""}</span>
-                  <span className="workCaseTitle"><span className="workCaseTitleArrow" aria-hidden="true">→</span><span className="workCaseTitleText">{project.title}</span></span>
+                  <span className="workCaseTitle"><span className="workCaseTitleText">{project.title}</span><span className="workCaseTitleArrow" aria-hidden="true">↗</span></span>
                 </span>
               </button>
             </li>
