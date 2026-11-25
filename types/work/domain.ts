@@ -123,6 +123,7 @@ export interface HrProfile {
   endDate: string | null;
   /** Null when the viewer may not see pay. */
   salary: number | null;
+  monthlyNonSalaryBonus: number | null;
   salaryPeriod: "monthly" | "hourly" | "project";
   eps: string;
   pensionFund: string;

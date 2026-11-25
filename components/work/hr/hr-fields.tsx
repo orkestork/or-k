@@ -2,7 +2,7 @@
 
 import { Lock } from "lucide-react";
 import type { HrProfile } from "@/types/work/domain";
-import { ARL_LABEL, isEmployment } from "@/lib/work/payroll";
+import { ARL_LABEL, isEmployment, supportsMonthlyNonSalaryBonus } from "@/lib/work/payroll";
 import { Input } from "@/components/work/ui/input";
 import { Label } from "@/components/work/ui/label";
 import { Textarea } from "@/components/work/ui/textarea";
@@ -44,7 +44,7 @@ export function HrFields({
   const lock = (hr: boolean) => (hr && !canEditAll ? <Lock className="size-3 text-muted-foreground" aria-label="Lo gestiona Talento humano" /> : null);
   const editable = (hr: boolean) => (hr ? canEditAll : canEditPersonal || canEditAll);
 
-  const text = (k: keyof HrProfile, label: string, o: { hr?: boolean; type?: string; placeholder?: string; list?: string[] } = {}) => (
+  const text = (k: keyof HrProfile, label: string, o: { hr?: boolean; type?: string; placeholder?: string; list?: string[]; min?: number; step?: number } = {}) => (
     <div className="grid gap-1.5">
       <Label htmlFor={`hr-${k}`} className="flex items-center gap-1">
         {label} {lock(!!o.hr)}
@@ -55,6 +55,8 @@ export function HrFields({
         list={o.list ? `list-${k}` : undefined}
         value={(p[k] ?? "") as string | number}
         placeholder={o.placeholder}
+        min={o.min}
+        step={o.step}
         disabled={!editable(!!o.hr)}
         onChange={(e) =>
           set(
@@ -163,6 +165,11 @@ export function HrFields({
                   </select>
                 </div>
               ) : null}
+              {showPay && supportsMonthlyNonSalaryBonus(p.contractType)
+                ? text("monthlyNonSalaryBonus", "Bono mensual no prestacional (COP)", {
+                    type: "number", hr: true, min: 0, step: 0.01, placeholder: "Opcional",
+                  })
+                : null}
             </div>
           ) : (
             <div className="grid gap-3 sm:grid-cols-3">

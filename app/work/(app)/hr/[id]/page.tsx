@@ -143,6 +143,11 @@ export default async function HrFilePage({ params }: { params: Promise<{ id: str
                   {money(file.salary)} <span className="text-muted-foreground">{PERIOD_LABEL[file.salaryPeriod]}</span>
                 </p>
               ) : null}
+              {(pay || isSelf) && file.monthlyNonSalaryBonus !== null ? (
+                <p className="text-xs">
+                  <span className="text-muted-foreground">Bono mensual no prestacional</span> {money(file.monthlyNonSalaryBonus)}
+                </p>
+              ) : null}
             </Card>
           ) : null}
           <Link href={`/work/team/${id}`} className="text-xs text-primary hover:underline">

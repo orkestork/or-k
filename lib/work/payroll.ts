@@ -50,6 +50,18 @@ export const ARL_LABEL = ["I · Mínimo (oficina)", "II · Bajo", "III · Medio"
 export const isEmployment = (t: HrProfile["contractType"]) =>
   t === "indefinite" || t === "fixed" || t === "work" || t === "apprentice";
 
+export const supportsMonthlyNonSalaryBonus = (type: HrProfile["contractType"]) =>
+  isEmployment(type) && type !== "apprentice";
+
+export function monthlyNonSalaryBonusError(profile: HrProfile): string | null {
+  const bonus = profile.monthlyNonSalaryBonus;
+  if (!supportsMonthlyNonSalaryBonus(profile.contractType) || bonus == null) return null;
+  if (!Number.isFinite(bonus) || bonus < 0 || bonus > 999_999_999_999.99 || Number(bonus.toFixed(2)) !== bonus) {
+    return "Ingresa un bono válido en COP, de cero o más y con máximo dos decimales.";
+  }
+  return null;
+}
+
 export type CostLine = { label: string; amount: number; hint?: string };
 
 /**

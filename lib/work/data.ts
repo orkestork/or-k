@@ -35,7 +35,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/work/supabase/server";
 import { supabaseConfigured } from "@/lib/work/supabase/env";
 import * as mock from "@/lib/work/mock/store";
-import { resolvePayroll, type PayrollParams } from "@/lib/work/payroll";
+import { monthlyNonSalaryBonusError, resolvePayroll, supportsMonthlyNonSalaryBonus, type PayrollParams } from "@/lib/work/payroll";
 import type { AppPlan, AppSubscribers, FinApp, Recurring } from "@/lib/work/finance";
 import { adminConfigured, createAdminClient } from "@/lib/work/supabase/admin";
 
@@ -2204,6 +2204,7 @@ const toHr = (r: Row): HrProfile => ({
   startDate: r.start_date,
   endDate: r.end_date,
   salary: r.salary === null || r.salary === undefined ? null : Number(r.salary),
+  monthlyNonSalaryBonus: r.monthly_non_salary_bonus == null ? null : Number(r.monthly_non_salary_bonus),
   salaryPeriod: r.salary_period,
   eps: r.eps,
   pensionFund: r.pension_fund,
@@ -2241,6 +2242,7 @@ export const EMPTY_HR = (userId: string): HrProfile => ({
   startDate: null,
   endDate: null,
   salary: null,
+  monthlyNonSalaryBonus: null,
   salaryPeriod: "monthly",
   eps: "",
   pensionFund: "",
@@ -2277,6 +2279,8 @@ export async function getHrProfiles(): Promise<HrProfile[]> {
 }
 
 export async function saveHrProfile(profile: HrProfile) {
+  const bonusError = monthlyNonSalaryBonusError(profile);
+  if (bonusError) throw new Error(bonusError);
   if (!supabaseConfigured) throw new Error("Requiere Supabase");
   await requireMe();
   const supabase = await sb();
@@ -2297,6 +2301,7 @@ export async function saveHrProfile(profile: HrProfile) {
       start_date: profile.startDate || null,
       end_date: profile.endDate || null,
       salary: profile.salary,
+      monthly_non_salary_bonus: supportsMonthlyNonSalaryBonus(profile.contractType) ? profile.monthlyNonSalaryBonus : null,
       salary_period: profile.salaryPeriod,
       eps: profile.eps,
       pension_fund: profile.pensionFund,

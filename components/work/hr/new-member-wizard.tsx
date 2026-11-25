@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Camera, Check } from "lucide-react";
 import { toast } from "sonner";
 import type { HrProfile, RoleSlug, WorkUserRecord } from "@/types/work/domain";
-import type { PayrollParams } from "@/lib/work/payroll";
+import { monthlyNonSalaryBonusError, type PayrollParams } from "@/lib/work/payroll";
 import { createMemberAction, saveHrProfileAction, setAvatarAction } from "@/lib/work/actions";
 import { cn } from "@/lib/work/utils";
 import { Button } from "@/components/work/ui/button";
@@ -59,7 +59,7 @@ export function NewMemberWizard({
   };
 
   const next = () => {
-    const err = step === 0 ? accountError() : null;
+    const err = step === 0 ? accountError() : step === 1 ? monthlyNonSalaryBonusError(hr) : null;
     setError(err);
     if (!err) setStep((s) => Math.min(STEPS.length - 1, s + 1));
   };
@@ -69,6 +69,12 @@ export function NewMemberWizard({
     if (err) {
       setStep(0);
       setError(err);
+      return;
+    }
+    const bonusError = monthlyNonSalaryBonusError(hr);
+    if (bonusError) {
+      setStep(1);
+      setError(bonusError);
       return;
     }
     setError(null);
