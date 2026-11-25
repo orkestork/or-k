@@ -156,7 +156,7 @@ export default function Home() {
     const video = openingStage.current?.querySelector<HTMLVideoElement>(".orkHomeFilm");
     if (!track || !video || filmMode) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const IDLE_END = 3.8;
+    const IDLE_END = 0.95;
     let frame = 0;
     let shown = 0;
     let scrubbing = false;
