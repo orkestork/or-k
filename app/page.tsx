@@ -11,11 +11,6 @@ import LanguageSwitch from "@/components/language-switch";
 import FilmType, { beatAt } from "@/components/film-type";
 import { tr, useLang } from "@/lib/i18n";
 
-function openingRamp(value: number, from: number, to: number) {
-  const t = Math.min(1, Math.max(0, (value - from) / (to - from)));
-  return t * t * (3 - 2 * t);
-}
-
 const services: {title:string;axis:string;desc:string;media:string;motion?:string;focus:string[]}[] = [
   {title:"Understand",axis:"Eje Z · Profundidad",desc:"Entendemos cómo funciona realmente el negocio: estrategia, estructura, procesos, personas, cultura, tecnología, datos, marca, ventas y oportunidades.",media:"/assets/services-orca-understand-v2.jpg",focus:["Estrategia","Estructura","Procesos","Personas","Cultura","Datos"]},
   {title:"Transform",axis:"Eje X · Transversalidad",desc:"Convertimos el diagnóstico en capacidades: sistemas, automatizaciones, integraciones, plataformas, datos, herramientas internas e inteligencia artificial.",media:"/assets/services-orca-transform-v2.jpg",focus:["Sistemas","Automatizaciones","Integraciones","Plataformas","Herramientas internas","Inteligencia artificial"]},
@@ -84,6 +79,8 @@ const teamMembers = [
 export default function Home() {
   const lang = useLang();
   const [filmBeat, setFilmBeat] = useState(-1);
+  const [filmPlaying, setFilmPlaying] = useState(false);
+  const heroVideo = useRef<HTMLVideoElement>(null);
   const [filmMode, setFilmMode] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(false);
@@ -92,8 +89,6 @@ export default function Home() {
   const [howProgress, setHowProgress] = useState(0);
   const [activeUtsAxis,setActiveUtsAxis] = useState<"X"|"Y"|"Z"|null>(null);
   const home = useRef<HTMLElement>(null);
-  const opening = useRef<HTMLDivElement>(null);
-  const openingStage = useRef<HTMLElement>(null);
   const cursor = useRef<HTMLDivElement>(null);
   const scrollProgress = useRef<HTMLDivElement>(null);
   const howRail = useRef<HTMLDivElement>(null);
@@ -106,54 +101,15 @@ export default function Home() {
     setFilmMode(new URLSearchParams(window.location.search).has("film"));
   }, []);
   useEffect(() => {
-    const track = opening.current;
-    const stage = openingStage.current;
-    if (!track || !stage || filmMode) return;
-
-    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let pendingFrame = 0;
-    let lastProgress = -1;
-    const paint = () => {
-      pendingFrame = 0;
-      if (preference.matches) return;
-
-      const bounds = track.getBoundingClientRect();
-      const distance = bounds.height - stage.offsetHeight;
-      const progress = Math.min(1, Math.max(0, -bounds.top / Math.max(1, distance)));
-      if (progress === lastProgress) return;
-      lastProgress = progress;
-      const style = stage.style;
-      stage.toggleAttribute("data-title-out", progress >= .14);
-      style.setProperty("--opening-copy-out", String(openingRamp(progress, .02, .14)));
-      style.setProperty("--opening-grow", String(openingRamp(progress, .01, .16)));
-      style.setProperty("--opening-matte", String(openingRamp(progress, .95, 1)));
-      style.setProperty("--opening-progress", String(progress));
-    };
-    const schedule = () => {
-      if (!pendingFrame) pendingFrame = window.requestAnimationFrame(paint);
-    };
-    const syncPreference = () => {
-      lastProgress = -1;
-      track.toggleAttribute("data-motion", !preference.matches);
-      schedule();
-    };
-    syncPreference();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
-    preference.addEventListener("change", syncPreference);
-    return () => {
-      track.removeAttribute("data-motion");
-      stage.removeAttribute("data-title-out");
-      if (pendingFrame) window.cancelAnimationFrame(pendingFrame);
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-      preference.removeEventListener("change", syncPreference);
-    };
-  }, [filmMode]);
-  useEffect(() => {
     if (showLoader) return;
-    const video = openingStage.current?.querySelector<HTMLVideoElement>(".orkHomeFilm");
-    if (video) void video.play().catch(() => {});
+    const video = heroVideo.current;
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const pauseForPreference = () => {
+      if (preference.matches) video?.pause();
+    };
+    if (!preference.matches && video) void video.play().catch(() => {});
+    preference.addEventListener("change", pauseForPreference);
+    return () => preference.removeEventListener("change", pauseForPreference);
   }, [showLoader]);
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
@@ -437,8 +393,8 @@ export default function Home() {
       </div>
     </div>}
 
-    <div className="homeOpening" id="inicio" ref={opening}>
-    <section className="hero" ref={openingStage} onPointerMove={(event)=>{
+    <div className="homeOpening" id="inicio">
+    <section className="hero" onPointerMove={(event)=>{
       if (event.pointerType !== "mouse") return;
       const bounds = event.currentTarget.getBoundingClientRect();
       event.currentTarget.style.setProperty("--hero-x", `${((event.clientX - bounds.left) / bounds.width - .5) * 2}`);
@@ -450,32 +406,40 @@ export default function Home() {
       <div className="heroMedia tone-0 openingScreen" aria-hidden="true">
         <video
           className="orkHomeFilm"
-          autoPlay={!showLoader}
+          ref={heroVideo}
           muted
           loop
           playsInline
           preload="auto"
           poster="/assets/ork-hero-film-poster.jpg"
+          onPlay={(event) => {
+            setFilmPlaying(true);
+            setFilmBeat(beatAt(event.currentTarget.currentTime));
+          }}
+          onPause={() => setFilmPlaying(false)}
           onTimeUpdate={(event) => setFilmBeat(beatAt(event.currentTarget.currentTime))}
         >
           <source src="/assets/ork-hero-film.mp4?v=5s" type="video/mp4"/>
         </video>
+        <div className="heroShade" />
         <FilmType index={filmBeat} lang={lang} />
       </div>
-      <div className="heroShade" />
       <div className="studioHeroCopy">
-        <span className="studioHeroLabel">Business innovation &amp; technology · Bogotá</span>
         <h1 aria-label="No somos espectadores del cambio.">
           <span aria-hidden="true"><span>No somos</span></span>
           <span aria-hidden="true"><span>espectadores</span></span>
           <span aria-hidden="true"><span>del cambio.</span></span>
         </h1>
-        <p>Estrategia, creatividad y tecnología en la misma mesa para entender tu negocio, transformarlo y hacerlo crecer.</p>
         <a className="studioHeroCta" href="/formulario">Conversemos <span aria-hidden="true">→</span></a>
       </div>
-      <div className="openingScroll" aria-hidden="true">
-        <span>Desplázate para explorar</span><i/><b>↓</b>
-      </div>
+      <button type="button" className="heroFilmControl" onClick={() => {
+        const video = heroVideo.current;
+        if (!video) return;
+        if (video.paused) void video.play().catch(() => {});
+        else video.pause();
+      }}>
+        {lang === "en" ? (filmPlaying ? "Pause video" : "Play video") : (filmPlaying ? "Pausar video" : "Reproducir video")}
+      </button>
       <div className="marquee"><div>ESTRATEGIA · DISEÑO · TECNOLOGÍA · CULTURA · ESTRATEGIA · DISEÑO · TECNOLOGÍA · CULTURA ·</div></div>
     </section>
     </div>

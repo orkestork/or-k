@@ -10,7 +10,7 @@ import { useEffect } from "react";
  *  - subtle 3D tilt on cards
  * Everything is skipped for touch devices and prefers-reduced-motion.
  */
-const MAGNETIC = ".utsBrief > div > span, .studioHeroCta, .navLogin, .navHow, .contactLaunch, .projectControls button, .soundToggle";
+const MAGNETIC = ".utsBrief > div > span, .navLogin, .navHow, .contactLaunch, .projectControls button, .soundToggle";
 const TILT = ".work .project .visual";
 const MEDIA = ".project .visual, .collageTile, .serviceMedia, video";
 const INTERACTIVE = "a, button, [role=button], input, select, textarea, label";
@@ -122,7 +122,7 @@ export default function SiteMotion({ cursorSelector = ".homeCursor" }: { cursorS
 
       const isMedia = !!el?.closest(".workCaseMedia") || (!!el?.closest(MEDIA) && !el?.closest(INTERACTIVE + ", .serviceCard"));
       const isInteractive = !!el?.closest(INTERACTIVE + ", .serviceCard");
-      scaleTarget = isMedia ? 5.2 : isInteractive ? 3 : 1;
+      scaleTarget = isMedia ? 4 : isInteractive ? 2.4 : 1;
       const nextLabel = isMedia ? "Ver" : "";
       if (cursor && nextLabel !== label) {
         label = nextLabel;
