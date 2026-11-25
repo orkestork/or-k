@@ -150,48 +150,11 @@ export default function Home() {
       preference.removeEventListener("change", syncPreference);
     };
   }, [filmMode]);
-  // The hero film follows the scroll: idle it loops its first shot, scrolling scrubs it forward/back.
   useEffect(() => {
-    const track = opening.current;
+    if (showLoader) return;
     const video = openingStage.current?.querySelector<HTMLVideoElement>(".orkHomeFilm");
-    if (!track || !video || filmMode) return;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const IDLE_END = 0.95;
-    let frame = 0;
-    let shown = 0;
-    let scrubbing = false;
-    let beat = -1;
-    const syncBeat = (time: number) => {
-      const next = beatAt(time);
-      if (next !== beat) { beat = next; setFilmBeat(next); }
-    };
-    const tick = () => {
-      frame = window.requestAnimationFrame(tick);
-      const bounds = track.getBoundingClientRect();
-      if (bounds.bottom < 0 || !video.duration) return;
-      if (reduced.matches) {
-        if (video.paused) void video.play().catch(() => {});
-        return;
-      }
-      const distance = Math.max(1, bounds.height - window.innerHeight);
-      const progress = Math.min(1, Math.max(0, -bounds.top / distance));
-      if (progress < .004) {
-        if (scrubbing) { scrubbing = false; if (video.currentTime > IDLE_END) video.currentTime = 0; }
-        if (video.paused) void video.play().catch(() => {});
-        if (video.currentTime > IDLE_END) video.currentTime = 0;
-        shown = video.currentTime;
-        syncBeat(shown);
-        return;
-      }
-      if (!scrubbing) { scrubbing = true; video.pause(); shown = video.currentTime; }
-      const target = progress * (video.duration - .05);
-      shown += (target - shown) * .14;
-      if (!video.seeking && Math.abs(video.currentTime - shown) > 1 / 60) video.currentTime = shown;
-      syncBeat(shown);
-    };
-    frame = window.requestAnimationFrame(tick);
-    return () => window.cancelAnimationFrame(frame);
-  }, [filmMode]);
+    if (video) void video.play().catch(() => {});
+  }, [showLoader]);
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
         window.location.hash ||
@@ -485,8 +448,17 @@ export default function Home() {
       event.currentTarget.style.setProperty("--hero-y", "0");
     }}>
       <div className="heroMedia tone-0 openingScreen" aria-hidden="true">
-        <video className="orkHomeFilm" muted loop playsInline preload="auto" poster="/assets/ork-hero-film-poster.jpg">
-          <source src="/assets/ork-hero-film.mp4" type="video/mp4"/>
+        <video
+          className="orkHomeFilm"
+          autoPlay={!showLoader}
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="/assets/ork-hero-film-poster.jpg"
+          onTimeUpdate={(event) => setFilmBeat(beatAt(event.currentTarget.currentTime))}
+        >
+          <source src="/assets/ork-hero-film.mp4?v=5s" type="video/mp4"/>
         </video>
         <FilmType index={filmBeat} lang={lang} />
       </div>
