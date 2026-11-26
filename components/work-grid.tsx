@@ -9,12 +9,6 @@ import CaseExperience, { type CaseData, caseTags, leadClip } from "./case-experi
 type WorkProject = WheelProject & { preview?: string };
 
 const cases: Record<string, CaseData> = {
-  "Pabellón O R-K": {
-    product: true,
-    desc: "Un pabellón 3D flotando sobre las nubes donde cada stand es un servicio de O R-K. Crea tu avatar, recorre los stands y habla —por texto o por voz— con el equipo de atención, que te explica cómo aplicar cada servicio a tu negocio.",
-    scope: ["Experiencia 3D en el navegador", "Agentes conversacionales con voz", "Método UTS", "Desarrollo Three.js y Blender"],
-    pieces: [],
-  },
   "4U Studio": {
     desc: "Academia de música y producción en Bogotá. Construimos su marca, el sitio web de la academia y las piezas audiovisuales para comunicar «Play your talent».",
     scope: ["Estrategia de marca", "Identidad visual", "Sitio web", "Producción audiovisual"],

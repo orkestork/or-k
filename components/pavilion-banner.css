@@ -1,0 +1,55 @@
+/* Pabellón O R-K banner — full-bleed, 1920×300 proportion on desktop */
+.pavBanner {
+  position: relative; display: flex; align-items: center; justify-content: space-between; gap: 4vw;
+  width: 100%; aspect-ratio: 1920 / 300; min-height: 220px; padding: 0 4.2vw; overflow: hidden; isolation: isolate;
+  background: #1b1730; color: #fff; text-decoration: none; border-top: 1px solid rgba(255,255,255,.08); border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.pavBannerBg {
+  position: absolute; inset: 0; z-index: -3; width: 100%; height: 100%; object-fit: cover; object-position: 62% 55%;
+  transform: scale(1.04); animation: pavDrift 22s ease-in-out infinite alternate; transition: transform 1.2s cubic-bezier(.16,.8,.2,1), filter .8s;
+}
+.pavBanner:hover .pavBannerBg { transform: scale(1.1); filter: saturate(1.15) brightness(1.06); animation-play-state: paused; }
+@keyframes pavDrift { from { transform: scale(1.04) translateX(0); } to { transform: scale(1.09) translateX(-1.5%); } }
+.pavBannerShade {
+  position: absolute; inset: 0; z-index: -2;
+  background: linear-gradient(90deg, rgba(11,7,16,.86) 0%, rgba(11,7,16,.55) 30%, rgba(11,7,16,.05) 58%, rgba(11,7,16,.25) 100%),
+              linear-gradient(0deg, rgba(11,7,16,.45), transparent 45%);
+}
+/* drifting specks of light */
+.pavBannerMotes { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.pavBannerMotes i {
+  position: absolute; left: calc(var(--m) * 7.1% + 2%); bottom: -6px; width: 3px; height: 3px; border-radius: 50%;
+  background: #f3eff8; box-shadow: 0 0 10px 2px rgba(189,165,255,.7); opacity: 0;
+  animation: pavMote calc(7s + var(--m) * .45s) linear infinite; animation-delay: calc(var(--m) * -.9s);
+}
+@keyframes pavMote { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: .9; } 85% { opacity: .5; } 100% { transform: translateY(-300px) translateX(18px); opacity: 0; } }
+.pavBannerCopy { display: flex; flex-direction: column; gap: 12px; max-width: min(760px, 60%); }
+.pavBannerLive { display: inline-flex; align-items: center; gap: 10px; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: rgba(243,239,248,.78); }
+.pavBannerLive b { width: 8px; height: 8px; border-radius: 50%; background: #4dff9a; box-shadow: 0 0 0 0 rgba(77,255,154,.6); animation: pavLive 1.8s ease-out infinite; }
+@keyframes pavLive { 70% { box-shadow: 0 0 0 9px rgba(77,255,154,0); } 100% { box-shadow: 0 0 0 0 rgba(77,255,154,0); } }
+.pavBannerCopy strong {
+  font-family: "Anton", Impact, sans-serif; font-weight: 400; text-transform: uppercase;
+  font-size: clamp(34px, 4.1vw, 78px); line-height: .9; letter-spacing: -.01em;
+}
+.pavBannerCopy strong em { font-style: normal; color: #bda5ff; }
+.pavBannerSub { font-size: clamp(13px, 1vw, 16px); line-height: 1.45; color: rgba(243,239,248,.74); max-width: 520px; }
+.pavBannerCta {
+  position: relative; flex: none; display: inline-flex; align-items: center; gap: 14px; overflow: hidden;
+  padding: 18px 30px; border-radius: 999px; background: #f3eff8; color: #0b0710;
+  font-weight: 600; font-size: 14px; letter-spacing: .16em; text-transform: uppercase;
+  box-shadow: 0 14px 50px rgba(124,60,255,.45); transition: transform .35s cubic-bezier(.16,.8,.2,1), background .3s, color .3s;
+}
+.pavBannerCta span { font-size: 18px; transition: transform .35s; }
+.pavBannerCta:after { content: ""; position: absolute; top: 0; left: -60%; width: 40%; height: 100%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.75), transparent); transform: skewX(-20deg); animation: pavShine 3.6s ease-in-out infinite; }
+@keyframes pavShine { 0%, 55% { left: -60%; } 100% { left: 130%; } }
+.pavBanner:hover .pavBannerCta, .pavBanner:focus-visible .pavBannerCta { transform: scale(1.06); background: #7c3cff; color: #fff; }
+.pavBanner:hover .pavBannerCta span { transform: translateX(6px); }
+.pavBanner:focus-visible { outline: 2px solid #bda5ff; outline-offset: -4px; }
+@media (max-width: 760px) {
+  .pavBanner { aspect-ratio: auto; min-height: 300px; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 18px; padding: 28px 6vw; }
+  .pavBannerBg { object-position: 72% 50%; }
+  .pavBannerShade { background: linear-gradient(0deg, rgba(11,7,16,.9) 10%, rgba(11,7,16,.25) 70%); }
+  .pavBannerCopy { max-width: 100%; }
+  .pavBannerCta { padding: 14px 24px; font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .pavBannerBg, .pavBannerMotes i, .pavBannerCta:after, .pavBannerLive b { animation: none; } }
