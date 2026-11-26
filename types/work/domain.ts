@@ -135,6 +135,8 @@ export interface HrProfile {
   severanceFund: string;
   /** null = automatic (salary ≤ 2 SMMLV). */
   transportAllowance: boolean | null;
+  /** Monthly bonus on top of the salary (COP). Non-salary: it never counts for benefits. */
+  bonus: number | null;
   contractValue: number | null;
   paymentFrequency: "monthly" | "biweekly" | "per_delivery";
   paysOwnSocialSecurity: boolean;

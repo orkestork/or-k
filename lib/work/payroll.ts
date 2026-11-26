@@ -54,22 +54,28 @@ export type CostLine = { label: string; amount: number; hint?: string };
 
 /**
  * Monthly cost of a person in Colombia (estimate).
- * Employment: salary + transport allowance + employer social security,
+ * Employment: salary + bonus + transport allowance + employer social security,
  * payroll taxes and benefits. Contractors: the fee, with the social security
  * they must pay themselves (40% IBC) shown for reference.
  */
-export function monthlyCost(p: Pick<HrProfile, "contractType" | "salary" | "salaryPeriod" | "arlRiskLevel" | "transportAllowance" | "paysOwnSocialSecurity">, params: PayrollParams) {
+export function monthlyCost(
+  p: Pick<HrProfile, "contractType" | "salary" | "salaryPeriod" | "arlRiskLevel" | "transportAllowance" | "paysOwnSocialSecurity"> &
+    Partial<Pick<HrProfile, "bonus">>,
+  params: PayrollParams,
+) {
   const base = p.salary ?? 0;
   if (!base) return null;
+  const bonus = Math.max(0, p.bonus ?? 0);
 
   if (!isEmployment(p.contractType)) {
-    const ibc = Math.max(params.minimumWage, base * 0.4);
+    const fee = base + bonus;
+    const ibc = Math.max(params.minimumWage, fee * 0.4);
     const own = ibc * (0.125 + 0.16 + ARL_RATE[0]);
     return {
       kind: "contractor" as const,
-      lines: [{ label: "Honorarios", amount: base }] as CostLine[],
-      company: base,
-      employeeNet: base,
+      lines: [{ label: "Honorarios", amount: base }, ...(bonus ? [{ label: "Bono", amount: bonus }] : [])] as CostLine[],
+      company: fee,
+      employeeNet: fee,
       reference: p.paysOwnSocialSecurity
         ? [{ label: "Seguridad social que paga el contratista (≈40% IBC)", amount: Math.round(own) }]
         : [],
@@ -94,34 +100,44 @@ export function monthlyCost(p: Pick<HrProfile, "contractType" | "salary" | "sala
   }
 
   const smmlv = params.minimumWage;
-  const transport = (p.transportAllowance ?? base <= 2 * smmlv) ? params.transportAllowance : 0;
-  const exempt = params.exempt && base < 10 * smmlv;
+  // The bonus is paid apart from the salary (non-salary, art. 128 C.S.T.): no benefits, no payroll taxes.
+  // Only the part above 40% of the total pay joins the social-security base (art. 30 Ley 1393/2010).
+  const freeBonus = bonus;
+  const salary = base;
+  const excess = Math.max(0, freeBonus - 0.4 * (salary + freeBonus));
+  const ibc = salary + excess;
+  const transport = (p.transportAllowance ?? salary <= 2 * smmlv) ? params.transportAllowance : 0;
+  const exempt = params.exempt && salary < 10 * smmlv;
   const risk = ARL_RATE[(p.arlRiskLevel ?? 1) - 1];
-  const withTransport = base + transport;
+  const withTransport = salary + transport;
 
   const lines: CostLine[] = [
     { label: "Salario", amount: base },
+    ...(freeBonus ? [{ label: "Bono extra", amount: freeBonus, hint: "aparte, sin prestaciones" }] : []),
     ...(transport ? [{ label: "Auxilio de transporte", amount: transport }] : []),
-    ...(exempt ? [] : [{ label: "Salud empleador (8.5%)", amount: base * 0.085 }]),
-    { label: "Pensión empleador (12%)", amount: base * 0.12 },
-    { label: `ARL (${(risk * 100).toFixed(3)}%)`, amount: base * risk },
-    { label: "Caja de compensación (4%)", amount: base * 0.04 },
-    ...(exempt ? [] : [{ label: "ICBF (3%) + SENA (2%)", amount: base * 0.05 }]),
+    ...(exempt ? [] : [{ label: "Salud empleador (8.5%)", amount: ibc * 0.085 }]),
+    { label: "Pensión empleador (12%)", amount: ibc * 0.12 },
+    { label: `ARL (${(risk * 100).toFixed(3)}%)`, amount: ibc * risk },
+    { label: "Caja de compensación (4%)", amount: salary * 0.04 },
+    ...(exempt ? [] : [{ label: "ICBF (3%) + SENA (2%)", amount: salary * 0.05 }]),
     { label: "Prima de servicios (8.33%)", amount: withTransport * 0.0833, hint: "provisión mensual" },
     { label: "Cesantías (8.33%)", amount: withTransport * 0.0833, hint: "provisión mensual" },
     { label: "Intereses a cesantías (1%)", amount: withTransport * 0.01, hint: "provisión mensual" },
-    { label: "Vacaciones (4.17%)", amount: base * 0.0417, hint: "provisión mensual" },
+    { label: "Vacaciones (4.17%)", amount: salary * 0.0417, hint: "provisión mensual" },
   ].map((l) => ({ ...l, amount: Math.round(l.amount) }));
 
-  const solidarity = base >= 4 * smmlv ? 0.01 : 0;
-  const deductions = base * (0.04 + 0.04 + solidarity);
+  const solidarity = ibc >= 4 * smmlv ? 0.01 : 0;
+  const deductions = ibc * (0.04 + 0.04 + solidarity);
   return {
     kind: "employee" as const,
     lines,
     company: lines.reduce((a, l) => a + l.amount, 0),
-    employeeNet: Math.round(withTransport - deductions),
+    employeeNet: Math.round(withTransport + freeBonus - deductions),
     reference: [
       { label: `Descuentos al empleado: salud 4% + pensión 4%${solidarity ? " + FSP 1%" : ""}`, amount: Math.round(deductions) },
+      ...(excess
+        ? [{ label: "El bono supera el 40% de lo que gana la persona; ese excedente cotiza salud y pensión (Ley 1393 de 2010), pero no prestaciones", amount: Math.round(excess) }]
+        : []),
     ],
     exempt,
   };

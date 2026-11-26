@@ -2215,6 +2215,7 @@ const toHr = (r: Row): HrProfile => ({
   arlRiskLevel: r.arl_risk_level,
   severanceFund: r.severance_fund,
   transportAllowance: r.transport_allowance,
+  bonus: r.bonus === null || r.bonus === undefined ? null : Number(r.bonus),
   contractValue: r.contract_value === null || r.contract_value === undefined ? null : Number(r.contract_value),
   paymentFrequency: r.payment_frequency,
   paysOwnSocialSecurity: r.pays_own_social_security,
@@ -2252,6 +2253,7 @@ export const EMPTY_HR = (userId: string): HrProfile => ({
   arlRiskLevel: 1,
   severanceFund: "",
   transportAllowance: null,
+  bonus: null,
   contractValue: null,
   paymentFrequency: "monthly",
   paysOwnSocialSecurity: false,
@@ -2280,8 +2282,7 @@ export async function saveHrProfile(profile: HrProfile) {
   if (!supabaseConfigured) throw new Error("Requiere Supabase");
   await requireMe();
   const supabase = await sb();
-  check(
-    await supabase.from("hr_profiles").upsert({
+  const row = {
       user_id: profile.userId,
       document_type: profile.documentType,
       document_number: profile.documentNumber,
@@ -2315,8 +2316,16 @@ export async function saveHrProfile(profile: HrProfile) {
       bank_account_type: profile.bankAccountType,
       bank_account_number: profile.bankAccountNumber,
       work_description: profile.workDescription,
-    }),
-  );
+      bonus: profile.bonus,
+  };
+  const res = await supabase.from("hr_profiles").upsert(row);
+  // Until the bonus migration is applied the columns don't exist: save everything else.
+  if (res.error && /bonus/.test(res.error.message)) {
+    const { bonus: _b, ...rest } = row;
+    check(await supabase.from("hr_profiles").upsert(rest));
+    return;
+  }
+  check(res);
 }
 
 export async function getPayrollParams(): Promise<ReturnType<typeof resolvePayroll>> {

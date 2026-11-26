@@ -163,10 +163,22 @@ export function HrFields({
                   </select>
                 </div>
               ) : null}
+              {showPay && p.contractType !== "apprentice" ? (
+                <>
+                  {text("bonus", "Bono mensual extra (COP)", { type: "number", hr: true, placeholder: "0" })}
+                  {p.bonus ? (
+                    <p className="self-end text-xs text-muted-foreground sm:col-span-2">
+                      Va aparte del salario: no suma a prima, cesantías, vacaciones ni parafiscales. Si supera el 40% de lo que gana la
+                      persona, ese excedente cotiza salud y pensión.
+                    </p>
+                  ) : null}
+                </>
+              ) : null}
             </div>
           ) : (
             <div className="grid gap-3 sm:grid-cols-3">
               {showPay ? text("salary", "Honorarios (COP)", { type: "number", hr: true }) : null}
+              {showPay ? text("bonus", "Bono extra (COP)", { type: "number", hr: true, placeholder: "0" }) : null}
               {select("salaryPeriod", "Los honorarios son", [
                 ["monthly", "Mensuales"],
                 ["hourly", "Por hora"],
