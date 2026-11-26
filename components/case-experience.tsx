@@ -5,7 +5,7 @@ import type { ProjectClip, WheelProject } from "@/components/project-wheel";
 import "./case-experience.css";
 
 /** `src` overrides /assets/pieces/<id>.jpg; `wide` shows the piece full width at its own proportions (no square crop). */
-export type CaseData = { desc: string; scope: string[]; pieces: { id: string; label: string; src?: string; wide?: boolean }[] };
+export type CaseData = { product?: boolean; desc: string; scope: string[]; pieces: { id: string; label: string; src?: string; wide?: boolean }[] };
 
 type Shot = { key: string; kind: "video" | "image"; src: string; label?: string; clip?: ProjectClip };
 
@@ -27,7 +27,7 @@ export default function CaseExperience({
 }: {
   project: WheelProject;
   data?: CaseData;
-  logo: string;
+  logo?: string;
   index: number;
   total: number;
   next: WheelProject;
@@ -134,7 +134,7 @@ export default function CaseExperience({
       <header className="caseXBar">
         <button type="button" className="caseXBack" onClick={onClose} autoFocus><span aria-hidden="true">←</span> Volver</button>
         <span className="caseXCount">{number} / {String(total).padStart(2, "0")}</span>
-        <a className="caseXLive" href={project.url} target="_blank" rel="noreferrer">Ver en vivo <span aria-hidden="true">↗</span></a>
+        <a className="caseXLive" href={project.url} target="_blank" rel="noreferrer">{data?.product ? "Jugar" : "Ver en vivo"} <span aria-hidden="true">↗</span></a>
       </header>
 
       <section className="caseXHero">
@@ -147,25 +147,25 @@ export default function CaseExperience({
 
       <section className="caseXIntro">
         <div className="caseXIntroMain caseXReveal">
-          <span className="caseXMark" role="img" aria-label={`Logo ${title}`} style={{ maskImage: `url(${logo})`, WebkitMaskImage: `url(${logo})` } as React.CSSProperties} />
+          {logo && <span className="caseXMark" role="img" aria-label={`Logo ${title}`} style={{ maskImage: `url(${logo})`, WebkitMaskImage: `url(${logo})` } as React.CSSProperties} />}
           <p className="caseXDesc">{data?.desc}</p>
         </div>
         <aside className="caseXFacts caseXReveal">
-          <div><h3>Servicios</h3><ul>{(data?.scope ?? caseTags(project.meta)).map((item) => <li key={item}>{item}</li>)}</ul></div>
-          <div><h3>Cliente</h3><p>{title}</p></div>
+          <div><h3>{data?.product ? "Alcance" : "Servicios"}</h3><ul>{(data?.scope ?? caseTags(project.meta)).map((item) => <li key={item}>{item}</li>)}</ul></div>
+          {!data?.product && <div><h3>Cliente</h3><p>{title}</p></div>}
           <div><h3>Año</h3><p>{project.year}</p></div>
-          <a className="caseXLaunch" href={project.url} target="_blank" rel="noreferrer"><i aria-hidden="true" />Ver proyecto en vivo</a>
+          <a className="caseXLaunch" href={project.url} target="_blank" rel="noreferrer"><i aria-hidden="true" />{data?.product ? `Jugar ${title}` : "Ver proyecto en vivo"}</a>
         </aside>
       </section>
 
-      <section className={`caseXGallery${shots.filter((shot) => !wide(shot)).length % 3 !== 0 && shots.filter((shot) => !wide(shot)).length % 2 === 0 ? " isPairs" : ""}`} aria-label={`Piezas de ${title}`}>
+      {shots.length > 0 && <section className={`caseXGallery${shots.filter((shot) => !wide(shot)).length % 3 !== 0 && shots.filter((shot) => !wide(shot)).length % 2 === 0 ? " isPairs" : ""}`} aria-label={`Piezas de ${title}`}>
         {shots.map((shot, i) => (
           <figure className={`caseXShot caseXReveal ${shot.kind === "video" ? "isWide" : shot.clip ? "isWide isStill" : "isTile"}`} key={shot.key}>
             <div className="caseXShotFrame">{renderMedia(shot)}</div>
             {shot.label && <figcaption><span>{String(i + 1).padStart(2, "0")}</span>{shot.label}</figcaption>}
           </figure>
         ))}
-      </section>
+      </section>}
 
       <section className="caseXNext" ref={nextSection}>
         <div className="caseXNextPin">

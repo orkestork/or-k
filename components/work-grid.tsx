@@ -9,6 +9,12 @@ import CaseExperience, { type CaseData, caseTags, leadClip } from "./case-experi
 type WorkProject = WheelProject & { preview?: string };
 
 const cases: Record<string, CaseData> = {
+  "Pabellón O R-K": {
+    product: true,
+    desc: "Un pabellón 3D flotando sobre las nubes donde cada stand es un servicio de O R-K. Crea tu avatar, recorre los stands y habla —por texto o por voz— con el equipo de atención, que te explica cómo aplicar cada servicio a tu negocio.",
+    scope: ["Experiencia 3D en el navegador", "Agentes conversacionales con voz", "Método UTS", "Desarrollo Three.js y Blender"],
+    pieces: [],
+  },
   "4U Studio": {
     desc: "Academia de música y producción en Bogotá. Construimos su marca, el sitio web de la academia y las piezas audiovisuales para comunicar «Play your talent».",
     scope: ["Estrategia de marca", "Identidad visual", "Sitio web", "Producción audiovisual"],
@@ -273,7 +279,7 @@ export default function WorkGrid({ projects }: { projects: WorkProject[] }) {
                 type="button"
                 className="workCaseButton"
                 data-title={project.title}
-                aria-label={`Ver lo que hicimos con ${project.title}`}
+                aria-label={cases[project.title]?.product ? `Ver producto: ${project.title}` : `Ver lo que hicimos con ${project.title}`}
                 aria-haspopup="dialog"
                 onPointerEnter={(event) => {
                   if (event.pointerType === "mouse") setHovered(project.title);
@@ -318,7 +324,7 @@ export default function WorkGrid({ projects }: { projects: WorkProject[] }) {
           key={open.title}
           project={open}
           data={cases[open.title]}
-          logo={`/assets/logos/${(logos[open.title] ?? "").replace("-logo", "")}.png`}
+          logo={logos[open.title] ? `/assets/logos/${logos[open.title].replace("-logo", "")}.png` : undefined}
           index={openIndex}
           total={projects.length}
           next={projects[(openIndex + 1) % projects.length]}

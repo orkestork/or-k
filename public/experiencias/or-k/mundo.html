@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pabellón O R-K</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #120818; font-family: 'Inter', system-ui, sans-serif; color: #fff; }
+  canvas { display: block; }
+  #loader { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 50% 40%, #3a1650, #0d0512 70%); z-index: 30; transition: opacity 1.2s ease; }
+  #loader h1 { font-family: 'Anton', Impact, sans-serif; font-size: clamp(28px, 5vw, 60px); letter-spacing: .2em; margin-bottom: 10px;
+    background: linear-gradient(90deg, #8ff0ff, #ff8fd8, #c7a2ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #loader p { opacity: .7; letter-spacing: .2em; font-size: 12px; margin-bottom: 26px; text-transform: uppercase; }
+  #bar { width: min(320px, 70vw); height: 3px; background: rgba(255,255,255,.12); border-radius: 3px; overflow: hidden; }
+  #bar div { height: 100%; width: 0; background: linear-gradient(90deg, #8ff0ff, #ff8fd8); transition: width .2s; }
+  #enter { margin-top: 32px; padding: 12px 34px; border-radius: 30px; border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.06);
+    color: #fff; font: 500 15px 'Inter'; letter-spacing: .12em; cursor: pointer; opacity: 0; pointer-events: none; transition: all .4s; }
+  #enter.ready { opacity: 1; pointer-events: auto; }
+  #enter:hover { background: rgba(255,255,255,.16); box-shadow: 0 0 30px rgba(255,143,216,.45); }
+  .fade { opacity: 0; transition: opacity 1.5s; }
+  /* cinematic opening: letterbox bars while the camera flies in */
+  .cineBar { position: fixed; left: 0; right: 0; height: 0; background: #000; z-index: 6; transition: height 1.2s ease; pointer-events: none; }
+  #cineTop { top: 0; } #cineBot { bottom: 0; }
+  body.cine .cineBar { height: 9vh; }
+  body.cine #title { top: 12vh; }
+  #title { position: fixed; top: 6vh; width: 100%; text-align: center; pointer-events: none; z-index: 5; transition: opacity 2.5s; }
+  #title h2 { font-family: 'Anton', Impact, sans-serif; font-weight: 700; font-size: clamp(30px, 5.5vw, 76px); letter-spacing: .18em; text-shadow: 0 0 30px rgba(255,160,220,.6), 0 2px 8px rgba(60,0,60,.6); }
+  #title p { margin-top: 8px; font-size: clamp(12px, 1.3vw, 16px); letter-spacing: .25em; opacity: .85; text-transform: uppercase; }
+  #hud { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); display: flex; gap: 8px; align-items: center; z-index: 6;
+    padding: 9px 12px; border-radius: 40px; background: rgba(20,8,30,.5); border: 1px solid rgba(255,255,255,.14); backdrop-filter: blur(14px); }
+  #hud button { padding: 8px 14px; border-radius: 22px; border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.06); color: #fff;
+    font: 500 13px 'Inter'; cursor: pointer; transition: all .25s; white-space: nowrap; }
+  #hud button:hover { background: rgba(255,255,255,.18); }
+  #hud button.on { background: linear-gradient(135deg, rgba(143,240,255,.35), rgba(255,143,216,.35)); border-color: rgba(255,255,255,.45); }
+  #hud button.primary { background: linear-gradient(135deg, #2fd6ff, #ff3fae); border: none; font-weight: 600; }
+  #hud label { font-size: 12px; opacity: .8; margin-left: 4px; }
+  #hud input[type=range] { width: 90px; accent-color: #ff8fd8; }
+  #hint { position: fixed; top: 18px; right: 22px; font-size: 12px; letter-spacing: .04em; line-height: 1.7; text-align: right; z-index: 6; text-shadow: 0 1px 4px rgba(0,0,0,.7); }
+  #counter { position: fixed; top: 18px; left: 22px; font-size: 13px; z-index: 6; letter-spacing: .08em; text-shadow: 0 1px 4px rgba(0,0,0,.6); }
+  #counter b { font-size: 20px; color: #ffb3ea; }
+  #labels { position: fixed; inset: 0; pointer-events: none; z-index: 4; }
+  .label { position: absolute; left: 0; top: 0; pointer-events: auto; cursor: pointer; white-space: nowrap; font-family: 'Anton', Impact, sans-serif; font-weight: 700;
+    font-size: 14px; letter-spacing: .12em; padding: 5px 12px; border-radius: 16px; background: rgba(20,8,30,.35); border: 1px solid rgba(255,255,255,.25);
+    text-shadow: 0 0 10px rgba(255,180,230,.8); backdrop-filter: blur(6px); transition: background .2s; }
+  .label:hover { background: rgba(255,143,216,.35); }
+  #bubble { position: fixed; left: 0; top: 0; z-index: 8; transform: translate(-50%, calc(-100% - 12px)) scale(.6); opacity: 0; pointer-events: none;
+    max-width: 280px; padding: 10px 14px; border-radius: 14px; background: rgba(255,250,245,.96); color: #2a1a30; font-size: 14px; line-height: 1.35;
+    box-shadow: 0 8px 30px rgba(40,0,60,.35); transition: opacity .25s, transform .25s cubic-bezier(.2,1.6,.4,1); }
+  #bubble.show { opacity: 1; transform: translate(-50%, calc(-100% - 12px)) scale(1); }
+  #bubble::after { content: ''; position: absolute; left: 50%; bottom: -8px; transform: translateX(-50%); border: 8px solid transparent; border-bottom: 0; border-top-color: rgba(255,250,245,.96); }
+  #bubble b { display: block; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #b03a8a; margin-bottom: 3px; }
+  #tip { position: fixed; z-index: 9; pointer-events: none; padding: 4px 9px; border-radius: 10px; background: rgba(20,8,30,.75); font-size: 12px; opacity: 0; transition: opacity .15s; }
+  #toast { position: fixed; top: 70px; left: 50%; transform: translate(-50%, -10px); z-index: 9; padding: 10px 18px; border-radius: 20px; background: rgba(20,8,30,.7);
+    border: 1px solid rgba(255,255,255,.2); font-size: 14px; opacity: 0; transition: all .4s; backdrop-filter: blur(10px); pointer-events: none; }
+  #playerHud { position: fixed; left: 22px; bottom: 90px; display: flex; align-items: center; gap: 12px; z-index: 6; opacity: 0; transition: opacity .6s;
+    padding: 10px 14px; border-radius: 16px; background: rgba(20,8,30,.55); border: 1px solid rgba(255,255,255,.15); backdrop-filter: blur(10px); }
+  #playerHud .lv { font-family: 'Anton', Impact, sans-serif; font-size: 12px; text-align: center; line-height: 1; }
+  #playerHud .lv b { display: block; font-size: 24px; color: #ffd23a; }
+  #playerHud .bars { width: 220px; display: flex; flex-direction: column; gap: 5px; }
+  #playerHud .hp { position: relative; height: 16px; border-radius: 8px; background: rgba(0,0,0,.5); overflow: hidden; }
+  #hpFill { height: 100%; width: 100%; background: linear-gradient(90deg,#ff3a5a,#ff8a5a); transition: width .2s; }
+  #hpText { position: absolute; inset: 0; font-size: 11px; font-weight: 600; text-align: center; line-height: 16px; text-shadow: 0 1px 2px #000; }
+  #playerHud .xp { height: 5px; border-radius: 3px; background: rgba(0,0,0,.5); overflow: hidden; }
+  #xpFill { height: 100%; width: 0; background: linear-gradient(90deg,#8ff0ff,#c7a2ff); transition: width .3s; }
+  #playerHud .gold { font-size: 15px; } #playerHud .gold b { color: #ffd23a; }
+  #lockHint { position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%); z-index: 7; text-align: center; font-size: 13px; line-height: 1.5; opacity: 0; transition: opacity .4s;
+    padding: 7px 16px; border-radius: 999px; background: rgba(16,11,28,.72); border: 1px solid rgba(255,255,255,.16); pointer-events: none; backdrop-filter: blur(8px); white-space: nowrap; max-width: 94vw; }
+  #lockHint small { display: block; opacity: .75; font-size: 11px; }
+  #lockHint.seen small { display: none; }
+  #vignetteHit { position: fixed; inset: 0; pointer-events: none; z-index: 5; opacity: 0; transition: opacity .25s; box-shadow: inset 0 0 160px 40px rgba(255,0,30,.75); }
+  #questLog { position: fixed; left: 22px; top: 56px; z-index: 6; width: 300px; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+  #questLog .q { padding: 9px 12px; border-radius: 12px; background: rgba(20,8,30,.55); border: 1px solid rgba(255,255,255,.14); backdrop-filter: blur(8px); font-size: 12px; line-height: 1.4; }
+  #questLog .q.ready { border-color: rgba(120,255,140,.6); }
+  #questLog .q b { display: block; font-size: 13px; color: #ffe08a; margin-bottom: 2px; }
+  #questLog .q i { display: block; height: 4px; border-radius: 2px; background: rgba(0,0,0,.45); margin-top: 6px; overflow: hidden; }
+  #questLog .q i em { display: block; height: 100%; background: linear-gradient(90deg,#ffd23a,#ff8a3a); }
+  #questLog .q small { opacity: .75; }
+  #questLog .hintq { font-size: 12px; opacity: .85; text-shadow: 0 1px 4px #000; }
+  #prompt { position: fixed; left: 50%; bottom: 150px; transform: translateX(-50%); z-index: 8; padding: 9px 18px; border-radius: 20px; font-size: 15px;
+    background: rgba(20,8,30,.7); border: 1px solid rgba(255,220,120,.5); opacity: 0; transition: opacity .2s; pointer-events: none; }
+  #prompt b { display: inline-block; min-width: 22px; padding: 1px 6px; margin-right: 4px; border-radius: 6px; background: #ffd23a; color: #2a1a00; text-align: center; }
+  #fade { position: fixed; inset: 0; background: #000; opacity: 0; pointer-events: none; z-index: 20; transition: opacity .35s; }
+  #shop { position: fixed; inset: 0; z-index: 25; display: none; align-items: center; justify-content: center; background: rgba(10,4,16,.55); backdrop-filter: blur(4px); }
+  #shop.show { display: flex; }
+  #shop .box { width: min(560px, 94vw); max-height: 86vh; overflow: auto; border-radius: 20px; padding: 18px; background: linear-gradient(160deg, #3a1d4a, #1a0c24); border: 1px solid rgba(255,220,140,.35); box-shadow: 0 20px 60px rgba(0,0,0,.6); }
+  #shop .head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  #shop h3 { font-family: 'Anton', Impact, sans-serif; font-size: 20px; flex: 1; color: #ffe08a; }
+  #shop .g { font-weight: 700; color: #ffd23a; }
+  #shop .x { background: none; border: 0; color: #fff; font-size: 20px; cursor: pointer; }
+  #shop .it { display: flex; align-items: center; gap: 12px; padding: 10px; margin-bottom: 8px; border-radius: 14px; background: rgba(255,255,255,.06); }
+  #shop .it.have { opacity: .6; }
+  #shop .ic { font-size: 30px; width: 44px; text-align: center; }
+  #shop .tx { flex: 1; } #shop .tx b { display: block; } #shop .tx small { display: block; opacity: .75; font-size: 12px; }
+  #shop .it button { padding: 8px 14px; border-radius: 12px; border: 0; font: 600 13px Inter; cursor: pointer; background: linear-gradient(135deg,#ffd23a,#ff9a3a); color: #2a1400; }
+  #shop .it button:disabled { background: rgba(255,255,255,.15); color: #ccc; cursor: default; }
+  #shop .foot { font-size: 12px; opacity: .7; text-align: center; margin-top: 6px; }
+  #touchUI { display: none; position: fixed; inset: 0; pointer-events: none; z-index: 9; }
+  #joy { position: fixed; width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,.12); border: 2px solid rgba(255,255,255,.3); left: 40px; bottom: 140px; opacity: .5; }
+  #joy.on { opacity: 1; }
+  #knob { position: absolute; left: 35px; top: 35px; width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,.55); }
+  #tbtns { position: fixed; right: 16px; bottom: 120px; display: grid; grid-template-columns: repeat(3, 62px); gap: 10px; pointer-events: auto; }
+  #tbtns button { width: 62px; height: 62px; border-radius: 50%; border: 2px solid rgba(255,255,255,.35); background: rgba(20,8,30,.55); color: #fff; font-size: 24px; touch-action: none; }
+  #tbtns button.big { background: rgba(255,80,80,.45); }
+  @media (pointer: coarse) { #lockHint { display: none; } #playerHud { bottom: auto; top: 10px; left: 50%; transform: translateX(-50%); } #questLog { width: 220px; font-size: 11px; } }
+  #skill { font-size: 11px; opacity: .9; margin-top: 2px; } #skill b { color: #8fffb0; }
+  #charSelect { position: fixed; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 30%, rgba(70,25,90,.92), rgba(10,4,16,.96)); opacity: 0; transition: opacity .35s; overflow: auto; }
+  #charSelect.show { opacity: 1; }
+  #charSelect .cs { text-align: center; padding: 24px; }
+  #charSelect h2 { font-family: 'Anton', Impact, sans-serif; font-size: clamp(26px, 4vw, 44px); letter-spacing: .15em; background: linear-gradient(90deg,#8ff0ff,#ff8fd8,#ffd23a); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #charSelect .sub { opacity: .65; font-size: 13px; margin: 6px 0 20px; }
+  #charSelect .cards { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
+  #charSelect .card { width: 260px; padding: 14px; border-radius: 22px; background: linear-gradient(170deg, rgba(255,255,255,.1), rgba(255,255,255,.03)); border: 1px solid rgba(255,255,255,.18); cursor: pointer; transition: transform .25s, box-shadow .25s, border-color .25s; text-align: left; }
+  #charSelect .card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 18px 50px rgba(255,120,220,.35); border-color: rgba(255,200,240,.6); }
+  #charSelect .card.cur { border-color: #ffd23a; }
+  #charSelect .pic { height: 250px; border-radius: 16px; background: radial-gradient(circle at 50% 60%, rgba(255,180,230,.35), rgba(60,20,90,.2) 70%) center/contain no-repeat; background-size: cover; background-position: center; }
+  #charSelect h3 { font-family: 'Anton', Impact, sans-serif; font-size: 22px; margin: 10px 0 4px; color: #ffe08a; }
+  #charSelect .card p { font-size: 13px; opacity: .85; line-height: 1.4; min-height: 54px; }
+  #charSelect .bars { margin: 10px 0; display: grid; gap: 4px; }
+  #charSelect .bars div { display: flex; align-items: center; gap: 8px; font-size: 11px; } #charSelect .bars span { width: 64px; opacity: .8; }
+  #charSelect .bars i { flex: 1; height: 6px; border-radius: 3px; background: rgba(0,0,0,.4); overflow: hidden; } #charSelect .bars em { display: block; height: 100%; background: linear-gradient(90deg,#8ff0ff,#ff8fd8); }
+  #charSelect .skill { font-size: 12px; padding: 8px 10px; border-radius: 10px; background: rgba(0,0,0,.25); line-height: 1.35; } #charSelect .skill b { color: #8fffb0; }
+  #charSelect .card button { width: 100%; margin-top: 10px; padding: 10px; border: 0; border-radius: 12px; font: 600 14px Inter; color: #2a1400; background: linear-gradient(135deg,#ffd23a,#ff9a3a); cursor: pointer; }
+  #credits { position: fixed; right: 14px; bottom: 8px; font-size: 10px; opacity: .55; z-index: 6; letter-spacing: .05em; }
+  #toast.show { opacity: 1; transform: translate(-50%, 0); }
+  @media (max-width: 760px) { #hud { flex-wrap: wrap; justify-content: center; width: 94vw; border-radius: 20px; } #hint { display: none; } }
+  #loader { background: radial-gradient(ellipse at center, #362068, #0b0710 72%); }
+  #loader h1, #title h2 { color: #f3eff8; background: none; -webkit-text-fill-color: currentColor; }
+  #bar div, #hud .primary { background: linear-gradient(90deg, #4f24a0, #7c3cff); color: #fff; }
+  #counter b { color: #d9c5ff; }
+  #bUnderstand { border-color: #a984ff; }
+  #questLog { display: none; }
+  #labels .label { color: #fff; background: #100b1ce8; border: 1px solid #ad98e8; letter-spacing: .08em; font: 600 12px/1.3 'Inter', sans-serif; }
+  #labels .label:is(:hover, :focus-visible) { background: #5027a1; }
+  #title h2, #loader h1 { letter-spacing: .085em; }
+  #hud { width: max-content; max-width: 95vw; border-radius: 12px; }
+  #serviceSelect { max-width: min(230px, 40vw); background: #160f24; border: 1px solid #a984ff; border-radius: 8px; padding: 8px 10px; color: #fff; font: inherit; }
+  #serviceConsole { position: fixed; z-index: 12; right: clamp(12px, 3vw, 40px); top: 65px; width: min(360px, calc(100vw - 24px)); max-height: calc(100dvh - 200px); overflow: auto; padding: 20px; border: 1px solid #9371ff; border-radius: 14px; background: #100b1cf2; color: #f3eff8; }
+  #serviceConsole h2 { font-size: 24px; padding-right: 28px; }
+  #serviceConsole p { margin-top: 12px; font-size: 14px; line-height: 1.45; }
+  #serviceConsole button { border: 1px solid #9074d8; border-radius: 7px; padding: 9px; background: #201438; color: #fff; cursor: pointer; font: inherit; }
+  #serviceConsole button:hover, #serviceConsole button:focus-visible { background: #4f24a0; }
+  #closeService { position: absolute; top: 12px; right: 12px; }
+  #serviceOptions { display: grid; gap: 8px; margin-top: 12px; text-align: left; }
+  #serviceFeedback { color: #d9c5ff; }
+  #diagnosisTools { display: none; gap: 6px; margin-top: 8px; }
+  #diagnosisTools.is-open { display: flex; flex-wrap: wrap; }
+  #diagnosisTools button { padding: 6px 9px; border: 1px solid #a984ff; border-radius: 5px; background: #190f2c; color: #fff; cursor: pointer; }
+  #diagnosisTools button:disabled { opacity: .65; cursor: default; }
+  #chat { position: fixed; z-index: 13; left: clamp(12px, 2vw, 24px); top: 56px; width: min(380px, calc(100vw - 24px)); max-height: min(560px, calc(100dvh - 190px)); display: flex; flex-direction: column;
+    border: 1px solid #9371ff; border-radius: 16px; background: #100b1cf4; color: #f3eff8; box-shadow: 0 18px 50px rgba(0,0,0,.45); overflow: hidden; }
+  #chat[hidden] { display: none; }
+  #chat header { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid #ffffff1f; background: linear-gradient(135deg, #2a1650, #160f24); }
+  #chat header div { flex: 1; min-width: 0; } #chat header b { display: block; font-size: 15px; } #chat header small { font-size: 12px; color: #d9c5ff; }
+  #chat header button { border: 1px solid #a984ff; border-radius: 8px; background: #201438; color: #fff; padding: 6px 9px; font: 500 12px Inter, sans-serif; cursor: pointer; }
+  #chat header button:hover, #chat header button:focus-visible { background: #4f24a0; }
+  #chatClose { font-size: 16px !important; line-height: 1; }
+  #chatLog { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-height: 120px; }
+  #chatLog .msg { max-width: 86%; padding: 9px 12px; border-radius: 14px; font-size: 14px; line-height: 1.45; white-space: pre-wrap; }
+  #chatLog .assistant { align-self: flex-start; background: #241a3d; border-bottom-left-radius: 4px; }
+  #chatLog .user { align-self: flex-end; background: #6b33e6; border-bottom-right-radius: 4px; }
+  #chatLog .typing { opacity: .7; font-style: italic; }
+  #chatChips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 12px 8px; }
+  #chatChips button { border: 1px solid #ffffff33; border-radius: 14px; background: transparent; color: #d9c5ff; padding: 5px 10px; font: 12px Inter, sans-serif; cursor: pointer; }
+  #chatChips button:hover, #chatChips button:focus-visible { background: #ffffff14; color: #fff; }
+  #chatForm { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid #ffffff1f; }
+  #chatForm input { flex: 1; min-width: 0; border: 1px solid #a984ff; border-radius: 10px; background: #160f24; color: #fff; padding: 10px 12px; font: 14px Inter, sans-serif; }
+  #chatForm input:focus-visible { outline: 2px solid #b89cff; outline-offset: 1px; }
+  #chatForm button { border: 0; border-radius: 10px; padding: 0 14px; background: #7c3cff; color: #fff; font: 600 14px Inter, sans-serif; cursor: pointer; }
+  #chatForm.busy button { opacity: .5; pointer-events: none; }
+  #chatForm #chatMic { padding: 0 12px; background: #241a3d; border: 1px solid #a984ff; font-size: 16px; }
+  #chatForm #chatMic[aria-pressed="true"] { background: #e0457b; border-color: #ff9ab8; animation: micPulse 1s ease-in-out infinite; }
+  @keyframes micPulse { 50% { box-shadow: 0 0 0 6px rgba(224,69,123,.25); } }
+  @media (prefers-reduced-motion: reduce) { #chatForm #chatMic[aria-pressed="true"] { animation: none; } }
+  #chatForm.busy #chatMic { opacity: .5; pointer-events: none; }
+  #chatMicHelp { margin: 0 12px 8px; padding: 9px 11px; border-radius: 10px; background: #2a1838; border: 1px solid #e0457b80; font-size: 12px; line-height: 1.45; color: #f3eff8; }
+  #chatMicHelp b { color: #ffc2d6; font-weight: 600; }
+  #chat footer { padding: 0 12px 10px; font-size: 12px; } #chat footer a { color: #d9c5ff; }
+  @media (max-width: 760px) { #chat { top: auto; bottom: 0; left: 0; width: 100vw; max-height: 62dvh; border-radius: 16px 16px 0 0; } }
+  #avatarMaker { position: fixed; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center; padding: 16px; opacity: 0; transition: opacity .35s;
+    background: radial-gradient(circle at 30% 40%, rgba(124,60,255,.35), rgba(10,6,18,.94) 65%); backdrop-filter: blur(6px); }
+  #avatarMaker.show { opacity: 1; }
+  #avatarMaker .am { display: grid; grid-template-columns: minmax(260px, 420px) minmax(300px, 460px); gap: 22px; width: min(920px, 100%); height: min(520px, calc(100dvh - 32px)); }
+  #avatarMaker .amPreview, #avatarMaker .amPanel { min-height: 0; height: 100%; }
+  #avatarMaker .amPreview { position: relative; border-radius: 22px; background: radial-gradient(circle at 50% 70%, #3a2368, #150e26 75%); border: 1px solid #ffffff22; overflow: hidden; min-height: 420px; }
+  #avatarMaker .amPreview canvas { width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
+  #avatarMaker .amPreview p { position: absolute; bottom: 12px; width: 100%; text-align: center; font-size: 12px; opacity: .6; pointer-events: none; }
+  #avatarMaker .amPanel { overflow-y: auto; padding: 22px; border-radius: 22px; background: #100b1cf2; border: 1px solid #9371ff; color: #f3eff8; }
+  #avatarMaker h2 { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 34px; letter-spacing: .06em; }
+  #avatarMaker .sub { font-size: 13px; opacity: .7; margin: 4px 0 16px; }
+  #avatarMaker .amName { display: grid; gap: 6px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #d9c5ff; }
+  #avatarMaker .amName input { border: 1px solid #a984ff; border-radius: 10px; background: #1a1230; color: #fff; padding: 11px 12px; font: 16px Inter, sans-serif; text-transform: none; letter-spacing: 0; }
+  #avatarMaker section { margin-top: 16px; }
+  #avatarMaker h3 { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #d9c5ff; font-weight: 600; margin-bottom: 8px; }
+  #avatarMaker .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  #avatarMaker .chips button { border: 1px solid #ffffff2e; border-radius: 999px; background: #1d1533; color: #f3eff8; padding: 8px 13px; font: 500 13px Inter, sans-serif; cursor: pointer; transition: background .2s, border-color .2s; }
+  #avatarMaker .chips button:hover { border-color: #b89cff; }
+  #avatarMaker .chips button[aria-pressed="true"] { background: #7c3cff; border-color: #c9b2ff; }
+  #avatarMaker .chips button:focus-visible, #avatarMaker .amActions button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  #avatarMaker .swatches button.sw { width: 34px; height: 34px; padding: 0; border-radius: 50%; border: 2px solid #ffffff33; }
+  #avatarMaker .swatches button.sw[aria-pressed="true"] { border-color: #fff; box-shadow: 0 0 0 3px #7c3cff; }
+  #avatarMaker .amStyle { margin-top: 8px; font-size: 12px; color: #b9a8e6; }
+  #avatarMaker .amActions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 22px; flex-wrap: wrap; }
+  #avatarMaker .amActions button { border-radius: 12px; padding: 12px 18px; font: 600 14px Inter, sans-serif; cursor: pointer; }
+  #avatarMaker .amActions .go { border: 0; background: linear-gradient(135deg, #7c3cff, #b04cff); color: #fff; }
+  #avatarMaker .amActions .ghost { border: 1px solid #ffffff40; background: transparent; color: #fff; }
+  @media (max-width: 760px) { #avatarMaker { align-items: stretch; } #avatarMaker .am { grid-template-columns: 1fr; grid-template-rows: 38dvh auto; overflow-y: auto; } #avatarMaker .amPreview { min-height: 0; } }
+  #avatarMaker .swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+  #avatarMaker section[hidden] { display: none; }
+
+  /* ?foto: clean frames for press / portfolio images */
+  body.foto #hud, body.foto #hint, body.foto #counter, body.foto #labels, body.foto #credits, body.foto #title, body.foto .cineBar { display: none !important; }
+  /* ================= premium skin (neutral dark glass, OR-K violet as the single accent) ================= */
+  :root { --glass: rgba(13,14,18,.72); --glass2: rgba(13,14,18,.88); --line: rgba(255,255,255,.1); --text: #f2f1ee; --muted: rgba(242,241,238,.62); --accent: #8b5cff; }
+  html, body { background: #07080c; }
+  #loader { background: radial-gradient(120% 90% at 50% 35%, #1a2142 0%, #0b0d16 55%, #050608 100%); }
+  #loader img { width: min(220px, 46vw); margin-bottom: 26px; opacity: .95; }
+  #loader h1 { font: 600 13px/1 'Inter', sans-serif; letter-spacing: .42em; text-transform: uppercase; color: var(--text); margin-bottom: 12px; }
+  #loader p { font-size: 12px; letter-spacing: .18em; color: var(--muted); opacity: 1; margin-bottom: 34px; }
+  #bar { width: min(260px, 60vw); height: 1px; background: rgba(255,255,255,.12); }
+  #bar div { background: #fff; }
+  #enter { margin-top: 34px; padding: 13px 30px; border: 0; border-radius: 999px; background: #f2f1ee; color: #0b0c10; font: 600 13px 'Inter'; letter-spacing: .16em; text-transform: uppercase; }
+  #enter:hover { background: #fff; box-shadow: 0 10px 40px rgba(139,92,255,.35); transform: translateY(-1px); }
+  #title h2 { font-size: clamp(28px, 4.6vw, 64px); letter-spacing: .14em; text-shadow: 0 2px 30px rgba(0,0,0,.45); }
+  #title p { font: 500 12px 'Inter'; letter-spacing: .38em; color: var(--muted); opacity: 1; }
+  #hud { gap: 4px; padding: 6px; border-radius: 14px; background: var(--glass); border: 1px solid var(--line); backdrop-filter: blur(18px) saturate(1.2); box-shadow: 0 20px 60px rgba(0,0,0,.35); }
+  #hud > span { font: 500 12px 'Inter'; color: var(--muted); padding: 0 10px; letter-spacing: .04em; } #hud > span b { color: var(--text); }
+  #hud button { border: 0; border-radius: 9px; padding: 9px 13px; background: transparent; color: var(--muted); font: 500 13px 'Inter'; letter-spacing: .01em; }
+  #hud button:hover { background: rgba(255,255,255,.07); color: var(--text); }
+  #hud button.on { background: rgba(255,255,255,.1); color: var(--text); border: 0; }
+  #hud button.primary, #hud .primary { background: #f2f1ee; color: #0b0c10; font-weight: 600; }
+  #hud button.primary:hover { background: #fff; }
+  #hud button.primary.on { background: var(--accent); color: #fff; }
+  #serviceSelect { background: rgba(255,255,255,.05); border: 1px solid var(--line); border-radius: 9px; color: var(--text); padding: 8px 10px; }
+  #counter { font: 500 11px 'Inter'; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); text-shadow: none; padding: 9px 12px; border-radius: 10px; background: var(--glass); border: 1px solid var(--line); backdrop-filter: blur(12px); }
+  #counter b { font-size: 13px; color: var(--text); }
+  #hint { font-size: 11px; color: var(--muted); text-shadow: 0 1px 8px rgba(0,0,0,.6); letter-spacing: .03em; }
+  #labels .label { font: 500 11px/1.2 'Inter', sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--text); background: var(--glass); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; text-shadow: none; backdrop-filter: blur(10px); }
+  #labels .label:is(:hover, :focus-visible) { background: var(--accent); border-color: transparent; }
+  #toast { background: var(--glass2); border: 1px solid var(--line); border-radius: 12px; font-size: 13px; }
+  #bubble { background: rgba(250,249,246,.97); color: #16171c; border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,.3); }
+  #bubble b { color: #6a3fe0; }
+  #credits { opacity: .38; }
+  #chat, #serviceConsole { background: var(--glass2); border: 1px solid var(--line); backdrop-filter: blur(22px) saturate(1.2); box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+  #chat header { background: transparent; border-bottom: 1px solid var(--line); }
+  #chat header small { color: var(--muted); }
+  #chat header button, #serviceConsole button { background: rgba(255,255,255,.06); border: 1px solid var(--line); border-radius: 8px; }
+  #chat header button:hover, #serviceConsole button:hover, #serviceConsole button:focus-visible { background: rgba(255,255,255,.12); }
+  #chatLog .assistant { background: rgba(255,255,255,.07); }
+  #chatLog .user { background: var(--accent); }
+  #chatChips button { border-color: var(--line); color: var(--muted); }
+  #chatForm input { background: rgba(255,255,255,.05); border: 1px solid var(--line); }
+  #chatForm input:focus-visible { outline: 1px solid var(--accent); }
+  #chatForm button { background: #f2f1ee; color: #0b0c10; }
+  #chatForm #chatMic { background: rgba(255,255,255,.06); border: 1px solid var(--line); }
+  #serviceFeedback { color: #cdb8ff; }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div class="cineBar" id="cineTop"></div><div class="cineBar" id="cineBot"></div>
+<div id="loader">
+  <img src="/assets/brand/ork-logo-blanco.svg" alt="O R-K">
+  <h1>Pabellón de servicios</h1>
+  <p>Una experiencia inmersiva · Understand · Transform · Scale</p>
+  <div id="bar"><div></div></div>
+  <button id="enter">Entrar al pabellón</button>
+</div>
+<div id="title" class="fade"><h2>PABELLÓN O R-K</h2><p>Understand · Transform · Scale</p></div>
+<div id="counter" class="fade">Understand · Señales <b id="diagnosisCount" aria-live="polite">0</b> / 3<span hidden><span id="count">0</span> / <span id="total">0</span></span>
+  <div id="diagnosisTools">
+    <button type="button" data-signal="0">Operación</button>
+    <button type="button" data-signal="1">Clientes</button>
+    <button type="button" data-signal="2">Datos</button>
+  </div>
+</div>
+<div id="hint" class="fade">Arrastra para girar · Rueda para zoom<br>Elige un stand en el mapa o en el menú para visitarlo.</div>
+<div id="labels" class="fade"></div>
+<div id="bubble"><b></b><span></span></div>
+<div id="tip"></div>
+<div id="toast"></div>
+<div id="playerHud">
+  <div class="lv">NV <b id="lvl">1</b></div>
+  <div class="bars">
+    <div class="hp"><div id="hpFill"></div><span id="hpText">100 / 100</span></div>
+    <div class="xp"><div id="xpFill"></div></div>
+    <div id="skill"></div>
+  </div>
+  <div class="gold">🪙 <b id="gold">0</b><br>🧪 <b id="potions">1</b> <small>(R)</small></div>
+</div>
+<div id="lockHint">🖱️ Clic en el mundo para mover la cámara · <b>Esc</b> para soltar
+  <small>WASD mover · Shift correr · Espacio saltar · Clic atacar · Clic derecho habilidad · E interactuar · R poción</small></div>
+<div id="crosshair"></div>
+<div id="vignetteHit"></div>
+<div id="prompt"></div>
+<div id="fade"></div>
+<div id="credits">Personajes: KayKit · Kay Lousberg &nbsp;|&nbsp; Muebles, plantas y cielo: Poly Haven &nbsp;(CC0)</div>
+<section id="chat" aria-label="Chat con el equipo O R-K" hidden>
+  <header><div><b id="chatName"></b><small id="chatRole"></small></div><button id="chatChallenge" type="button">Ver reto</button><button id="chatClose" type="button" aria-label="Cerrar chat">×</button></header>
+  <div id="chatLog" role="log" aria-live="polite"></div>
+  <div id="chatChips"></div>
+  <form id="chatForm"><button type="button" id="chatMic" aria-label="Hablar con el micrófono" aria-pressed="false" title="Mantén la conversación con tu voz" hidden>🎤</button><input id="chatInput" maxlength="400" autocomplete="off" placeholder="Escribe o usa el 🎤…" aria-label="Escribe tu mensaje"><button type="submit">Enviar</button></form>
+  <footer>¿Prefieres hablar con una persona? <a href="/#contacto" target="_blank" rel="noopener">Escríbenos →</a></footer>
+</section>
+<aside id="serviceConsole" aria-label="Reto de servicio" hidden>
+  <button id="closeService" type="button" aria-label="Cerrar reto">×</button>
+  <h2></h2>
+  <p id="serviceBrief"></p>
+  <p id="serviceQuestion"></p>
+  <div id="serviceOptions"></div>
+  <p id="serviceFeedback" role="status"></p>
+</aside>
+<div id="hud" class="fade">
+  <select id="serviceSelect" aria-label="Visitar un servicio"><option value="">Stands de servicio</option></select>
+  <span>Retos <b id="serviceProgress" aria-live="polite">0</b>/9</span>
+  <button id="bUnderstand">Ir al lobby</button>
+  <button id="bExplore" class="primary">Explorar caminando</button>
+  <button id="bTime">Noche</button>
+  <button hidden id="bWhale">🐋 Ballena</button>
+  <button hidden id="bDragon">Volar en orca</button>
+  <button id="bRotate" class="on">Auto-giro</button>
+  <button id="bSound" class="on">Sonido</button>
+  <button hidden id="bMagic">✦ Magia</button>
+  <button id="bHero" title="Personaliza tu avatar">Mi avatar</button>
+  <button hidden id="bReset" title="Nueva partida">↺</button>
+  <label hidden for="glow">Brillo</label><input hidden id="glow" type="range" min="0" max="2.5" step="0.05" value="0.75">
+</div>
+<script type="module" src="mundo/main.js?v=ork-pabellon-43"></script>
+</body>
+</html>

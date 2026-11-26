@@ -1,0 +1,17 @@
+// TEMPORARY dev-only endpoint: receives the pavilion geometry exported from the browser so Blender can bake
+// its lighting. Disabled in production. Delete once the lightmap is baked.
+import { NextResponse } from "next/server";
+import { mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
+
+export const runtime="nodejs";
+
+export async function POST(request:Request) {
+  if(process.env.NODE_ENV==="production") return new NextResponse(null,{status:404});
+  const buf=Buffer.from(await request.arrayBuffer());
+  if(buf.length<12||buf.length>200_000_000||buf.toString("latin1",0,4)!=="glTF") return NextResponse.json({error:"GLB inválido"},{status:400});
+  const dir=path.join(process.cwd(),"output","ork-bake");
+  await mkdir(dir,{recursive:true});
+  await writeFile(path.join(dir,"scene.glb"),buf);
+  return NextResponse.json({ok:true,bytes:buf.length});
+}

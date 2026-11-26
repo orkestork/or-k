@@ -54,6 +54,7 @@ const sectors = [
   "STARTUPS",
 ];
 const projects = [
+  {title:"Pabellón O R-K",url:"/experiencias/or-k/mundo.html",meta:"Producto propio / Experiencia 3D",year:"2026",kind:"image",media:"/assets/portfolio/pabellon-or-k-cover.jpg"},
   {title:"Kliniu",url:"https://kliniucolombia.com",meta:"Naming / Identidad de marca",year:"2026",kind:"image",media:"/assets/portfolio/kliniu-cover.webp"},
   {title:"GEU",url:"https://geu-navy.vercel.app/",meta:"Identidad corporativa / Sistema visual",year:"2026",kind:"image",media:"/assets/portfolio/geu-cover.webp"},
   {title:"Totalpars",url:"https://unipars-tech.vercel.app",meta:"Identidad corporativa / Diseño de marca",year:"2026",kind:"image",media:"/assets/portfolio/totalpars-cover.webp"},

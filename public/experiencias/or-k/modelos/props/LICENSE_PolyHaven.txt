@@ -1,0 +1,4 @@
+Muebles, plantas, decoración, HDRI (../../entorno/pav_studio_03_1k.hdr) y textura de roble (../../entorno/oak)
+descargados de Poly Haven (https://polyhaven.com) — licencia CC0 (dominio público, sin atribución obligatoria).
+Plantas potted_plant_01 y potted_plant_02 simplificadas con Blender (decimate) para la web.
+Texturas de tex/ (marble_01, herringbone_parquet, velour_velvet, white_stucco): Poly Haven, CC0.
